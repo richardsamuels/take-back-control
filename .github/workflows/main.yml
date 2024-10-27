@@ -50,3 +50,13 @@ jobs:
         path: dist-chrome/anti-doomscroll.tar.gz
         if-no-files-found: error
 
+  tests:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Run tests
+        run: yarn test
+      - name: Run Lints
+        run: yarn check
+
+
