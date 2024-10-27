@@ -20,15 +20,15 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Get Package Version
-      run: node .github/index.js
+      run: node .github/index.cjs
     - name: Run make
       run: make
     - name: Get Version number
-      run: node .github/version.js
+      run: node .github/version.cjs
     - name: "Read file contents"
       uses: andstor/file-reader-action@v1
       with:
-        path: "version"
+        path: ".github/version"
     - name: Upload Unsigned Firefox xpi
       uses: actions/upload-artifact@v4
       with:

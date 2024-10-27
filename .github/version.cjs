@@ -3,4 +3,5 @@ const fs = require("node:fs");
 
 const { version } = require(resolve("./package.json"));
 
-fs.writeFileSync("version", version);
+fs.writeFileSync(resolve(".github", "version"), version);
+process.exit();
