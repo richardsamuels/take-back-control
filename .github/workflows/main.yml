@@ -1,0 +1,52 @@
+name: Build with Make
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+    - name: Install Yarn
+      run: npm install -g yarn
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+    - name: Get Package Version
+      id: get-package-version
+      uses: stevenbenitez/get-package-version-action@v1
+    - name: Run make
+      run: make
+    - name: Upload Unsigned Firefox xpi
+      uses: actions/upload-artifact@v4
+      with:
+        name: anti-doomscroll_UNSIGNED.xpi
+        path: dist/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.xpi
+        if-no-files-found: error
+    - name: Upload Firefox Source
+      uses: actions/upload-artifact@v4
+      with:
+        name: anti-doomscroll_UNSIGNED.xpi
+        path: dist/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.tar.gz
+        if-no-files-found: error
+
+    - name: Upload Unsigned Chrome xpi
+      uses: actions/upload-artifact@v4
+      with:
+        name: anti-doomscroll_UNSIGNED.xpi
+        path: dist-chrome/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.xpi
+        if-no-files-found: error
+    - name: Upload Chrome Source
+      uses: actions/upload-artifact@v4
+      with:
+        name: anti-doomscroll_UNSIGNED.xpi
+        path: dist-chrome/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.tar.gz
+        if-no-files-found: error
+
