@@ -1,15 +1,19 @@
+/* global navigator */
 import { describe, it, expect } from "vitest";
 
 import * as ut from "./validator";
 
-function setGlobals(agent, vendor) {
+function setGlobals(agent: string, vendor: string) {
+  // @ts-ignore
   navigator.__defineGetter__("userAgent", function () {
     return agent; // customized user agent
   });
+  // @ts-ignore
   navigator.__defineGetter__("vendor", function () {
     return vendor; // customized  vendor
   });
-  global.window = {}; // @ts-ignore
+  // @ts-ignore
+  global.window = {};
 }
 setGlobals("firefox", "mozilla");
 
