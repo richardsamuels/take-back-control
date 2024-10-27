@@ -3,8 +3,12 @@ export const DEFAULT_MESSAGES = [
   "You are compromising your future self.",
   "Why are you here?",
   "Get back to it.",
+  "Stand up and stretch instead.",
   "Focus.",
-  "Lock in.",
+  "Does this spark joy?",
+  "Would you be happier outside?",
+  "Is this supporting your true creative potential?",
+  "You have better hobbies than this.",
 ];
 
 export const DEFAULT_URL_WHITELIST = [

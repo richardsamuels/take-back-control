@@ -6,8 +6,8 @@
     PERMITTED_SCROLL_AMOUNT,
     MAX_BLUR,
     MAX_INTENSITY,
-  } from "../constants";
-  import { settingsStore } from "../store.svelte";
+  } from "./constants";
+  import { settingsStore } from "./store.svelte";
 
   function getOrdinal(n: number) {
     let suffix = "th";
@@ -31,8 +31,10 @@
   }
 
   let numScrollExtensions = $state(1);
-  let innerHeight = $state(window.innerHeight)
-  let overlayTriggerOffset = $derived(window.scrollY + numScrollExtensions * innerHeight * 0.75);
+  let innerHeight = $state(window.innerHeight);
+  let overlayTriggerOffset = $derived(
+    window.scrollY + numScrollExtensions * innerHeight * 0.75,
+  );
   let blurIntensity = $state(0);
   let blurAmount = $derived(blurIntensity * MAX_BLUR);
   let rgbOpacity = $derived(Math.min(blurIntensity, 0.75));
@@ -50,11 +52,11 @@
   }
 
   onMount(() => {
-    window.addEventListener('resize', (_) => {
-      innerHeight = window.innerHeight
-    })
+    window.addEventListener("resize", (_) => {
+      innerHeight = window.innerHeight;
+    });
 
-    document.addEventListener('scroll', (_) => {
+    document.addEventListener("scroll", (_) => {
       const amountScrolled = scrollProgress(overlayTriggerOffset);
       blurIntensity = amountScrolled;
       const shouldMessageRemainVisible = amountScrolled > 0.1;

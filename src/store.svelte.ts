@@ -1,3 +1,4 @@
+import * as browser from "webextension-polyfill";
 import * as constants from "./constants";
 import { writable } from "svelte/store";
 import { type Message } from "./messages";

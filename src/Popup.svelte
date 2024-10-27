@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { settingsStore } from "../store.svelte";
+  import { settingsStore } from "./store.svelte";
+  import * as browser from "webextension-polyfill";
   function options(e) {
     e.preventDefault();
     browser.runtime.openOptionsPage();

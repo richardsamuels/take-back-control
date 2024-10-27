@@ -1,6 +1,7 @@
+import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
 import { type Message } from "./messages";
-import Content from "./Content/index.svelte";
+import Content from "./Content.svelte";
 import { setupStoreFromLocalStorage } from "./store.svelte";
 
 (async function appendCreatedDivs() {

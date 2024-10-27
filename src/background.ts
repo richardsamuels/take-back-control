@@ -1,3 +1,4 @@
+import * as browser from "webextension-polyfill";
 import { get } from "svelte/store";
 import {
   setupStoreFromLocalStorage,
@@ -9,11 +10,11 @@ import { type Message } from "./messages";
 let registered: any = null;
 
 async function registerScript(_message: Message) {
-  console.log("Message", _message);
+  //console.log("Message", _message);
   await setupStoreFromLocalStorage();
 
   let settings = get<Settings>(settingsStore);
-  console.log(settings);
+  //console.log(settings);
   try {
     await browser.scripting.unregisterContentScripts({ ids: ["ads-injector"] });
   } catch (e) {}
@@ -25,7 +26,7 @@ async function registerScript(_message: Message) {
     console.info("Plugin disabled, skipping scripts");
     return;
   }
-  console.info("Reloading scripts", settings.blacklist, settings.whitelist);
+  //console.info("Reloading scripts", settings.blacklist, settings.whitelist);
 
   registered = await browser.scripting.registerContentScripts([
     {

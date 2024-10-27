@@ -1,11 +1,10 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import webExtension from "@samrum/vite-plugin-web-extension";
-import { config, build } from "./vite.common.config";
-import { build } from "./vite.common.config";
+import { chromeConfig, chromeBuild } from "./vite.common.config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte(), webExtension(config)],
-  build,
+  plugins: [svelte(), webExtension(chromeConfig)],
+  build: chromeBuild,
 });
