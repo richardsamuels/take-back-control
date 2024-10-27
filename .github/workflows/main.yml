@@ -19,15 +19,11 @@ jobs:
       run: npm install -g yarn
     - name: Install dependencies
       run: yarn install --frozen-lockfile
-    - name: Get Package Version
-      run: node .github/index.cjs
     - name: Run make
       run: make
-    - name: Get Version number 2
-      run: ls **/*
     - name: Get Version number
       run: node .github/version.cjs
-    - name: "Read file contents"
+    - name: "Read version number"
       uses: andstor/file-reader-action@v1
       with:
         path: ".github/version"
