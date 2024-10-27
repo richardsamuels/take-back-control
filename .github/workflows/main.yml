@@ -33,7 +33,7 @@ jobs:
     - name: Upload Firefox Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+        name: anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
         path: dist/anti-doomscroll.tar.gz
         if-no-files-found: error
 
@@ -46,7 +46,7 @@ jobs:
     - name: Upload Chrome Source
       uses: actions/upload-artifact@v4
       with:
-        name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+        name: CHROME_anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
         path: dist-chrome/anti-doomscroll.tar.gz
         if-no-files-found: error
 
