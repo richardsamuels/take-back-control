@@ -3,14 +3,14 @@
     coerce_and_explain,
     isValidMatchPattern,
     tryParseMatchPattern,
-  } from "./validator.ts";
+  } from "./validator";
   let url = $state("");
   let [realPattern, errors] = $derived(coerce_and_explain(url));
   let valid = $derived(isValidMatchPattern(realPattern));
 
-  const { desc, value = $bindable(), add } = $props();
+  const { desc, add }: { desc: string; add: (a: string) => void } = $props();
 
-  function handle(e) {
+  function handle(e: Event) {
     e.preventDefault();
     add(realPattern);
     url = "";

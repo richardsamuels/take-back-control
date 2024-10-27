@@ -1,4 +1,4 @@
-import * as browser from "webextension-polyfill";
+import * as browser from "/node_modules/webextension-polyfill/dist/browser-polyfill.min.js";
 import * as constants from "./constants";
 import { writable } from "svelte/store";
 import { type Message } from "./messages";

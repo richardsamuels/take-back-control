@@ -1,4 +1,4 @@
-import * as browser from "webextension-polyfill";
+import * as browser from "/node_modules/webextension-polyfill/dist/browser-polyfill.min.js";
 import { mount } from "svelte";
 import { type Message } from "./messages";
 import Content from "./Content.svelte";

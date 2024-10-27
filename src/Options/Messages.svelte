@@ -5,10 +5,10 @@
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
 
-  let selected = $state([]);
+  let selected: number[] = $state([]);
   let newMsg = $state("");
 
-  function removeSelected(e) {
+  function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
 
@@ -18,7 +18,7 @@
     selected.length = 0;
   }
 
-  function selectAll(e) {
+  function selectAll(e: Event) {
     const checked = e.target.checked;
 
     if (!checked) {
@@ -28,7 +28,7 @@
     }
   }
 
-  function handleNewMsg(e) {
+  function handleNewMsg(e: Event) {
     e.preventDefault();
 
     for (const v in $settingsStore.messages) {

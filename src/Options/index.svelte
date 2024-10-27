@@ -4,11 +4,12 @@
   import Messages from "./Messages.svelte";
   import EraseAll from "./EraseAll.svelte";
   import Status from "./Status.svelte";
+  import { settingsStore } from "../store.svelte";
 
-  function erase(e) {
+  function erase(e: Event) {
     e.preventDefault();
     settingsStore.nuke();
-    window.reload();
+    window.location.reload();
   }
 </script>
 

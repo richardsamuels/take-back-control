@@ -1,4 +1,4 @@
-import * as browser from "webextension-polyfill";
+import * as browser from "/node_modules/webextension-polyfill/dist/browser-polyfill.min.js";
 import { get } from "svelte/store";
 import {
   setupStoreFromLocalStorage,
@@ -41,4 +41,4 @@ async function registerScript(_message: Message) {
 
 browser.runtime.onMessage.addListener(registerScript);
 
-registerScript({ init: true });
+registerScript({ reloadContentScripts: true, reloadMessages: true });
