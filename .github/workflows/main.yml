@@ -20,33 +20,38 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     - name: Get Package Version
-      id: get-package-version
-      uses: stevenbenitez/get-package-version-action@v1
+      run: node .github/index.js
     - name: Run make
       run: make
+    - name: Get Version number
+      run: node .github/version.js
+    - name: "Read file contents"
+      uses: andstor/file-reader-action@v1
+      with:
+        path: "version"
     - name: Upload Unsigned Firefox xpi
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
         path: dist/anti-doomscroll.xpi
         if-no-files-found: error
     - name: Upload Firefox Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.tar.gz
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
         path: dist/anti-doomscroll.tar.gz
         if-no-files-found: error
 
     - name: Upload Unsigned Chrome xpi
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
         path: dist-chrome/anti-doomscroll.xpi
         if-no-files-found: error
     - name: Upload Chrome Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
         path: dist-chrome/anti-doomscroll.tar.gz
         if-no-files-found: error
 
