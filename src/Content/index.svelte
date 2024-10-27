@@ -30,8 +30,9 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  let numScrollExtensions = $state(0);
-  let overlayTriggerOffset = $state(window.innerHeight * 0.75); // TODO on resize, update this
+  let numScrollExtensions = $state(1);
+  let innerHeight = $state(window.innerHeight)
+  let overlayTriggerOffset = $derived(window.scrollY + numScrollExtensions * innerHeight * 0.75);
   let blurIntensity = $state(0);
   let blurAmount = $derived(blurIntensity * MAX_BLUR);
   let rgbOpacity = $derived(Math.min(blurIntensity, 0.75));
@@ -44,15 +45,16 @@
     e.stopPropagation();
     e.preventDefault();
     numScrollExtensions += 1;
-    overlayTriggerOffset =
-      window.scrollY + numScrollExtensions * PERMITTED_SCROLL_AMOUNT;
     blurIntensity = 0;
     messageVisible = false;
   }
 
   onMount(() => {
-    console.log("Mounted");
-    document.onscroll = (_) => {
+    window.addEventListener('resize', (_) => {
+      innerHeight = window.innerHeight
+    })
+
+    document.addEventListener('scroll', (_) => {
       const amountScrolled = scrollProgress(overlayTriggerOffset);
       blurIntensity = amountScrolled;
       const shouldMessageRemainVisible = amountScrolled > 0.1;
@@ -71,7 +73,7 @@
         message = newMessage;
       }
       messageVisible = shouldMessageRemainVisible;
-    };
+    });
   });
 </script>
 
@@ -106,7 +108,7 @@
         type="button"
         onclick={lieToSelf}
       >
-        It's important ({getOrdinal(numScrollExtensions + 1)} time)
+        It's important ({getOrdinal(numScrollExtensions)} time)
       </button>
     </div>
   </div>

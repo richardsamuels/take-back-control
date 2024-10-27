@@ -5,8 +5,8 @@
     browser.runtime.openOptionsPage();
   }
   function click(e) {
-    console.log(e.target.checked)
-    $settingsStore.enable = (e.target.checked)
+    console.log(e.target.checked);
+    $settingsStore.enable = e.target.checked;
   }
 </script>
 
@@ -38,7 +38,9 @@
         </div>-->
 
       <div>
-        <a href="#" class="link-primary text-light" onclick={options}>Edit allowed websites</a>
+        <a href="#" class="link-primary text-light" onclick={options}
+          >Edit allowed websites</a
+        >
       </div>
     </div>
   </div>

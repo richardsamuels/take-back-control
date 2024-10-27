@@ -39,7 +39,7 @@
   }
 
   function click(e) {
-    settingsStore.enable(e.target.checked)
+    settingsStore.enable(e.target.checked);
   }
 </script>
 
