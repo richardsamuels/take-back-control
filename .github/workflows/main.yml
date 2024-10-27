@@ -27,26 +27,26 @@ jobs:
     - name: Upload Unsigned Firefox xpi
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED.xpi
-        path: dist/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.xpi
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        path: dist/anti-doomscroll.xpi
         if-no-files-found: error
     - name: Upload Firefox Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED.xpi
-        path: dist/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.tar.gz
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.tar.gz
+        path: dist/anti-doomscroll.tar.gz
         if-no-files-found: error
 
     - name: Upload Unsigned Chrome xpi
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED.xpi
-        path: dist-chrome/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.xpi
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        path: dist-chrome/anti-doomscroll.xpi
         if-no-files-found: error
     - name: Upload Chrome Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED.xpi
-        path: dist-chrome/anti-doomscroll-${{ steps.get-package-version.outputs.version }}.tar.gz
+        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}.xpi
+        path: dist-chrome/anti-doomscroll.tar.gz
         if-no-files-found: error
 
