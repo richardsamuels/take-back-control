@@ -1,18 +1,16 @@
-PACKAGE_NAME = anti-doomscroll
+.PHONY: all clean yarn
 
-.PHONY: all xpi signed clean
+all: dist/anti-doomscroll.xpi dist/anti-doomscroll.tar.gz
 
-all: xpi
+yarn:
+	yarn build -c vite.cs.config.ts
+	yarn build -c vite.config.ts
 
-xpi: makexpi/makexpi.sh
-	git submodule update
-	makexpi/makexpi.sh -n $(PACKAGE_NAME) -o
+dist/anti-doomscroll.xpi: yarn $(wildcard dist/**/*)
+	cd dist && zip -r -FS anti-doomscroll.xpi * --exclude '*.git*' --exclude '*.map'
 
-makexpi/makexpi.sh:
-	git submodule update --init
-
-signed: xpi
-	makexpi/sign_xpi.sh -k $(JWT_KEY) -s $(JWT_SECRET) -p ./$(PACKAGE_NAME)_noupdate.xpi
+dist/anti-doomscroll.tar.gz: yarn $(wildcard dist/**/*)
+	tar -czvf dist/anti-doomscroll.tar.gz --exclude='.git' --exclude='dist' --exclude="node_modules" .
 
 clean:
-	rm $(PACKAGE_NAME).xpi $(PACKAGE_NAME)_noupdate.xpi sha1hash.txt
+	rm dist/*.xpi
