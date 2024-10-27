@@ -23,10 +23,6 @@ jobs:
       run: make
     - name: Get Version number
       run: node .github/version.cjs
-    - name: "Read version number"
-      uses: andstor/file-reader-action@v1
-      with:
-        path: ".github/version"
     - name: Upload Unsigned Firefox xpi
       uses: actions/upload-artifact@v4
       with:
@@ -43,13 +39,13 @@ jobs:
     - name: Upload Unsigned Chrome xpi
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+        name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
         path: dist-chrome/anti-doomscroll.xpi
         if-no-files-found: error
     - name: Upload Chrome Source
       uses: actions/upload-artifact@v4
       with:
-        name: anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+        name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
         path: dist-chrome/anti-doomscroll.tar.gz
         if-no-files-found: error
 
