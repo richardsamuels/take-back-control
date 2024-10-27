@@ -23,6 +23,8 @@ jobs:
       run: node .github/index.cjs
     - name: Run make
       run: make
+    - name: Get Version number 2
+      run: ls **/*
     - name: Get Version number
       run: node .github/version.cjs
     - name: "Read file contents"
