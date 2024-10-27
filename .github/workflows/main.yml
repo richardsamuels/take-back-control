@@ -22,6 +22,7 @@ jobs:
     - name: Run make
       run: make
     - name: Get Version number
+      id: get-package-version
       run: node .github/version.cjs
     - name: Upload Unsigned Firefox xpi
       uses: actions/upload-artifact@v4
