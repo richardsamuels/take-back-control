@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as browser from "webextension-polyfill";
+  import Nag from "./Content/Nag.svelte";
   import { onMount } from "svelte";
   import {
     OVERLAY_DIV_ID,
@@ -8,18 +8,6 @@
     MAX_BLUR,
   } from "./constants";
   import { settingsStore } from "./store.svelte";
-
-  function getOrdinal(n: number) {
-    let suffix = "th";
-    if (n % 10 == 1 && n % 100 != 11) {
-      suffix = "st";
-    } else if (n % 10 == 2 && n % 100 != 12) {
-      suffix = "nd";
-    } else if (n % 10 == 3 && n % 100 != 13) {
-      suffix = "rd";
-    }
-    return n + suffix;
-  }
 
   function randomItemFrom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)];
@@ -53,8 +41,6 @@
   });
 
   function lieToSelf(e: Event) {
-    e.stopPropagation();
-    e.preventDefault();
     numScrollExtensions += 1;
     rawBlurIntensity = 0;
   }
@@ -96,16 +82,7 @@
         {message}
       </div>
     </div>
-    <div class="center-flex-row" style="gap: 16px">
-      <button
-        id="finite-extend-button"
-        class="finite-button nude soft-transition"
-        type="button"
-        onclick={lieToSelf}
-      >
-        It's important ({getOrdinal(numScrollExtensions)} time)
-      </button>
-    </div>
+    <Nag n={numScrollExtensions} continueFn={lieToSelf} />
   </div>
 </div>
 
@@ -125,12 +102,6 @@
     /* transition: all 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95); */
   }
 
-  .center-flex-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   .center-flex-col {
     display: flex;
     flex-direction: column;
@@ -148,32 +119,5 @@
     color: #fafafa;
     text-align: center;
     font-weight: 300;
-  }
-
-  .finite-button {
-    padding: 8px 12px;
-    font-size: 16px;
-    border: 1px solid #ffc635;
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0);
-    color: #ffc635;
-    pointer-events: auto;
-  }
-
-  .finite-button.nude {
-    color: rgba(255, 255, 255, 0.28);
-    border: none;
-  }
-
-  .finite-button:hover {
-    cursor: pointer;
-    background-color: #ffc635;
-    color: #1b1b1b;
-  }
-
-  .finite-button.nude:hover {
-    background-color: rgba(0, 0, 0, 0);
-    color: white;
-    text-decoration: underline;
   }
 </style>

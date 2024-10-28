@@ -13,7 +13,5 @@ import { settingsStore, setupStoreFromLocalStorage } from "./store.svelte";
 })();
 
 browser.runtime.onMessage.addListener(async () => {
-  console.log("old", get(settingsStore));
   await setupStoreFromLocalStorage();
-  console.log("new", get(settingsStore));
 });

@@ -31,9 +31,9 @@ _in descending priority_
 - Firefox Mobile
 - Balance: allow the users to give themself a timed reprieve from this extension without disabling it
 - Compunctation statement. Make the user apologize for wasting their life by writing a handful of words into a text box (opt-in)
-- Dark mode support, especially on settings
 - Offer feature to trigger anti-doomscroll wall after measuring time on page instead of scrolling (opt-in)
 - Make Options/Popover less ugly
+  - Dark mode support, especially on settings
 - The Whitelist/Blacklist/Messages list all rely on copy pasted code. Fix that!
 - Import and Export of settings
 

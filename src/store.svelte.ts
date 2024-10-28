@@ -12,6 +12,7 @@ const KEY_ENABLED = "enabled";
 export type Settings = {
   init: boolean;
   enabled: boolean;
+  nagChance: number;
   messages: string[];
   blacklist: string[];
   //timeoutBlacklist: string[];
@@ -26,6 +27,7 @@ function createSettingsStore() {
   const { subscribe, set, update } = writable<Settings>({
     init: false,
     enabled: true,
+    nagChance: 0,
     messages: [],
     whitelist: [],
     blacklist: [],
@@ -101,6 +103,7 @@ async function sendToTabsWithContentScript(msg: Message) {
 class LikeCommentAnd {
   lastStore: Settings = {
     init: false,
+    nagChance: 0,
     enabled: true,
     messages: [],
     whitelist: [],
@@ -163,6 +166,7 @@ function defaultStore(): Settings {
     [KEY_MESSAGES]: constants.DEFAULT_MESSAGES,
     [KEY_DIDINIT]: true,
     [KEY_ENABLED]: true,
+    nagChance: 0,
   };
 }
 
