@@ -5,6 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { setupStoreFromLocalStorage } from "./store.svelte";
 
 await setupStoreFromLocalStorage();
+
 const app = mount(Options, {
   target: document.getElementById("app")!,
 });

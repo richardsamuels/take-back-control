@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    coerce_and_explain,
-    isValidMatchPattern,
-    tryParseMatchPattern,
-  } from "./validator";
+  import { coerce_and_explain, isValidMatchPattern } from "./validator";
   let url = $state("");
   let [realPattern, errors] = $derived(coerce_and_explain(url));
   let valid = $derived(isValidMatchPattern(realPattern));
@@ -19,9 +15,9 @@
 
 <form class="mb-4" onsubmit={handle}>
   <div>
-    <label class="form-label">
+    <span class="form-label">
       {desc}
-    </label>
+    </span>
     <div class="d-flex gap-2">
       <span>
         {#if errors.length > 0}
