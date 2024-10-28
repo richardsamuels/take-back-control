@@ -1,6 +1,6 @@
 function isChrome() {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const vendor = navigator.vendor.toLowerCase();
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  const vendor = window.navigator.vendor.toLowerCase();
 
   return (
     /chrome/.test(userAgent) && /google inc/.test(vendor) && !("opr" in window)

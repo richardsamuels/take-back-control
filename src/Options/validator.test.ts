@@ -5,11 +5,11 @@ import * as ut from "./validator";
 
 function setGlobals(agent: string, vendor: string) {
   // @ts-ignore
-  navigator.__defineGetter__("userAgent", function () {
+  window.navigator.__defineGetter__("userAgent", function () {
     return agent; // customized user agent
   });
   // @ts-ignore
-  navigator.__defineGetter__("vendor", function () {
+  window.navigator.__defineGetter__("vendor", function () {
     return vendor; // customized  vendor
   });
   // @ts-ignore
