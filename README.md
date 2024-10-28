@@ -28,7 +28,6 @@ should review your browser's privacy policy.
 
 _in descending priority_
 
-- Fix the Select All. It should uncheck if you deactivate one item in the list
 - Firefox Mobile
 - Balance: allow the users to give themself a timed reprieve from this extension without disabling it
 - Compunctation statement. Make the user apologize for wasting their life by writing a handful of words into a text box (opt-in)
@@ -68,8 +67,8 @@ developing:
 
 You can manually reload the extension after making changes to the content script
 
-When using `make` (including the `yarn` target) to run the build, both
-config files will be built.
+When using `make` (specifically `make yarn`, which is default) to run the build,
+both config files will be built.
 
 ## Legal & Credit
 

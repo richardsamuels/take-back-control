@@ -114,7 +114,6 @@ class LikeCommentAnd {
       reloadMessages: false,
       reloadContentScripts: false,
     };
-    console.trace(this.lastStore?.enabled, store.enabled);
     if (this.lastStore == undefined) {
       msg.reloadContentScripts = true;
       msg.behaviorChanged = true;

@@ -1,28 +1,30 @@
 <script lang="ts">
-  import { get } from "svelte/store";
-  import { SvelteSet } from "svelte/reactivity";
   import List from "./List.svelte";
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
 
   let selected: number[] = $state([]);
-  const newWhitelist = $state("");
+  let selectAll = $state(false);
+  $effect(() => {
+    if (selectAll && selected.length != $settingsStore.whitelist.length) {
+      selectAll = false;
+    }
+  });
 
   function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
 
-    for (const d of selected.reverse()) {
+    for (const d of todel.reverse()) {
       settingsStore.whitelist.remove(d);
     }
     selected.length = 0;
   }
 
-  function selectAll(e: Event) {
-    const checked = (e.target as HTMLInputElement)?.checked;
-
-    if (!checked) {
-      selected.length = 0;
+  function selectAllClick(_e: Event) {
+    selectAll = !selectAll;
+    if (!selectAll) {
+      selected = [];
     } else {
       selected = $settingsStore.whitelist.map((_, i) => i);
     }
@@ -56,7 +58,10 @@
           <input
             class="form-check-input mt-0"
             type="checkbox"
-            onclick={selectAll}
+            indeterminate={selected.length > 0 &&
+              selected.length < $settingsStore.whitelist.length}
+            bind:checked={selectAll}
+            onclick={selectAllClick}
           /> Select all
         </label>
       </div>
