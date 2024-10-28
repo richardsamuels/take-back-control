@@ -1,46 +1,5 @@
 <script lang="ts">
-  import { get } from "svelte/store";
-  import { SvelteSet } from "svelte/reactivity";
-  import List from "./List.svelte";
-  import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
-
-  let selected: number[] = $state([]);
-  const newBlacklist = $state("");
-
-  function removeSelected(e: Event) {
-    e.preventDefault();
-    const todel = $state.snapshot(selected);
-
-    for (const d of selected.reverse()) {
-      settingsStore.blacklist.remove(d);
-    }
-    selected.length = 0;
-  }
-
-  function selectAll(e: Event) {
-    const checked = (e.target as HTMLInputElement)?.checked;
-
-    if (!checked) {
-      selected.length = 0;
-    } else {
-      selected = $settingsStore.blacklist.map((_, i) => i);
-    }
-  }
-
-  function addUrl(realPattern: string) {
-    for (const v in $settingsStore.blacklist) {
-      if (v == realPattern) {
-        console.log("DUPE");
-        return;
-      }
-    }
-    settingsStore.blacklist.add(realPattern);
-  }
-
-  function click(e: Event) {
-    settingsStore.enable((e.target as HTMLInputElement)?.checked);
-  }
 </script>
 
 <div class="pb-5">
@@ -50,8 +9,7 @@
       <input
         class="form-check-input mt-0"
         type="checkbox"
-        checked={$settingsStore.enable}
-        onclick={click}
+        bind:checked={$settingsStore.enabled}
       /> Enable Plugin
     </label>
   </div>

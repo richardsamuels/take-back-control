@@ -1,12 +1,10 @@
 <script lang="ts">
   import { settingsStore } from "./store.svelte";
   import * as browser from "webextension-polyfill";
+
   function options(e: Event) {
     e.preventDefault();
     browser.runtime.openOptionsPage();
-  }
-  function click(e: Event) {
-    $settingsStore.enable = (e.target as HTMLInputElement)?.checked;
   }
 </script>
 
@@ -21,8 +19,7 @@
           <input
             class="form-check-input"
             type="checkbox"
-            checked={$settingsStore.enable}
-            onclick={click}
+            bind:checked={$settingsStore.enabled}
           />
           Limited scroll
         </label>
@@ -38,7 +35,7 @@
         </div>-->
 
       <div>
-        <a href="#" class="link-primary text-light" onclick={options}
+        <a href="#options" class="link-primary text-light" onclick={options}
           >Edit allowed websites</a
         >
       </div>

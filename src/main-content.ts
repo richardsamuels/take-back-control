@@ -1,19 +1,19 @@
-import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
+import { get } from "svelte/store";
 import { type Message } from "./messages";
 import Content from "./Content.svelte";
-import { setupStoreFromLocalStorage } from "./store.svelte";
+import { settingsStore, setupStoreFromLocalStorage } from "./store.svelte";
 
 (async function appendCreatedDivs() {
-  await setupStoreFromLocalStorage(true);
+  await setupStoreFromLocalStorage();
 
   const bodyElement = document.querySelector("body");
   // @ts-ignore
   mount(Content, { target: bodyElement });
 })();
 
-browser.runtime.onMessage.addListener((msg: unknown): undefined => {
-  if ((msg as Message)?.reloadContentScripts) {
-    console.log("need to reassess");
-  }
+browser.runtime.onMessage.addListener(async () => {
+  console.log("old", get(settingsStore));
+  await setupStoreFromLocalStorage();
+  console.log("new", get(settingsStore));
 });

@@ -17,6 +17,7 @@ If you really need to, you can click the "It's important" button to see
 the content.
 
 ## Privacy
+
 No data is collected by this extension by the developer.
 
 If your browser is configured to synchronize addon settings, this feature will
