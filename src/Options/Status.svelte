@@ -1,5 +1,6 @@
 <script lang="ts">
   import { settingsStore } from "../store.svelte";
+  import Enable from "./Enable.svelte";
 </script>
 
 <div class="pb-5">
@@ -7,13 +8,7 @@
   <div>
     <ul class="list-group">
       <li class="list-group-item">
-        <label class="form-check-label mb-4">
-          <input
-            class="form-check-input mt-0"
-            type="checkbox"
-            bind:checked={$settingsStore.enabled}
-          /> Enable Plugin
-        </label>
+        <Enable />
         <ul class="list-group mb-4">
           <li
             class="list-group-item"

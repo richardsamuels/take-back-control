@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { settingsStore } from "./store.svelte";
   import * as browser from "webextension-polyfill";
-
+  import Enable from "./Options/Enable.svelte";
   function options(e: Event) {
     e.preventDefault();
     browser.runtime.openOptionsPage();
@@ -15,14 +14,7 @@
   <div class="d-flex flex-column gap-1">
     <div id="checkboxContainer" class="d-flex flex-column gap-1">
       <div class="form-check">
-        <label class="form-check-label">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            bind:checked={$settingsStore.enabled}
-          />
-          Limited scroll
-        </label>
+        <Enable />
       </div>
       <!--<div class="form-check">
             <label class="form-check-label">
