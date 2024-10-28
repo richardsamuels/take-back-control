@@ -18,7 +18,7 @@ the content.
 
 ## Privacy
 
-No data is collected by this extension by the developer.
+No data is collected by this extension for the developer.
 
 If your browser is configured to synchronize addon settings, this feature will
 be used to share settings across all logged in instances of that browser. You
