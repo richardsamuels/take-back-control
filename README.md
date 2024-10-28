@@ -16,25 +16,28 @@ You can also whitelist parts of a website, for example to permit access to
 If you really need to, you can click the "It's important" button to see
 the content.
 
-Privacy: no data is collected by this extension for storage by the developer.
-Your browser's synced settings feature will allow you to share settings
-across all logged in instances of that browser
+## Privacy
+No data is collected by this extension by the developer.
+
+If your browser is configured to synchronize addon settings, this feature will
+be used to share settings across all logged in instances of that browser. You
+should review your browser's privacy policy.
 
 ## Future Work
 
 _in descending priority_
 
 - Fix the Select All. It should uncheck if you deactivate one item in the list
-- Firefox Mobile (possibly combine with make less ugly?)
+- Firefox Mobile
 - Balance: allow the users to give themself a timed reprieve from this extension without disabling it
-- Compunctation statement. Make the user apologize for wasting their life by writing a handful of words into a text box
+- Compunctation statement. Make the user apologize for wasting their life by writing a handful of words into a text box (opt-in)
 - Dark mode support, especially on settings
-- Offer feature to trigger anti-doomscroll wall after measuring time on page instead of scrolling (User configurable)
+- Offer feature to trigger anti-doomscroll wall after measuring time on page instead of scrolling (opt-in)
 - Make Options/Popover less ugly
 - The Whitelist/Blacklist/Messages list all rely on copy pasted code. Fix that!
 - Import and Export of settings
 
-## Build Instructions (for Production Extension)
+## Build Instructions (for Production Extension & Addon Review)
 
 This repo assumes that `make`, `yarn`, `zip`, and `tar` are available on the
 path.
