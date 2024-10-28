@@ -5,15 +5,15 @@ import * as ut from "./validator";
 
 function setGlobals(agent: string, vendor: string) {
   // @ts-ignore
-  window.navigator.__defineGetter__("userAgent", function () {
+  global.window = { navigator: {} };
+  // @ts-ignore
+  global.window.navigator.__defineGetter__("userAgent", function () {
     return agent; // customized user agent
   });
   // @ts-ignore
-  window.navigator.__defineGetter__("vendor", function () {
+  global.window.navigator.__defineGetter__("vendor", function () {
     return vendor; // customized  vendor
   });
-  // @ts-ignore
-  global.window = {};
 }
 setGlobals("firefox", "mozilla");
 
