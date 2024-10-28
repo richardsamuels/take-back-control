@@ -14,13 +14,13 @@ yarn-chrome:
 	yarn build -c vite.chrome.config.ts
 
 dist/FIREFOX_anti-doomscroll_UNSIGNED.xpi: yarn $(wildcard dist/**/*)
-	cd dist && zip -r -FS FIREFOX_anti-doomscroll_UNSIGNED.xpi * --exclude '*.git*' --exclude '*.map'
+	cd dist && zip -r -FS FIREFOX_anti-doomscroll_UNSIGNED.xpi * --exclude '*.git*'
 
 dist/FIREFOX_anti-doomscroll.tar.gz: yarn $(wildcard dist/**/*)
 	tar -czvf dist/FIREFOX_anti-doomscroll.tar.gz --exclude='.git' --exclude='dist' --exclude='dist-chrome' --exclude="node_modules" .
 
 dist-chrome/CHROME_anti-doomscroll_UNSIGNED.xpi: yarn $(wildcard dist-chrome/**/*)
-	cd dist-chrome && zip -r -FS CHROME_anti-doomscroll_UNSIGNED.xpi * --exclude '*.git*' --exclude '*.map'
+	cd dist-chrome && zip -r -FS CHROME_anti-doomscroll_UNSIGNED.xpi * --exclude '*.git*'
 
 dist-chrome/CHROME_anti-doomscroll.tar.gz: yarn $(wildcard dist-chrome/**/*)
 	tar -czvf dist-chrome/CHROME_anti-doomscroll.tar.gz --exclude='.git' --exclude='dist' --exclude='dist-chrome' --exclude="node_modules" .
