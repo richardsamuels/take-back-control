@@ -2,7 +2,6 @@ import * as browser from "webextension-polyfill";
 import * as constants from "./constants";
 import { writable } from "svelte/store";
 import { type Message } from "./messages";
-import { asyncable } from "svelte-asyncable";
 
 const KEY_BLACKLIST = "blacklist";
 const KEY_WHITELIST = "whitelist";
