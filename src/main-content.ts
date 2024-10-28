@@ -12,8 +12,8 @@ import { setupStoreFromLocalStorage } from "./store.svelte";
   mount(Content, { target: bodyElement });
 })();
 
-browser.runtime.onMessage.addListener((msg: Message) => {
-  if (msg?.reloadContentScripts) {
+browser.runtime.onMessage.addListener((msg: unknown): undefined => {
+  if ((msg as Message)?.reloadContentScripts) {
     console.log("need to reassess");
   }
 });

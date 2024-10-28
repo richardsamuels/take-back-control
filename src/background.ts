@@ -9,7 +9,7 @@ import { type Message } from "./messages";
 
 let registered: any = null;
 
-async function registerScript(_message: Message) {
+async function registerScript(_msg: unknown) {
   //console.log("Message", _message);
   await setupStoreFromLocalStorage();
 
@@ -41,4 +41,4 @@ async function registerScript(_message: Message) {
 
 browser.runtime.onMessage.addListener(registerScript);
 
-registerScript({ init: true });
+registerScript({ reloadContentScripts: true, reloadMessages: true });

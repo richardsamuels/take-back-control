@@ -5,10 +5,10 @@
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
 
-  let selected = $state([]);
+  let selected: number[] = $state([]);
   const newBlacklist = $state("");
 
-  function removeSelected(e) {
+  function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
 
@@ -18,8 +18,8 @@
     selected.length = 0;
   }
 
-  function selectAll(e) {
-    const checked = e.target.checked;
+  function selectAll(e: Event) {
+    const checked = (e.target as HTMLInputElement)?.checked;
 
     if (!checked) {
       selected.length = 0;
@@ -28,7 +28,7 @@
     }
   }
 
-  function addUrl(realPattern) {
+  function addUrl(realPattern: string) {
     for (const v in $settingsStore.blacklist) {
       if (v == realPattern) {
         console.log("DUPE");

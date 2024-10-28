@@ -21,7 +21,7 @@
     return n + suffix;
   }
 
-  function randomItemFrom(array) {
+  function randomItemFrom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)];
   }
 
@@ -43,7 +43,7 @@
   let messageVisible = $state(false);
   let message = $state("");
 
-  function lieToSelf(e) {
+  function lieToSelf(e: Event) {
     e.stopPropagation();
     e.preventDefault();
     numScrollExtensions += 1;

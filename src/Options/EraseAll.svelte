@@ -1,10 +1,10 @@
 <script lang="ts">
   import { settingsStore } from "../store.svelte";
 
-  function erase(e) {
+  function erase(e: Event) {
     e.preventDefault();
     settingsStore.nuke();
-    window.reload();
+    window.location.reload();
   }
 </script>
 

@@ -43,11 +43,11 @@ path.
 2. `yarn install`
 3. `make`
 4. For Firefox:
-    - Unsigned extension can be found in `dist/anti-doomscroll.xpi`
-    - Source archive for addon review can be found in `dist/anti-doomscroll.tar.gz`
-4. For Chrome:
-    - Unsigned extension can be found in `dist-chrome/anti-doomscroll.xpi`
-    - Source archive for addon review can be found in `dist-chrome/anti-doomscroll.tar.gz`
+   - Unsigned extension can be found in `dist/anti-doomscroll.xpi`
+   - Source archive for addon review can be found in `dist/anti-doomscroll.tar.gz`
+5. For Chrome:
+   - Unsigned extension can be found in `dist-chrome/anti-doomscroll.xpi`
+   - Source archive for addon review can be found in `dist-chrome/anti-doomscroll.tar.gz`
 
 ### Warning for Developers
 

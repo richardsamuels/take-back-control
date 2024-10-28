@@ -1,21 +1,25 @@
+/* global navigator */
 import { describe, it, expect } from "vitest";
 
 import * as ut from "./validator";
 
-function setGlobals(agent, vendor) {
-  navigator.__defineGetter__("userAgent", function () {
+function setGlobals(agent: string, vendor: string) {
+  // @ts-ignore
+  global.window = { navigator: {} };
+  // @ts-ignore
+  global.window.navigator.__defineGetter__("userAgent", function () {
     return agent; // customized user agent
   });
-  navigator.__defineGetter__("vendor", function () {
+  // @ts-ignore
+  global.window.navigator.__defineGetter__("vendor", function () {
     return vendor; // customized  vendor
   });
-  global.window = {}; // @ts-ignore
 }
 setGlobals("firefox", "mozilla");
 
 describe("tryParseMatchPattern", () => {
   it("accepts valid patterns", () => {
-    const table = [
+    const table: [string, ut.Parsed][] = [
       [
         "*://*.test.com/*",
         {
@@ -112,7 +116,7 @@ describe("tryParseMatchPattern", () => {
   });
 
   it("accepts valid patterns for file", () => {
-    const table = [
+    const table: [string, ut.Parsed][] = [
       [
         "file:///*",
         {
@@ -168,7 +172,7 @@ describe("tryParseMatchPattern", () => {
   it("accepts valid patterns (chrome)", () => {
     setGlobals("chrome", "google inc");
 
-    const table = [
+    const table: [string, ut.Parsed][] = [
       [
         "*://*.test.com/*",
         {
@@ -241,7 +245,7 @@ describe("tryParseMatchPattern", () => {
   });
 
   it("rejects invalid patterns", () => {
-    const table = [
+    const table: [string, ut.Parsed][] = [
       ["", { valid: false }],
       [
         "bs://*.test.com/*",
