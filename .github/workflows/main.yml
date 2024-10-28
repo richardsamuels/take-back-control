@@ -55,3 +55,15 @@ jobs:
         run: yarn test
       - name: Run Lints
         run: yarn check
+      - name: "web-ext lint"
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: lint
+          source: dist
+          channel: listed
+      - name: "web-ext lint (chrome)"
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: lint
+          source: dist-chrome
+          channel: listed
