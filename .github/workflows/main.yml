@@ -31,7 +31,7 @@ jobs:
           path: dist/*anti-doomscroll.*
           if-no-files-found: error
 
-      - name: Upload Chrome xpi
+      - name: Upload Chrome
         uses: actions/upload-artifact@v4
         with:
           name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
@@ -55,6 +55,8 @@ jobs:
         run: yarn test
       - name: Run Lints
         run: yarn check
+      - name: Run make
+        run: make
       - name: "web-ext lint"
         uses: kewisch/action-web-ext@v1
         with:
