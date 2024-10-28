@@ -1,11 +1,11 @@
 <script lang="ts">
+  import * as browser from "webextension-polyfill";
   import { onMount } from "svelte";
   import {
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
-    PERMITTED_SCROLL_AMOUNT,
+    PERMITTED_SCROLL_FACTOR,
     MAX_BLUR,
-    MAX_INTENSITY,
   } from "./constants";
   import { settingsStore } from "./store.svelte";
 
@@ -30,25 +30,33 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
+  let canBeVisible = $derived($settingsStore.enabled);
+
   let numScrollExtensions = $state(1);
+
   let innerHeight = $state(window.innerHeight);
-  let overlayTriggerOffset = $derived(
-    window.scrollY + numScrollExtensions * innerHeight * 0.75,
+  const overlayTriggerOffset = $derived(
+    window.scrollY +
+      numScrollExtensions * innerHeight * PERMITTED_SCROLL_FACTOR,
   );
-  let blurIntensity = $state(0);
-  let blurAmount = $derived(blurIntensity * MAX_BLUR);
-  let rgbOpacity = $derived(Math.min(blurIntensity, 0.75));
-  let pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
-  let overlayVisible = $derived(blurIntensity > 0);
-  let messageVisible = $state(false);
-  let message = $state("");
+  let rawBlurIntensity = $state(0);
+  const blurIntensity = $derived(canBeVisible ? rawBlurIntensity : 0);
+  const blurAmount = $derived(blurIntensity * MAX_BLUR);
+  const rgbOpacity = $derived(canBeVisible ? Math.min(blurIntensity, 0.75) : 0);
+  const pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
+  const messageVisible = $derived(blurIntensity > 0.1);
+  const message = $derived.by(() => {
+    if (!messageVisible) {
+      return;
+    }
+    return randomItemFrom($settingsStore.messages);
+  });
 
   function lieToSelf(e: Event) {
     e.stopPropagation();
     e.preventDefault();
     numScrollExtensions += 1;
-    blurIntensity = 0;
-    messageVisible = false;
+    rawBlurIntensity = 0;
   }
 
   onMount(() => {
@@ -58,23 +66,7 @@
 
     document.addEventListener("scroll", (_) => {
       const amountScrolled = scrollProgress(overlayTriggerOffset);
-      blurIntensity = amountScrolled;
-      const shouldMessageRemainVisible = amountScrolled > 0.1;
-
-      if (!messageVisible) {
-        const oldTxt = $state.snapshot(message);
-        let newMessage = randomItemFrom($settingsStore.messages);
-        let limit = 5;
-        while (newMessage == oldTxt) {
-          newMessage = randomItemFrom($settingsStore.messages);
-          limit--;
-          if (limit == 0) {
-            break;
-          }
-        }
-        message = newMessage;
-      }
-      messageVisible = shouldMessageRemainVisible;
+      rawBlurIntensity = amountScrolled;
     });
   });
 </script>
@@ -82,6 +74,7 @@
 <div
   id={OVERLAY_DIV_ID}
   class="full-screen-overlay soft-transition"
+  style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
 >

@@ -704,11 +704,6 @@ std-env@^3.7.0:
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.7.0.tgz#c9f7386ced6ecf13360b6c6c55b8aaa4ef7481d2"
   integrity sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==
 
-svelte-asyncable@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/svelte-asyncable/-/svelte-asyncable-2.2.1.tgz#f9b28861a153a01829a158e097402dd78cf59284"
-  integrity sha512-9Hm6/Av4SwaBpFSjD2Tv7Diof4+mFkXLRlMFlsysDmGCxJdTqe4nCK/Og7yBpTmqOwBZvH/wnKoN7dtofFy5zg==
-
 svelte-check@^4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-4.0.5.tgz#5cd910c3b1d50f38159c17cc3bae127cbbb55c8d"

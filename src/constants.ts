@@ -52,7 +52,6 @@ export const DEFAULT_URL_BLACKLIST = [
 export const OVERLAY_DIV_ID = `finite-scroll-overlay-div`;
 export const MESSAGE_DISPLAY_DIV_ID = `finite-scroll-message-display-div`;
 
-export const PERMITTED_SCROLL_AMOUNT = 0.75; // px
-export const MAX_INTENSITY = 1;
+export const PERMITTED_SCROLL_FACTOR = 0.75; // px
 export const MAX_BLUR = 100; // px
 export const MAX_DURATION = 1000 * 60 * 5; // ms

@@ -115,7 +115,7 @@ class LikeCommentAnd {
       reloadMessages: false,
       reloadContentScripts: false,
     };
-    console.log(this.lastStore?.enabled, store.enabled);
+    console.trace(this.lastStore?.enabled, store.enabled);
     if (this.lastStore == undefined) {
       msg.reloadContentScripts = true;
       msg.behaviorChanged = true;
@@ -138,26 +138,19 @@ class LikeCommentAnd {
       msg.reloadContentScripts = true;
     }
 
-    // @ts-ignore: implicit any
     this.lastStore = store;
     await browser.storage.sync.set(store);
     try {
       await browser.runtime.sendMessage(msg);
     } catch (e) {
-      console.error(e);
-    }
-
-    try {
-      await browser.runtime.sendMessage(msg);
-    } catch (e) {
-      console.error(e);
+      console.trace(e);
     }
 
     if ("tabs" in browser) {
       try {
         await sendToTabsWithContentScript(msg);
       } catch (e) {
-        console.error(e);
+        console.trace(e);
       }
     }
   };
