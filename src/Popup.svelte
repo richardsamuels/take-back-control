@@ -1,13 +1,12 @@
 <script lang="ts">
   import { settingsStore } from "./store.svelte";
   import * as browser from "webextension-polyfill";
-  function options(e) {
+  function options(e: Event) {
     e.preventDefault();
     browser.runtime.openOptionsPage();
   }
-  function click(e) {
-    console.log(e.target.checked);
-    $settingsStore.enable = e.target.checked;
+  function click(e: Event) {
+    $settingsStore.enable = (e.target as HTMLInputElement)?.checked;
   }
 </script>
 

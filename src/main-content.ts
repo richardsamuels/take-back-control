@@ -1,4 +1,4 @@
-import * as browser from "/node_modules/webextension-polyfill/dist/browser-polyfill.min.js";
+import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
 import { type Message } from "./messages";
 import Content from "./Content.svelte";
@@ -12,8 +12,8 @@ import { setupStoreFromLocalStorage } from "./store.svelte";
   mount(Content, { target: bodyElement });
 })();
 
-browser.runtime.onMessage.addListener((msg: Message) => {
-  if (msg?.reloadContentScripts) {
+browser.runtime.onMessage.addListener((msg: unknown): undefined => {
+  if ((msg as Message)?.reloadContentScripts) {
     console.log("need to reassess");
   }
 });

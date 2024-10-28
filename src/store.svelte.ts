@@ -1,4 +1,4 @@
-import * as browser from "/node_modules/webextension-polyfill/dist/browser-polyfill.min.js";
+import * as browser from "webextension-polyfill";
 import * as constants from "./constants";
 import { writable } from "svelte/store";
 import { type Message } from "./messages";
@@ -127,7 +127,7 @@ export async function setupStoreFromLocalStorage(
   if (unsubscribe) {
     unsubscribe();
   }
-  let store = await browser.storage.sync.get([
+  let store: Partial<Settings> = await browser.storage.sync.get([
     KEY_DIDINIT,
     KEY_BLACKLIST,
     KEY_WHITELIST,
@@ -140,7 +140,7 @@ export async function setupStoreFromLocalStorage(
   //  !store[KEY_DIDINIT],
   //);
 
-  const newstore = {
+  const newstore: Partial<Settings> = {
     [KEY_BLACKLIST]: constants.DEFAULT_URL_BLACKLIST,
     [KEY_WHITELIST]: constants.DEFAULT_URL_WHITELIST,
     [KEY_MESSAGES]: constants.DEFAULT_MESSAGES,

@@ -16,7 +16,7 @@ type ValidSchemes =
   | "extension"
   | "file";
 
-type Parsed = {
+export type Parsed = {
   valid: boolean;
   scheme?: Scheme;
   host?: Host;
@@ -95,9 +95,9 @@ export function coerce(pattern: string) {
   return newPattern;
 }
 
-export function coerce_and_explain(pattern: string) {
+export function coerce_and_explain(pattern: string): [string, string[]] {
   if (pattern == "<all_urls>" || pattern.startsWith("data:")) {
-    return false;
+    return ["", ["<all_urls> and data: are forbidden"]];
   }
   if (pattern == "") {
     return [pattern, []];

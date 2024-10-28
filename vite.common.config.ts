@@ -6,7 +6,7 @@ export const config = {
     name: "Anti-Doomscroll",
     description: "Take back control.",
     version: pkg.version,
-    manifest_version: 3,
+    manifest_version: 3 as any,
     icons: {
       "16": "icons/skull-16.png",
       "32": "icons/skull-32.png",

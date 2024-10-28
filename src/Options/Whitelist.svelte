@@ -19,7 +19,7 @@
   }
 
   function selectAll(e: Event) {
-    const checked = e.target?.checked;
+    const checked = (e.target as HTMLInputElement)?.checked;
 
     if (!checked) {
       selected.length = 0;
@@ -67,6 +67,7 @@
       </span>
     </div>
     <List
+      bind:value={selected}
       items={$settingsStore.whitelist}
       setDefaults={settingsStore.whitelist.reset}
     />
