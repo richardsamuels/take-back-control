@@ -28,14 +28,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: firefox_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist/anti-doomscroll.*
+          path: dist/*anti-doomscroll.*
           if-no-files-found: error
 
       - name: Upload Chrome xpi
         uses: actions/upload-artifact@v4
         with:
           name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist-chrome/anti-doomscroll.*
+          path: dist-chrome/*anti-doomscroll.*
           if-no-files-found: error
 
   tests:
