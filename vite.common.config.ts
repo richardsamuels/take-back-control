@@ -19,6 +19,7 @@ export const config = {
     },
     options_ui: {
       page: "src/options.html",
+      open_in_tab: true,
     },
     background: {
       scripts: ["src/background.ts"],
@@ -29,7 +30,7 @@ export const config = {
         resources: ["assets/main-content.js"],
       },
     ],
-    permissions: ["storage", "activeTab", "scripting"],
+    permissions: ["storage", "activeTab", "scripting", "contextMenus"],
     host_permissions: ["<all_urls>"],
     browser_specific_settings: {
       gecko: {
