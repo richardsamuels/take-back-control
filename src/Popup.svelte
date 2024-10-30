@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
-  import Enable from "./Options/Enable.svelte";
+  import Enable from "./Options/Basic/Enable.svelte";
   function options(e: Event) {
     e.preventDefault();
     browser.runtime.openOptionsPage();

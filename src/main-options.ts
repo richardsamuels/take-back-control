@@ -1,6 +1,6 @@
 import { mount } from "svelte";
 import "./app.css";
-import Options from "./Options/index.svelte";
+import Options from "./Options.svelte";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { setupStoreFromLocalStorage } from "./store.svelte";
 
