@@ -56,7 +56,7 @@ function createSettingsStore() {
       update((store) => ({
         ...store,
 
-        settings: { ...store.settings, enabled: true },
+        settings: { ...store.settings, enabled: v },
       })),
     blacklist: {
       add: (url: string) =>
@@ -210,6 +210,7 @@ class LikeCommentAnd {
     }
     const newStore = storeSerialize(store);
     this.lastStore = newStore;
+    console.log("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
       await browser.runtime.sendMessage(msg);
@@ -257,8 +258,9 @@ export async function initStorage() {
   settingsStore.update((_store: Store) => store);
 }
 
+let unsubscribe: any = null;
 export async function setupStoreFromLocalStorage(): Promise<void> {
-  if (unsubscribe) {
+  if (unsubscribe != null) {
     unsubscribe();
   }
 
@@ -289,11 +291,9 @@ async function storeDeserializeFromStorage(): Promise<Store> {
       ...store.settings,
       // @ts-ignore
       blacklistSites: new SvelteMap(
-        Object.entries(store.settings.blacklistSites),
+        Object.entries(store.settings?.blacklistSites || {}),
       ),
     },
   } as Store;
   return realStore;
 }
-
-let unsubscribe: any = null;

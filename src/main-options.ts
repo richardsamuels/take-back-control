@@ -6,6 +6,10 @@ import { setupStoreFromLocalStorage } from "./store.svelte";
 
 await setupStoreFromLocalStorage();
 
+browser.runtime.onMessage.addListener(
+  async () => await setupStoreFromLocalStorage(),
+);
+
 const getPreferredTheme = () => {
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"

@@ -1,16 +1,19 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
-  import Enable from "./Options/Basic/Enable.svelte";
-  import { settingsStore } from "./store.svelte";
+  import { settingsStore, setupStoreFromLocalStorage } from "./store.svelte";
   import { onMount, onDestroy } from "svelte";
   import { patternMatch } from "./Options/validator";
 
   function options(e: Event) {
     e.preventDefault();
-    browser.runtime.openOptionsPage();
+    const optionsUrl =
+      browser.runtime.getURL("src/options.html") + "#/whitelist";
+    browser.tabs.create({ url: optionsUrl });
   }
 
   let url = $state("");
+  let needRefresh = $state(false);
+  let extensionActive = $state(false);
 
   async function extensionActiveInActiveTab(): Promise<boolean> {
     const tabs = await browser.tabs.query({
@@ -18,18 +21,26 @@
       currentWindow: true,
     });
     const active = tabs[0];
-    console.log(active.url);
+    url = active.url || "";
     try {
-      const response = (await browser.tabs.sendMessage(active.id!, {
+      (await browser.tabs.sendMessage(active.id!, {
         sendUrlToPopup: true,
       })) as { url: URL };
-      url = response.url.toString();
+      extensionActive = true;
       return true;
     } catch (err) {
+      extensionActive = false;
       // If we can't send a message to the tab, the content script isn't
       // injected. That means the extension isn't active on that tab
       return false;
     }
+  }
+
+  async function block(e: Event) {
+    e.preventDefault();
+    const p = URL.parse(url);
+    settingsStore.blacklist.add(`*://${p!.host}/*`);
+    needRefresh = true;
   }
 
   const isURLAllowed = (currentUrl: string) => {
@@ -55,9 +66,6 @@
   </div>
   <div class="d-flex flex-column gap-1">
     <div id="checkboxContainer" class="d-flex flex-column gap-1">
-      <div class="form-check">
-        <Enable />
-      </div>
       <!--<div class="form-check">
             <label class="form-check-label">
               <input class="form-check-input" type="checkbox">
@@ -70,12 +78,23 @@
       {#await extensionActiveInActiveTab()}
         &nbsp;
       {:then extensionActive}
-        {#if !extensionActive || isURLAllowed(url)}
-          Extension not active
+        {#if !extensionActive}
+          <button
+            type="button"
+            class="btn btn-danger"
+            onclick={block}
+            disabled={needRefresh}
+          >
+            {#if needRefresh}
+              Refresh Page to Block
+            {:else}
+              Block this Page
+            {/if}
+          </button>
         {:else if isURLAllowed(url)}
-          Allowed
+          Page is Allowed
         {:else}
-          Not Allowed
+          Page is Not Allowed
         {/if}
       {/await}
       <div>

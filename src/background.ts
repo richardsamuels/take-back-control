@@ -34,7 +34,6 @@ async function registerScript(msg: Message) {
       );
       return;
     }
-    //console.info("Reloading scripts", store.settings.blacklist, store.settings.whitelist);
 
     registered = await browser.scripting.registerContentScripts([
       {
