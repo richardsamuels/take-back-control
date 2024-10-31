@@ -11,12 +11,12 @@
       confirm that you really want to bypass the wall
     </div>
     <span class="mb-2">
-      {#if $settingsStore.nagChance == 0}
+      {#if $settingsStore.settings.nagChance == 0}
         0% (Never happens)
-      {:else if $settingsStore.nagChance == 100}
+      {:else if $settingsStore.settings.nagChance == 100}
         100% (Happens every time)
       {:else}
-        {Math.round($settingsStore.nagChance)}% chance of happening
+        {Math.round($settingsStore.settings.nagChance)}% chance of happening
       {/if}
     </span>
     <div class="row">
@@ -24,7 +24,7 @@
         <input
           type="range"
           class="form-range"
-          bind:value={$settingsStore.nagChance}
+          bind:value={$settingsStore.settings.nagChance}
           min="0"
           max="100"
           step=""

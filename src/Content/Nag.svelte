@@ -22,13 +22,13 @@
     e.preventDefault();
 
     let nag = false;
-    if ($settingsStore.nagChance == 100) {
+    if ($settingsStore.settings.nagChance == 100) {
       nag = true;
-    } else if ($settingsStore.nagChance == 0) {
+    } else if ($settingsStore.settings.nagChance == 0) {
       nag = false;
     } else {
       const r = Math.random();
-      nag = r <= $settingsStore.nagChance / 100;
+      nag = r <= $settingsStore.settings.nagChance / 100;
     }
 
     if (nag) {

@@ -3,11 +3,12 @@
   import { settingsStore } from "../store.svelte";
 
   let selected: number[] = $state([]);
+  const settings = $derived($settingsStore.settings);
   let selectAll = $state(false);
   $effect(() => {
     if (
-      (selectAll && selected.length != $settingsStore.messages.length) ||
-      $settingsStore.messages.length == 0
+      (selectAll && selected.length != settings.messages.length) ||
+      settings.messages.length == 0
     ) {
       selectAll = false;
     }
@@ -29,14 +30,14 @@
     if (!selectAll) {
       selected = [];
     } else {
-      selected = $settingsStore.messages.map((_, i) => i);
+      selected = settings.messages.map((_, i: number) => i);
     }
   }
 
   function handleNewMsg(e: Event) {
     e.preventDefault();
 
-    for (const v in $settingsStore.messages) {
+    for (const v in settings.messages) {
       if (v == newMsg) {
         console.log("DUPE");
         return;
@@ -97,7 +98,7 @@
                   class="form-check-input mt-0"
                   type="checkbox"
                   indeterminate={selected.length > 0 &&
-                    selected.length < $settingsStore.blacklist.length}
+                    selected.length < $settingsStore.settings.blacklist.length}
                   bind:checked={selectAll}
                   onclick={selectAllClick}
                 /> Select all
@@ -110,7 +111,7 @@
             </span>
           </div>
           <List
-            items={$settingsStore.messages}
+            items={$settingsStore.settings.messages}
             bind:value={selected}
             setDefaults={settingsStore.messages.reset}
           />

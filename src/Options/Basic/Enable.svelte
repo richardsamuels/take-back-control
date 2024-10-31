@@ -1,9 +1,9 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
 
-  let val = $derived($settingsStore.enabled);
+  let val = $derived($settingsStore.settings.enabled);
   function click() {
-    $settingsStore.enabled = !$settingsStore.enabled;
+    $settingsStore.settings.enabled = !$settingsStore.settings.enabled;
   }
 </script>
 
@@ -46,10 +46,12 @@
     <ul class="list-group mb-4">
       <li
         class="list-group-item"
-        class:list-group-item-success={$settingsStore.blacklist.length > 0}
-        class:list-group-item-danger={$settingsStore.blacklist.length == 0}
+        class:list-group-item-success={$settingsStore.settings.blacklist
+          .length > 0}
+        class:list-group-item-danger={$settingsStore.settings.blacklist
+          .length == 0}
       >
-        {#if $settingsStore.blacklist.length == 0}
+        {#if $settingsStore.settings.blacklist.length == 0}
           You need to add some URLs to the blacklist
         {:else}
           You've got some URLs in the blacklist
@@ -57,13 +59,16 @@
       </li>
       <li
         class="list-group-item"
-        class:list-group-item-success={$settingsStore.messages.length > 5}
-        class:list-group-item-warning={$settingsStore.messages.length < 5}
-        class:list-group-item-danger={$settingsStore.messages.length == 0}
+        class:list-group-item-success={$settingsStore.settings.messages.length >
+          5}
+        class:list-group-item-warning={$settingsStore.settings.messages.length <
+          5}
+        class:list-group-item-danger={$settingsStore.settings.messages.length ==
+          0}
       >
-        {#if $settingsStore.messages.length == 0}
+        {#if $settingsStore.settings.messages.length == 0}
           You need to add some messages
-        {:else if $settingsStore.messages.length < 5}
+        {:else if $settingsStore.settings.messages.length < 5}
           You could add more, but it'll do
         {:else}
           You've got more than enough inspiration.

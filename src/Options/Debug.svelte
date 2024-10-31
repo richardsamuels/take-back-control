@@ -3,7 +3,7 @@
   import { prettyPrintJson } from "pretty-print-json";
 
   import "/node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.css";
-  const s = $state.snapshot($settingsStore);
+  const s: any = $state.snapshot($settingsStore.settings);
   if (s.blacklistSites) {
     s.blacklistSites = Object.fromEntries(s.blacklistSites);
   }

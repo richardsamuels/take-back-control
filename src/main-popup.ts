@@ -1,4 +1,3 @@
-import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
 import "./app.css";
 import Popup from "./Popup.svelte";
