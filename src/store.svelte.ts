@@ -167,16 +167,7 @@ async function sendToTabsWithContentScript(msg: Message) {
 }
 
 class LikeCommentAnd {
-  lastStore = {
-    init: false,
-    enabled: true,
-    nagChance: 0,
-    blacklist: [],
-    whitelist: [],
-    messages: [],
-    blacklistSites: {},
-    //timeoutBlacklist: [],
-  };
+  lastStore: Settings | undefined = undefined;
 
   subscribe = async (store: Settings) => {
     const msg: Message = {
@@ -185,10 +176,10 @@ class LikeCommentAnd {
       reloadMessages: false,
       reloadContentScripts: false,
     };
-    if (this.lastStore == undefined) {
-      msg.reloadContentScripts = true;
-      msg.behaviorChanged = true;
-      msg.reloadMessages = true;
+    if (this.lastStore === undefined) {
+      // Initial fetch
+      this.lastStore = store;
+      return;
     }
 
     // @ts-ignore: implicit any
@@ -206,8 +197,8 @@ class LikeCommentAnd {
     ) {
       msg.reloadContentScripts = true;
     }
+    this.lastStore = store;
     const newStore = storeSerialize({ settings: store });
-    this.lastStore = newStore;
     console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
@@ -241,13 +232,12 @@ export async function initStorage() {
 
 let unsubscribe: any = null;
 export async function setupStoreFromLocalStorage(): Promise<void> {
-  if (unsubscribe != null) {
+  if (unsubscribe !== null) {
     unsubscribe();
   }
 
-  console.log(get(settingsStore));
-
   const store = await storeDeserializeFromStorage();
+  console.trace("fetch", get(settingsStore));
   settingsStore.update((_store: Settings) => store.settings);
 
   // Subscribe and store unsubscribe function

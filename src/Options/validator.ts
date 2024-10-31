@@ -18,20 +18,20 @@ type Scheme = {
   valid: boolean;
   data: string;
 };
-type Path = {
-  valid: boolean;
-  data: string;
-  has_leader: boolean;
-};
 type Host = {
   valid: boolean;
   data: string;
   has_port: boolean;
   wildcard_ok: boolean;
 };
+type Path = {
+  valid: boolean;
+  data: string;
+  has_leader: boolean;
+};
 type Data = {
-  base64: boolean;
   mime?: string;
+  base64: boolean;
   data: string; // TODO type
 };
 
