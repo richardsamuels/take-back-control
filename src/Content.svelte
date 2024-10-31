@@ -67,17 +67,18 @@
   const rgbOpacity = $derived(canBeVisible ? Math.min(blurIntensity, 0.75) : 0);
   const pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
   const messageVisible = $derived(blurIntensity > 0.1);
-  const message = $derived.by(() => {
-    if (!messageVisible) {
-      return;
-    }
-    return randomItemFrom($settingsStore.messages);
-  });
+  let message = $state(randomItemFrom($settingsStore.messages));
 
   function lieToSelf(_e: Event) {
     numScrollExtensions += 1;
     rawBlurIntensity = 0;
   }
+
+  $effect(() => {
+    if (!messageVisible) {
+      message = randomItemFrom($settingsStore.messages);
+    }
+  });
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
