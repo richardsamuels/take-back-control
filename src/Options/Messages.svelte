@@ -61,7 +61,7 @@
         <h5 class="mt-2">Add New Message</h5>
 
         <form class="mb-4" onsubmit={handleNewMsg}>
-          <label for="urlInput" class="form-label">Add a new message:</label>
+          <label for="urlInput" class="form-label"></label>
           <div class="d-flex gap-2">
             <input
               type="text"

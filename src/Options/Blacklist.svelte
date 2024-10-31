@@ -2,7 +2,7 @@
   import List from "./List.svelte";
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
-  import BlacklistItem from "./Blacklist.svelte";
+  import BlacklistItem from "./BlacklistItem.svelte";
 
   let selected: number[] = $state([]);
   let selectAll = $state(false);
@@ -88,7 +88,7 @@
             items={$settingsStore.blacklist}
             bind:value={selected}
             setDefaults={settingsStore.blacklist.reset}
-            component={BlacklistItem}
+            child={BlacklistItem}
           />
         </form>
       </li>

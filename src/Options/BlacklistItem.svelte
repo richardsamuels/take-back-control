@@ -64,7 +64,7 @@
         <label
           class="btn"
           class:active={blockWholePage}
-          class:btn-info={!blockWholePage}
+          class:btn-secondary={!blockWholePage}
           class:btn-danger={blockWholePage}
         >
           <input
@@ -95,7 +95,7 @@
         <label
           class="btn"
           class:active={alwaysBlock}
-          class:btn-info={!alwaysBlock}
+          class:btn-secondary={!alwaysBlock}
           class:btn-danger={alwaysBlock}
         >
           <input
@@ -104,7 +104,7 @@
             autocomplete="off"
             onclick={clickAlwaysBlock}
             checked={alwaysBlock}
-          /> <b>NEVER</b> Allow Access to Matching Pages
+          /> Never Allow Access (except if matching Whitelist)
         </label>
         <label
           class="btn btn-secondary"

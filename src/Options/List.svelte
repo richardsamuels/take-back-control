@@ -6,7 +6,7 @@
     items: string[];
     setDefaults: () => void;
     value: any;
-    child?: Component<{ item: string; index: number; group: any }>;
+    child?: Component<any>;
   };
   let {
     items,

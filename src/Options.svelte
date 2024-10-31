@@ -32,7 +32,7 @@
   });
 </script>
 
-<Nav />
+<Nav {url} />
 <main class="p5 ms-4 me-4">
   {#if url == "#/"}
     <Basic />
