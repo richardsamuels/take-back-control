@@ -9,20 +9,20 @@
   import { PERMITTED_SCROLL_FACTOR } from "../constants";
   import { settingsStore, type BlacklistSiteConfig } from "../store.svelte";
   const siteConfig: BlacklistSiteConfig = $derived(
-    $settingsStore.settings.blacklistSites.get(item)!,
+    $settingsStore.blacklistSites.get(item)!,
   );
   const blockWholePage = $derived(siteConfig.blockWholePage);
   const alwaysBlock = $derived(siteConfig.alwaysBlock);
   const scrollFactor = $derived(siteConfig.scrollFactor);
 
   function clickBlockWholePage(e: Event) {
-    $settingsStore.settings.blacklistSites.set(item, {
+    $settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       blockWholePage: !blockWholePage,
     });
   }
   function clickAlwaysBlock(e: Event) {
-    $settingsStore.settings.blacklistSites.set(item, {
+    $settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       alwaysBlock: !alwaysBlock,
     });
@@ -33,7 +33,7 @@
     if (value == null) {
       value = PERMITTED_SCROLL_FACTOR;
     }
-    $settingsStore.settings.blacklistSites.set(item, {
+    $settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       scrollFactor: value,
     });

@@ -18,7 +18,7 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  let canBeVisible = $derived($settingsStore.settings.enabled);
+  let canBeVisible = $derived($settingsStore.enabled);
 
   let numScrollExtensions = $state(1);
 
@@ -37,7 +37,7 @@
     if (!messageVisible) {
       return;
     }
-    return randomItemFrom($settingsStore.settings.messages);
+    return randomItemFrom($settingsStore.messages);
   });
 
   function lieToSelf(e: Event) {

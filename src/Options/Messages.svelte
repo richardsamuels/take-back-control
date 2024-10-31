@@ -3,7 +3,7 @@
   import { settingsStore } from "../store.svelte";
 
   let selected: number[] = $state([]);
-  const settings = $derived($settingsStore.settings);
+  const settings = $derived($settingsStore);
   let selectAll = $state(false);
   $effect(() => {
     if (
@@ -98,7 +98,7 @@
                   class="form-check-input mt-0"
                   type="checkbox"
                   indeterminate={selected.length > 0 &&
-                    selected.length < $settingsStore.settings.blacklist.length}
+                    selected.length < $settingsStore.blacklist.length}
                   bind:checked={selectAll}
                   onclick={selectAllClick}
                 /> Select all
@@ -111,7 +111,7 @@
             </span>
           </div>
           <List
-            items={$settingsStore.settings.messages}
+            items={$settingsStore.messages}
             bind:value={selected}
             setDefaults={settingsStore.messages.reset}
           />

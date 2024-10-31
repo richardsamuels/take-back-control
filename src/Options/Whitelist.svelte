@@ -7,9 +7,8 @@
   let selectAll = $state(false);
   $effect(() => {
     if (
-      (selectAll &&
-        selected.length != $settingsStore.settings.whitelist.length) ||
-      $settingsStore.settings.whitelist.length == 0
+      (selectAll && selected.length != $settingsStore.whitelist.length) ||
+      $settingsStore.whitelist.length == 0
     ) {
       selectAll = false;
     }
@@ -30,12 +29,12 @@
     if (!selectAll) {
       selected = [];
     } else {
-      selected = $settingsStore.settings.whitelist.map((_, i) => i);
+      selected = $settingsStore.whitelist.map((_, i) => i);
     }
   }
 
   function addUrl(realPattern: string) {
-    for (const v in $settingsStore.settings.whitelist) {
+    for (const v in $settingsStore.whitelist) {
       if (v == realPattern) {
         console.log("DUPE"); // TODO real duplicate notifications
         return;
@@ -76,7 +75,7 @@
                   class="form-check-input mt-0"
                   type="checkbox"
                   indeterminate={selected.length > 0 &&
-                    selected.length < $settingsStore.settings.whitelist.length}
+                    selected.length < $settingsStore.whitelist.length}
                   bind:checked={selectAll}
                   onclick={selectAllClick}
                 /> Select all
@@ -91,7 +90,7 @@
 
           <List
             bind:value={selected}
-            items={$settingsStore.settings.whitelist}
+            items={$settingsStore.whitelist}
             setDefaults={settingsStore.whitelist.reset}
           />
         </form>

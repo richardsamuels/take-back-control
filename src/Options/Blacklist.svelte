@@ -8,9 +8,8 @@
   let selectAll = $state(false);
   $effect(() => {
     if (
-      (selectAll &&
-        selected.length != $settingsStore.settings.blacklist.length) ||
-      $settingsStore.settings.blacklist.length == 0
+      (selectAll && selected.length != $settingsStore.blacklist.length) ||
+      $settingsStore.blacklist.length == 0
     ) {
       selectAll = false;
     }
@@ -31,12 +30,12 @@
     if (!selectAll) {
       selected = [];
     } else {
-      selected = $settingsStore.settings.blacklist.map((_, i) => i);
+      selected = $settingsStore.blacklist.map((_, i) => i);
     }
   }
 
   function addUrl(realPattern: string) {
-    for (const v in $settingsStore.settings.blacklist) {
+    for (const v in $settingsStore.blacklist) {
       if (v == realPattern) {
         console.log("DUPE");
         return;
@@ -74,7 +73,7 @@
                   class="form-check-input mt-0"
                   type="checkbox"
                   indeterminate={selected.length > 0 &&
-                    selected.length < $settingsStore.settings.blacklist.length}
+                    selected.length < $settingsStore.blacklist.length}
                   bind:checked={selectAll}
                   onclick={selectAllClick}
                 /> Select all
@@ -87,7 +86,7 @@
             </span>
           </div>
           <List
-            items={$settingsStore.settings.blacklist}
+            items={$settingsStore.blacklist}
             bind:value={selected}
             setDefaults={settingsStore.blacklist.reset}
             child={BlacklistItem}

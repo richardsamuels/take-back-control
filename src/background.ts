@@ -4,7 +4,7 @@ import {
   setupStoreFromLocalStorage,
   initStorage,
   settingsStore,
-  type Store,
+  type Settings,
 } from "./store.svelte";
 import { type Message } from "./messages";
 
@@ -13,8 +13,8 @@ let registered: any = null;
 async function registerScript(msg: Message) {
   await setupStoreFromLocalStorage();
 
-  let store = get<Store>(settingsStore);
-  if (!store.settings.init) {
+  let store = get<Settings>(settingsStore);
+  if (!store.init) {
     return;
   }
 
@@ -24,22 +24,16 @@ async function registerScript(msg: Message) {
         ids: ["ads-injector"],
       });
     } catch (e) {}
-    if (
-      store.settings.blacklist.length == 0 ||
-      store.settings.messages.length == 0
-    ) {
-      console.log(
-        "Blacklist/Messages empty, skippings scripts",
-        store.settings,
-      );
+    if (store.blacklist.length == 0 || store.messages.length == 0) {
+      console.log("Blacklist/Messages empty, skippings scripts", store);
       return;
     }
 
     registered = await browser.scripting.registerContentScripts([
       {
         id: "ads-injector",
-        matches: store.settings.blacklist,
-        excludeMatches: store.settings.whitelist,
+        matches: store.blacklist,
+        excludeMatches: store.whitelist,
         js: ["assets/main-content.js"],
         runAt: "document_idle",
       },

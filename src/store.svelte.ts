@@ -1,6 +1,6 @@
 import * as browser from "webextension-polyfill";
 import * as constants from "./constants";
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { SvelteMap } from "svelte/reactivity";
 import { type Message } from "./messages";
 
@@ -30,45 +30,60 @@ function removeElement<T>(arr: T[], i: number): T[] {
   return arr.slice(0, i).concat(arr.slice(i + 1));
 }
 
+function defaultSettings() {
+  const settings = {
+    init: true,
+    enabled: true,
+    nagChance: 0,
+    blacklist: constants.DEFAULT_URL_BLACKLIST,
+    whitelist: constants.DEFAULT_URL_WHITELIST,
+    messages: constants.DEFAULT_MESSAGES,
+    blacklistSites: new SvelteMap<string, BlacklistSiteConfig>(),
+  };
+
+  for (const site of settings.blacklist) {
+    settings.blacklistSites.set(site, {
+      scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
+      blockWholePage: false,
+      alwaysBlock: false,
+    });
+  }
+  return settings;
+}
+
 function createSettingsStore() {
-  const { subscribe, set, update } = writable<Store>({
-    settings: {
-      init: false,
-      enabled: true,
-      nagChance: 0,
-      messages: [],
-      whitelist: [],
-      blacklist: [],
-      blacklistSites: new SvelteMap(),
-    },
+  const { subscribe, set, update } = writable<Settings>({
+    init: false,
+    enabled: true,
+    nagChance: 0,
+    messages: [],
+    whitelist: [],
+    blacklist: [],
+    blacklistSites: new SvelteMap(),
   });
 
   return {
     subscribe,
     set,
-    nuke: () => update((_store) => defaultStore()),
+    nuke: () => update((_store) => defaultSettings()),
     init: () =>
       update((store) => ({
         ...store,
-        settings: { ...store.settings, init: true },
+        init: true,
       })),
     enable: (v: boolean) =>
       update((store) => ({
         ...store,
-
-        settings: { ...store.settings, enabled: v },
+        enabled: v,
       })),
     blacklist: {
       add: (url: string) =>
         update((store) => {
           const newStore = {
             ...store,
-            settings: {
-              ...store.settings,
-              blacklist: [...store.settings.blacklist, url],
-            },
+            blacklist: [...store.blacklist, url],
           };
-          newStore.settings.blacklistSites.set(url, {
+          newStore.blacklistSites.set(url, {
             scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
             blockWholePage: false,
             alwaysBlock: false,
@@ -78,71 +93,56 @@ function createSettingsStore() {
       remove: (i: number) =>
         update((store) => ({
           ...store,
-          settings: {
-            ...store.settings,
-            blacklist: removeElement(store.settings.blacklist, i),
-          },
+          blacklist: removeElement(store.blacklist, i),
         })),
       reset: () =>
         update((store) => ({
-          settings: {
-            ...store.settings,
-            blacklist: constants.DEFAULT_URL_BLACKLIST,
-            blacklistSites: new SvelteMap(
-              constants.DEFAULT_URL_BLACKLIST.map((url: string) => [
-                url,
-                {
-                  scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
-                  blockWholePage: false,
-                  alwaysBlock: false,
-                },
-              ]),
-            ),
-          },
+          ...store,
+          blacklist: constants.DEFAULT_URL_BLACKLIST,
+          blacklistSites: new SvelteMap(
+            constants.DEFAULT_URL_BLACKLIST.map((url: string) => [
+              url,
+              {
+                scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
+                blockWholePage: false,
+                alwaysBlock: false,
+              },
+            ]),
+          ),
         })),
     },
     whitelist: {
       add: (url: string) =>
         update((store) => ({
-          settings: {
-            ...store.settings,
-            whitelist: [...store.settings.whitelist, url],
-          },
+          ...store,
+          whitelist: [...store.whitelist, url],
         })),
       remove: (i: number) =>
         update((store) => ({
-          ...store.settings,
-          settings: {
-            ...store.settings,
-            whitelist: removeElement(store.settings.whitelist, i),
-          },
+          ...store,
+          whitelist: removeElement(store.whitelist, i),
         })),
       reset: () =>
         update((store) => ({
-          settings: {
-            ...store.settings,
-            whitelist: constants.DEFAULT_URL_WHITELIST,
-          },
+          ...store,
+          whitelist: constants.DEFAULT_URL_WHITELIST,
         })),
     },
     messages: {
       add: (url: string) =>
         update((store) => ({
-          settings: {
-            ...store.settings,
-            messages: [...store.settings.messages, url],
-          },
+          ...store,
+          messages: [...store.messages, url],
         })),
       remove: (i: number) =>
         update((store) => ({
-          settings: {
-            ...store.settings,
-            messages: removeElement(store.settings.messages, i),
-          },
+          ...store,
+          messages: removeElement(store.messages, i),
         })),
       reset: () =>
         update((store) => ({
-          settings: { ...store.settings, messages: constants.DEFAULT_MESSAGES },
+          ...store,
+          messages: constants.DEFAULT_MESSAGES,
         })),
     },
     update,
@@ -168,19 +168,17 @@ async function sendToTabsWithContentScript(msg: Message) {
 
 class LikeCommentAnd {
   lastStore = {
-    settings: {
-      init: false,
-      enabled: true,
-      nagChance: 0,
-      blacklist: [],
-      whitelist: [],
-      messages: [],
-      blacklistSites: {},
-      //timeoutBlacklist: [],
-    },
+    init: false,
+    enabled: true,
+    nagChance: 0,
+    blacklist: [],
+    whitelist: [],
+    messages: [],
+    blacklistSites: {},
+    //timeoutBlacklist: [],
   };
 
-  subscribe = async (store: Store) => {
+  subscribe = async (store: Settings) => {
     const msg: Message = {
       sendUrlToPopup: false,
       behaviorChanged: false,
@@ -194,23 +192,23 @@ class LikeCommentAnd {
     }
 
     // @ts-ignore: implicit any
-    if (store.settings.messages != this.lastStore?.settings.messages) {
+    if (store.messages != this.lastStore?.messages) {
       msg.reloadMessages = true;
     }
-    if (store.settings.enabled != this.lastStore?.settings.enabled) {
+    if (store.enabled != this.lastStore?.enabled) {
       msg.behaviorChanged = true;
     }
     if (
       // @ts-ignore: implicit any
-      store.settings.blacklist != this.lastStore?.settings.blacklist ||
+      store.blacklist != this.lastStore?.blacklist ||
       // @ts-ignore: implicit any
-      store.settings.whitelist != this.lastStore?.settings.whitelist
+      store.whitelist != this.lastStore?.whitelist
     ) {
       msg.reloadContentScripts = true;
     }
-    const newStore = storeSerialize(store);
+    const newStore = storeSerialize({ settings: store });
     this.lastStore = newStore;
-    console.log("storing", newStore);
+    console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
       await browser.runtime.sendMessage(msg);
@@ -231,31 +229,14 @@ class LikeCommentAnd {
 let likeCommentAnd = new LikeCommentAnd();
 
 function defaultStore(): Store {
-  const settings = {
-    init: true,
-    enabled: true,
-    nagChance: 0,
-    blacklist: constants.DEFAULT_URL_BLACKLIST,
-    whitelist: constants.DEFAULT_URL_WHITELIST,
-    messages: constants.DEFAULT_MESSAGES,
-    blacklistSites: new SvelteMap<string, BlacklistSiteConfig>(),
-  };
-
-  for (const site of settings.blacklist) {
-    settings.blacklistSites.set(site, {
-      scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
-      blockWholePage: false,
-      alwaysBlock: false,
-    });
-  }
-  return { settings: settings };
+  return { settings: defaultSettings() };
 }
 
 export async function initStorage() {
   const store = defaultStore();
 
   await browser.storage.sync.set(storeSerialize(store as Store));
-  settingsStore.update((_store: Store) => store);
+  settingsStore.update((_store: Settings) => store.settings);
 }
 
 let unsubscribe: any = null;
@@ -264,8 +245,10 @@ export async function setupStoreFromLocalStorage(): Promise<void> {
     unsubscribe();
   }
 
-  const storeSettings = await storeDeserializeFromStorage();
-  settingsStore.update((_store: Store) => storeSettings);
+  console.log(get(settingsStore));
+
+  const store = await storeDeserializeFromStorage();
+  settingsStore.update((_store: Settings) => store.settings);
 
   // Subscribe and store unsubscribe function
   if (unsubscribe === null) {

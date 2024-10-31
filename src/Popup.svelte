@@ -44,7 +44,7 @@
   }
 
   const isURLAllowed = (currentUrl: string) => {
-    const whitelist = $settingsStore.settings.whitelist;
+    const whitelist = $settingsStore.whitelist;
     return whitelist.some((pattern: string) =>
       patternMatch(pattern, currentUrl),
     );
