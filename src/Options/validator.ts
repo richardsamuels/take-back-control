@@ -264,11 +264,7 @@ export function patternMatch(pattern: string, url: string): boolean {
   if (!p.valid || !u) {
     return false;
   }
-  console.log(
-    patternSchemeMatch(p, u),
-    patternHostMatch(p, u),
-    patternPathMatch(p, u),
-  );
+
   return (
     patternSchemeMatch(p, u) && patternHostMatch(p, u) && patternPathMatch(p, u)
   );

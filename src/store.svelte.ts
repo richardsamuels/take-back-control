@@ -111,6 +111,15 @@ function createSettingsStore() {
           ),
         })),
     },
+    blacklistSites: {
+      set: (key: string, value: BlacklistSiteConfig) =>
+        update((store) => {
+          const newStore = { ...store };
+          newStore.blacklistSites.set(key, value);
+          newStore.blacklistSites = new SvelteMap(newStore.blacklistSites);
+          return newStore;
+        }),
+    },
     whitelist: {
       add: (url: string) =>
         update((store) => ({
@@ -262,7 +271,6 @@ async function storeDeserializeFromStorage(): Promise<Store> {
     ...store,
     settings: {
       ...store.settings,
-      // @ts-ignore
       blacklistSites: new SvelteMap(
         Object.entries(store.settings?.blacklistSites || {}),
       ),

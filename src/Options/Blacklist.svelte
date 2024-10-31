@@ -18,7 +18,6 @@
   function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
-    console.log(todel);
     for (const d of todel.reverse()) {
       settingsStore.blacklist.remove(d);
     }

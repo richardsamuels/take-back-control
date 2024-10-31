@@ -13,27 +13,26 @@
   );
   const blockWholePage = $derived(siteConfig.blockWholePage);
   const alwaysBlock = $derived(siteConfig.alwaysBlock);
-  const scrollFactor = $derived(siteConfig.scrollFactor);
 
   function clickBlockWholePage(e: Event) {
-    $settingsStore.blacklistSites.set(item, {
+    settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       blockWholePage: !blockWholePage,
     });
   }
   function clickAlwaysBlock(e: Event) {
-    $settingsStore.blacklistSites.set(item, {
+    settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       alwaysBlock: !alwaysBlock,
     });
   }
 
   let value = $state(siteConfig.scrollFactor);
-  function change(e: Partial<{ target?: any }>) {
+  function change() {
     if (value == null) {
       value = PERMITTED_SCROLL_FACTOR;
     }
-    $settingsStore.blacklistSites.set(item, {
+    settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       scrollFactor: value,
     });
@@ -56,6 +55,7 @@
       class="btn btn-info position-end col-1"
       data-bs-toggle="collapse"
       data-bs-target={`#item-${i}`}
+      onclick={(e: Event) => e.preventDefault()}
     >
       More
     </button>
