@@ -35,7 +35,6 @@ type Data = {
   data: string; // TODO type
 };
 
-const SCHEME_FILE = "file://";
 function explain_errors(p: ParsedPattern): string[] {
   const errors = [];
   // Check if the scheme is bad or missing
@@ -102,6 +101,7 @@ function findSchemeLike(pattern: string): string | null {
   }
   return null;
 }
+const SCHEME_FILE = "file://";
 export function tryParseMatchPattern(pattern: string): ParsedPattern {
   if (pattern.startsWith("data:")) {
     return handleDataPattern(pattern);

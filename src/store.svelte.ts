@@ -84,7 +84,7 @@ function createSettingsStore() {
             blacklist: [...store.blacklist, url],
           };
           newStore.blacklistSites.set(url, {
-            scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
+            scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
             blockWholePage: false,
             alwaysBlock: false,
           });
@@ -103,7 +103,7 @@ function createSettingsStore() {
             constants.DEFAULT_URL_BLACKLIST.map((url: string) => [
               url,
               {
-                scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
+                scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
                 blockWholePage: false,
                 alwaysBlock: false,
               },
