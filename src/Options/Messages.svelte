@@ -5,7 +5,10 @@
   let selected: number[] = $state([]);
   let selectAll = $state(false);
   $effect(() => {
-    if (selectAll && selected.length != $settingsStore.messages.length) {
+    if (
+      (selectAll && selected.length != $settingsStore.messages.length) ||
+      $settingsStore.messages.length == 0
+    ) {
       selectAll = false;
     }
   });
@@ -52,54 +55,69 @@
     Insulting phrasing to change your behaviour
   </div>
 
-  <form class="mb-4" onsubmit={removeSelected}>
-    <div
-      class="ps-3 pe-1 py-1 my-2 bg-dark d-flex align-items-center justify-content-between"
-    >
-      <div class="d-flex align-items-center gap-2">
-        <label class="form-check-label text-light small" style="opacity: 0.75;">
-          <input
-            class="form-check-input mt-0"
-            type="checkbox"
-            indeterminate={selected.length > 0 &&
-              selected.length < $settingsStore.messages.length}
-            bind:checked={selectAll}
-            onclick={selectAllClick}
-          /> Select all
-        </label>
-      </div>
-      <span>
-        <button type="submit" class="btn btn-outline-danger btn-sm">
-          Remove
-        </button>
-      </span>
-    </div>
-    <List
-      items={$settingsStore.messages}
-      bind:value={selected}
-      setDefaults={settingsStore.messages.reset}
-    />
-  </form>
-  <form class="mb-4" onsubmit={handleNewMsg}>
-    <label for="urlInput" class="form-label">Add a new message:</label>
-    <div class="d-flex gap-2">
-      <input
-        type="text"
-        class="form-control"
-        bind:value={newMsg}
-        placeholder="Do something better"
-        aria-describedby="messageHelp"
-        required
-      />
-      <button type="submit" class="btn btn-primary" aria-label="Add">
-        <i class="bi bi-plus-lg"></i>
-      </button>
-    </div>
-    <div id="messageHelp" class="form-text">
-      Try crafting a message that targets one of your fixable fears or
-      insecurities, such as your waist circumference.
-    </div>
-  </form>
+  <div class="mt-4">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <h5 class="mt-2">Add New Message</h5>
+
+        <form class="mb-4" onsubmit={handleNewMsg}>
+          <label for="urlInput" class="form-label">Add a new message:</label>
+          <div class="d-flex gap-2">
+            <input
+              type="text"
+              class="form-control"
+              bind:value={newMsg}
+              placeholder="Do something better"
+              aria-describedby="messageHelp"
+              required
+            />
+            <button type="submit" class="btn btn-primary" aria-label="Add">
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
+          <div id="messageHelp" class="form-text">
+            Try crafting a message that targets one of your fixable fears or
+            insecurities, such as your waist circumference.
+          </div>
+        </form>
+      </li>
+      <li class="list-group-item">
+        <h5 class="mt-2">Inspirational Messages</h5>
+
+        <form class="mb-4" onsubmit={removeSelected}>
+          <div
+            class="ps-3 pe-1 py-1 my-2 d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <label
+                class="form-check-label text-light small"
+                style="opacity: 0.75;"
+              >
+                <input
+                  class="form-check-input mt-0"
+                  type="checkbox"
+                  indeterminate={selected.length > 0 &&
+                    selected.length < $settingsStore.blacklist.length}
+                  bind:checked={selectAll}
+                  onclick={selectAllClick}
+                /> Select all
+              </label>
+            </div>
+            <span>
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                Remove
+              </button>
+            </span>
+          </div>
+          <List
+            items={$settingsStore.messages}
+            bind:value={selected}
+            setDefaults={settingsStore.messages.reset}
+          />
+        </form>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <style>

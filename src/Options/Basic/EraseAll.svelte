@@ -9,7 +9,7 @@
       eraseText = "One more time, just to be safe";
     } else {
       settingsStore.nuke();
-      window.location.reload();
+      console.log($settingsStore);
     }
   }
 </script>

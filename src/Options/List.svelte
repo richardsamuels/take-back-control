@@ -1,9 +1,20 @@
 <script lang="ts">
+  import type { Component } from "svelte";
+  import ListItem from "./ListItem.svelte";
+
+  type Props = {
+    items: string[];
+    setDefaults: () => void;
+    value: any;
+    child?: Component<{ item: string; index: number; group: any }>;
+  };
   let {
     items,
     value = $bindable(),
     setDefaults,
-  }: { items: string[]; setDefaults: () => void; value: any } = $props();
+    child = ListItem,
+  }: Props = $props();
+  const Child = child;
 </script>
 
 <ul class="list-group">
@@ -17,18 +28,7 @@
     </li>
   {:else}
     {#each items as item, i (item)}
-      <li class="list-group-item">
-        <label class="ms-1 form-check-label">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="url"
-            value={i}
-            bind:group={value}
-          />
-          <span>{item}</span>
-        </label>
-      </li>
+      <Child {item} index={i} bind:group={value} />
     {/each}
   {/if}
 </ul>

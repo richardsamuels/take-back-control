@@ -2,11 +2,15 @@
   import List from "./List.svelte";
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
+  import BlacklistItem from "./Blacklist.svelte";
 
   let selected: number[] = $state([]);
   let selectAll = $state(false);
   $effect(() => {
-    if (selectAll && selected.length != $settingsStore.blacklist.length) {
+    if (
+      (selectAll && selected.length != $settingsStore.blacklist.length) ||
+      $settingsStore.blacklist.length == 0
+    ) {
       selectAll = false;
     }
   });
@@ -84,6 +88,7 @@
             items={$settingsStore.blacklist}
             bind:value={selected}
             setDefaults={settingsStore.blacklist.reset}
+            component={BlacklistItem}
           />
         </form>
       </li>

@@ -25,9 +25,16 @@ window
   .addEventListener("change", () => {
     setTheme(getPreferredTheme());
   });
-
+const container = document.getElementById("app")!;
 const app = mount(Options, {
-  target: document.getElementById("app")!,
+  target: container,
 });
 
 export default app;
+if (import.meta.hot) {
+  const { addViteStyleTarget } = await import(
+    "@samrum/vite-plugin-web-extension/client"
+  );
+
+  await addViteStyleTarget(container);
+}
