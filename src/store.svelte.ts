@@ -43,7 +43,7 @@ function defaultSettings() {
 
   for (const site of settings.blacklist) {
     settings.blacklistSites.set(site, {
-      scrollFactor: constants.PERMITTED_SCROLL_FACTOR,
+      scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
       blockWholePage: false,
       alwaysBlock: false,
     });
