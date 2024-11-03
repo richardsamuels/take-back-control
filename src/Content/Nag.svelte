@@ -42,7 +42,7 @@
       continueFn(e);
     }
   }
-  const siteConfig = $derived.by(() => $settingsStore.blacklistSites.get(site));
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[site]);
   console.log("XXX", site, $settingsStore.blacklistSites, siteConfig);
 </script>
 

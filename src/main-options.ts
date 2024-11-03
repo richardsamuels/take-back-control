@@ -3,12 +3,16 @@ import "./app.css";
 import Options from "./Options.svelte";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { setupStoreFromLocalStorage } from "./store.svelte";
+import { type Message } from "./messages";
 
 await setupStoreFromLocalStorage();
 
-browser.runtime.onMessage.addListener(
-  async () => await setupStoreFromLocalStorage(),
-);
+browser.runtime.onMessage.addListener(async (msg_: unknown) => {
+  const msg = msg_ as Message;
+  console.log(msg);
+
+  await setupStoreFromLocalStorage();
+});
 
 const getPreferredTheme = () => {
   return window.matchMedia("(prefers-color-scheme: dark)").matches

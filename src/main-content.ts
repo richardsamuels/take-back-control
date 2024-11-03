@@ -11,13 +11,12 @@ browser.runtime.onMessage.addListener(
     sendResponse: any,
   ) => {
     console.log(msg_);
-    await setupStoreFromLocalStorage();
     const msg = msg_ as Message;
-
     if (msg.sendUrlToPopup) {
       sendResponse({ url: window.location });
       return;
     }
+    await setupStoreFromLocalStorage();
   },
 );
 
@@ -25,6 +24,5 @@ browser.runtime.onMessage.addListener(
   await setupStoreFromLocalStorage();
 
   const bodyElement = document.querySelector("body");
-  // @ts-ignore
-  mount(Content, { target: bodyElement });
+  mount(Content, { target: bodyElement! });
 })();

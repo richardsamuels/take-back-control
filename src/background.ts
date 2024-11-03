@@ -14,7 +14,7 @@ async function registerScript(msg: Message) {
   await setupStoreFromLocalStorage();
 
   let store = get<Settings>(settingsStore);
-  if (!store.init) {
+  if (!store?.init) {
     return;
   }
 

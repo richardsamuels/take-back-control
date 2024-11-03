@@ -1,10 +1,11 @@
 import * as browser from "webextension-polyfill";
 import * as constants from "./constants";
 import { writable, get } from "svelte/store";
-import { SvelteMap } from "svelte/reactivity";
 import { type Message } from "./messages";
 
-export type BlacklistSitesMap = SvelteMap<string, BlacklistSiteConfig>;
+export type BlacklistSitesMap = {
+  [key: string]: BlacklistSiteConfig;
+};
 
 export type BlacklistSiteConfig = {
   scrollFactor: number;
@@ -31,22 +32,22 @@ function removeElement<T>(arr: T[], i: number): T[] {
 }
 
 function defaultSettings() {
-  const settings = {
+  const settings: Settings = {
     init: true,
     enabled: true,
     nagChance: 0,
     blacklist: constants.DEFAULT_URL_BLACKLIST,
     whitelist: constants.DEFAULT_URL_WHITELIST,
     messages: constants.DEFAULT_MESSAGES,
-    blacklistSites: new SvelteMap<string, BlacklistSiteConfig>(),
+    blacklistSites: {},
   };
 
   for (const site of settings.blacklist) {
-    settings.blacklistSites.set(site, {
+    settings.blacklistSites[site] = {
       scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
       blockWholePage: false,
       alwaysBlock: false,
-    });
+    };
   }
   return settings;
 }
@@ -59,7 +60,7 @@ function createSettingsStore() {
     messages: [],
     whitelist: [],
     blacklist: [],
-    blacklistSites: new SvelteMap(),
+    blacklistSites: {},
   });
 
   return {
@@ -79,45 +80,46 @@ function createSettingsStore() {
     blacklist: {
       add: (url: string) =>
         update((store) => {
-          const newStore = {
+          return {
             ...store,
             blacklist: [...store.blacklist, url],
-          };
-          newStore.blacklistSites.set(url, {
-            scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
-            blockWholePage: false,
-            alwaysBlock: false,
-          });
-          return newStore;
-        }),
-      remove: (i: number) =>
-        update((store) => ({
-          ...store,
-          blacklist: removeElement(store.blacklist, i),
-        })),
-      reset: () =>
-        update((store) => ({
-          ...store,
-          blacklist: constants.DEFAULT_URL_BLACKLIST,
-          blacklistSites: new SvelteMap(
-            constants.DEFAULT_URL_BLACKLIST.map((url: string) => [
-              url,
-              {
+            blacklistSites: {
+              ...store.blacklistSites,
+              [url]: {
                 scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
                 blockWholePage: false,
                 alwaysBlock: false,
               },
-            ]),
-          ),
+            },
+          };
+        }),
+      remove: (i: number) =>
+        update((store) => {
+          const toDel = store.blacklist[i];
+          const newStore = {
+            ...store,
+            blacklist: removeElement(store.blacklist, i),
+          };
+          delete newStore.blacklistSites[toDel];
+          return newStore;
+        }),
+      reset: () =>
+        update((store) => ({
+          ...store,
+          blacklist: constants.DEFAULT_URL_BLACKLIST,
+          blacklistSites: defaultSettings().blacklistSites,
         })),
     },
     blacklistSites: {
       set: (key: string, value: BlacklistSiteConfig) =>
         update((store) => {
-          const newStore = { ...store };
-          newStore.blacklistSites.set(key, value);
-          newStore.blacklistSites = new SvelteMap(newStore.blacklistSites);
-          return newStore;
+          return {
+            ...store,
+            blacklistSites: {
+              ...store.blacklistSites,
+              [key]: value,
+            },
+          };
         }),
     },
     whitelist: {
@@ -186,12 +188,12 @@ class LikeCommentAnd {
       reloadContentScripts: false,
     };
     if (this.lastStore === undefined) {
-      // Initial fetch
+      // For initial fetch, just store the store. This is called
+      // immediately after the subscription is created
       this.lastStore = store;
       return;
     }
 
-    // @ts-ignore: implicit any
     if (store.messages != this.lastStore?.messages) {
       msg.reloadMessages = true;
     }
@@ -199,9 +201,7 @@ class LikeCommentAnd {
       msg.behaviorChanged = true;
     }
     if (
-      // @ts-ignore: implicit any
       store.blacklist != this.lastStore?.blacklist ||
-      // @ts-ignore: implicit any
       store.whitelist != this.lastStore?.whitelist
     ) {
       msg.reloadContentScripts = true;
@@ -243,38 +243,23 @@ let unsubscribe: any = null;
 export async function setupStoreFromLocalStorage(): Promise<void> {
   if (unsubscribe !== null) {
     unsubscribe();
+    likeCommentAnd.lastStore = undefined;
   }
 
   const store = await storeDeserializeFromStorage();
-  console.trace("fetch", get(settingsStore));
   settingsStore.update((_store: Settings) => store.settings);
+  console.trace("fetch", get(settingsStore));
 
-  // Subscribe and store unsubscribe function
-  if (unsubscribe === null) {
+  if (unsubscribe == null) {
     unsubscribe = settingsStore.subscribe(likeCommentAnd.subscribe);
   }
 }
 
 function storeSerialize(store: Store): any {
-  return {
-    ...store,
-    settings: {
-      ...store.settings,
-      blacklistSites: Object.fromEntries(store.settings.blacklistSites),
-    },
-  };
+  return store;
 }
 
 async function storeDeserializeFromStorage(): Promise<Store> {
   const store = (await browser.storage.sync.get()) as Store;
-  const realStore = {
-    ...store,
-    settings: {
-      ...store.settings,
-      blacklistSites: new SvelteMap(
-        Object.entries(store.settings?.blacklistSites || {}),
-      ),
-    },
-  } as Store;
-  return realStore;
+  return store;
 }

@@ -38,9 +38,7 @@
     });
     return possiblePatterns[0];
   });
-  const siteConfig = $derived.by(() =>
-    $settingsStore.blacklistSites.get(pattern),
-  );
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
 
   const canBeVisible = $derived($settingsStore.enabled);
 

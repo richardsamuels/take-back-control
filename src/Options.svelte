@@ -6,11 +6,9 @@
   import Messages from "./Options/Messages.svelte";
   import Debug from "./Options/Debug.svelte";
   import { onMount, onDestroy } from "svelte";
-  import { settingsStore } from "./store.svelte";
 
   let url = $state("");
   function hashChange(event: HashChangeEvent) {
-    console.log(event.newURL);
     if (event.newURL == event.oldURL) {
       return;
     }

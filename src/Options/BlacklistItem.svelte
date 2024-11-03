@@ -9,7 +9,7 @@
   import { DEFAULT_SCROLL_FACTOR } from "../constants";
   import { settingsStore, type BlacklistSiteConfig } from "../store.svelte";
   const siteConfig: BlacklistSiteConfig = $derived(
-    $settingsStore.blacklistSites.get(item)!,
+    $settingsStore.blacklistSites[item]!,
   );
   const blockWholePage = $derived(siteConfig.blockWholePage);
   const alwaysBlock = $derived(siteConfig.alwaysBlock);
