@@ -57,6 +57,9 @@ browser.runtime.onInstalled.addListener(async function (
       reloadMessages: true,
     });
   }
+  if (event.reason == "update") {
+    // TODO migrations
+  }
 });
 
 // @ts-ignore

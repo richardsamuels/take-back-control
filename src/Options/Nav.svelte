@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { settingsStore } from "../store.svelte";
   const { url } = $props();
 </script>
 
@@ -44,11 +45,13 @@
             class:active={url == "#/messages"}>Messages</a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#/debug" class:active={url == "#/debug"}
-            >Debug</a
-          >
-        </li>
+        {#if $settingsStore.showDebug}
+          <li class="nav-item">
+            <a class="nav-link" href="#/debug" class:active={url == "#/debug"}
+              >Debug</a
+            >
+          </li>
+        {/if}
       </ul>
     </div>
   </div>

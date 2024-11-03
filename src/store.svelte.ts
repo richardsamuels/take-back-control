@@ -15,6 +15,7 @@ export type BlacklistSiteConfig = {
 
 export type Settings = {
   init: boolean;
+  showDebug: boolean;
   enabled: boolean;
   nagChance: number;
   messages: string[];
@@ -34,6 +35,7 @@ function removeElement<T>(arr: T[], i: number): T[] {
 function defaultSettings() {
   const settings: Settings = {
     init: true,
+    showDebug: false,
     enabled: true,
     nagChance: 0,
     blacklist: constants.DEFAULT_URL_BLACKLIST,
@@ -55,6 +57,7 @@ function defaultSettings() {
 function createSettingsStore() {
   const { subscribe, set, update } = writable<Settings>({
     init: false,
+    showDebug: false,
     enabled: true,
     nagChance: 0,
     messages: [],
