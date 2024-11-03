@@ -32,6 +32,19 @@ function removeElement<T>(arr: T[], i: number): T[] {
   return arr.slice(0, i).concat(arr.slice(i + 1));
 }
 
+function nilSettings(): Settings {
+  return {
+    init: false,
+    showDebug: false,
+    enabled: false,
+    nagChance: 0,
+    messages: [],
+    whitelist: [],
+    blacklist: [],
+    blacklistSites: {},
+  };
+}
+
 function defaultSettings() {
   const settings: Settings = {
     init: true,
@@ -55,16 +68,7 @@ function defaultSettings() {
 }
 
 function createSettingsStore() {
-  const { subscribe, set, update } = writable<Settings>({
-    init: false,
-    showDebug: false,
-    enabled: true,
-    nagChance: 0,
-    messages: [],
-    whitelist: [],
-    blacklist: [],
-    blacklistSites: {},
-  });
+  const { subscribe, set, update } = writable<Settings>(nilSettings());
 
   return {
     subscribe,
@@ -210,7 +214,7 @@ class LikeCommentAnd {
       msg.reloadContentScripts = true;
     }
     this.lastStore = store;
-    const newStore = storeSerialize({ settings: store });
+    const newStore = { settings: store };
     console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
@@ -236,33 +240,28 @@ function defaultStore(): Store {
 }
 
 export async function initStorage() {
-  const store = defaultStore();
-
-  await browser.storage.sync.set(storeSerialize(store as Store));
-  settingsStore.update((_store: Settings) => store.settings);
+  const newStore = defaultSettings();
+  settingsStore.update((_store: Settings) => newStore);
 }
 
 let unsubscribe: any = null;
-export async function setupStoreFromLocalStorage(): Promise<void> {
+
+export async function hydrateStorage() {
+  const newStore = (await browser.storage.sync.get(["settings"])) as Store;
+  if (newStore.settings) {
+    settingsStore.update((_store: Settings) => newStore.settings);
+  }
+}
+
+export async function storageChange() {
+  browser.storage.sync.onChanged.removeListener(storageChange);
   if (unsubscribe !== null) {
     unsubscribe();
     likeCommentAnd.lastStore = undefined;
   }
 
-  const store = await storeDeserializeFromStorage();
-  settingsStore.update((_store: Settings) => store.settings);
-  console.trace("fetch", get(settingsStore));
+  await hydrateStorage();
 
-  if (unsubscribe == null) {
-    unsubscribe = settingsStore.subscribe(likeCommentAnd.subscribe);
-  }
-}
-
-function storeSerialize(store: Store): any {
-  return store;
-}
-
-async function storeDeserializeFromStorage(): Promise<Store> {
-  const store = (await browser.storage.sync.get()) as Store;
-  return store;
+  unsubscribe = settingsStore.subscribe(likeCommentAnd.subscribe);
+  browser.storage.sync.onChanged.addListener(storageChange);
 }

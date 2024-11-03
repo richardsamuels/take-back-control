@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
-  import { settingsStore, setupStoreFromLocalStorage } from "./store.svelte";
+  import { settingsStore } from "./store.svelte";
   import { onMount, onDestroy } from "svelte";
   import { patternMatch } from "./Options/validator";
 
