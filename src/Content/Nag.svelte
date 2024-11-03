@@ -43,7 +43,6 @@
     }
   }
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[site]);
-  console.log("XXX", site, $settingsStore.blacklistSites, siteConfig);
 </script>
 
 <div class="center-flex-row" style="gap: 16px">
@@ -63,7 +62,9 @@
       type="button"
       onclick={tryDoNag}
     >
-      It's important ({getOrdinal(n)} time)
+      It's important (<span class:blinking-red-text={n > 1}
+        >{getOrdinal(n)}</span
+      > time)
     </button>
   {:else}
     <div class="sliding-div">
@@ -76,7 +77,9 @@
         Are you <span style="font-style: italic" class="blinking-red-text"
           >REALLY</span
         >
-        sure it's important? ({getOrdinal(n)} time)
+        sure it's important? (<span class:blinking-red-text={n > 1}
+          >{getOrdinal(n)}</span
+        > time)
       </button>
     </div>
   {/if}
