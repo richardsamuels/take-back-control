@@ -19,7 +19,7 @@ setGlobals("firefox", "mozilla");
 
 describe("tryParseMatchPattern", () => {
   it("accepts valid patterns", () => {
-    const table: [string, ut.Parsed][] = [
+    const table: [string, ut.ParsedPattern][] = [
       [
         "*://*.test.com/*",
         {
@@ -116,7 +116,7 @@ describe("tryParseMatchPattern", () => {
   });
 
   it("accepts valid patterns for file", () => {
-    const table: [string, ut.Parsed][] = [
+    const table: [string, ut.ParsedPattern][] = [
       [
         "file:///*",
         {
@@ -172,7 +172,7 @@ describe("tryParseMatchPattern", () => {
   it("accepts valid patterns (chrome)", () => {
     setGlobals("chrome", "google inc");
 
-    const table: [string, ut.Parsed][] = [
+    const table: [string, ut.ParsedPattern][] = [
       [
         "*://*.test.com/*",
         {
@@ -245,7 +245,7 @@ describe("tryParseMatchPattern", () => {
   });
 
   it("rejects invalid patterns", () => {
-    const table: [string, ut.Parsed][] = [
+    const table: [string, ut.ParsedPattern][] = [
       ["", { valid: false }],
       [
         "bs://*.test.com/*",
@@ -325,6 +325,61 @@ describe("coerce", () => {
 
     for (const [t, expected] of table) {
       expect(ut.coerce(t), t).toStrictEqual(expected);
+    }
+  });
+});
+
+describe("patternMatch", () => {
+  it("correctly matches whitelist urls", () => {
+    const table = [
+      [
+        "*://*.reddit.com/r/cats/*",
+        "http://old.reddit.com/r/cats/blahblahblah",
+        true,
+      ],
+      [
+        "*://*.reddit.com/r/cats/*",
+        "http://old.reddit.com/r/dogs/blahblahblah",
+        false,
+      ],
+      [
+        "*://*.reddit.com/r/cats/*/notblah",
+        "http://old.reddit.com/r/dogs/blahblahblah",
+        false,
+      ],
+      [
+        "*://*.reddit.com/r/cats/*/notblah",
+        "http://old.reddit.com/r/dogs/blahblahblah/notblah",
+        false,
+      ],
+      [
+        "*://*.reddit.com/r/cats/*/notblah/*/end",
+        "https://old.reddit.com/r/cats/blahblahblah/notblah/sdfdsfdsfsdfds/fdshfksdfsdf/end",
+        true,
+      ],
+      [
+        "*://*/r/cats/*/notblah/*/end",
+        "http://old.reddit.com/r/cats/blahblahblah/notblah/sdfdsfdsfsdfds/fdshfksdfsdf/end",
+        true,
+      ],
+      [
+        "*://*/r/cats/*/notblah/*",
+        "http://old.reddit.com/r/cats/blahblahblah/notblah/sdfdsfdsfsdfds/fdshfksdfsdf/end",
+        true,
+      ],
+      [
+        "*://reddit.com/r/cats/*/notblah/*",
+        "http://old.reddit.com/r/cats/blahblahblah/notblah/sdfdsfdsfsdfds/fdshfksdfsdf/end",
+        false,
+      ],
+      ["*://*.reddit.com/r/blender/*", "https://reddit.com/r/blender/", true],
+    ];
+
+    for (const [pattern, url, expected] of table) {
+      //  @ts-ignore
+      expect(ut.patternMatch(pattern, url), `${pattern} ${url}`).toEqual(
+        expected,
+      );
     }
   });
 });

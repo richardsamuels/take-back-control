@@ -19,6 +19,7 @@ export const config = {
     },
     options_ui: {
       page: "src/options.html",
+      open_in_tab: true,
     },
     background: {
       scripts: ["src/background.ts"],

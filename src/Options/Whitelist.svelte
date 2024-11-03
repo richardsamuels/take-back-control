@@ -6,7 +6,10 @@
   let selected: number[] = $state([]);
   let selectAll = $state(false);
   $effect(() => {
-    if (selectAll && selected.length != $settingsStore.whitelist.length) {
+    if (
+      (selectAll && selected.length != $settingsStore.whitelist.length) ||
+      $settingsStore.whitelist.length == 0
+    ) {
       selectAll = false;
     }
   });
@@ -43,41 +46,57 @@
 
 <div class="pb-5">
   <h5>Whitelisted Websites</h5>
-  <div id="urlInputHelp" class="form-text pb-5">
+  <div id="urlInputHelp" class="form-text">
     If matched, the page with that URL will be exempt from doomscroll
     prevention. This is useful for allowing access to the useful parts of sites,
     while limiting access to the attention stealing parts. (ex: LinkedIn chat vs
     LinkedIn Feed)
   </div>
-  <form class="mb-4" onsubmit={removeSelected}>
-    <div
-      class="ps-3 pe-1 py-1 my-2 bg-dark d-flex align-items-center justify-content-between"
-    >
-      <div class="d-flex align-items-center gap-2">
-        <label class="form-check-label text-light small" style="opacity: 0.75;">
-          <input
-            class="form-check-input mt-0"
-            type="checkbox"
-            indeterminate={selected.length > 0 &&
-              selected.length < $settingsStore.whitelist.length}
-            bind:checked={selectAll}
-            onclick={selectAllClick}
-          /> Select all
-        </label>
-      </div>
-      <span>
-        <button type="submit" class="btn btn-outline-danger btn-sm">
-          Remove
-        </button>
-      </span>
-    </div>
-    <List
-      bind:value={selected}
-      items={$settingsStore.whitelist}
-      setDefaults={settingsStore.whitelist.reset}
-    />
-  </form>
-  <UrlExplainer add={addUrl} desc={"Exempt a new URL from the blacklist:"} />
+
+  <div class="mt-4">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <h5 class="mt-2">Exempt a New URL from the Blacklist</h5>
+        <UrlExplainer add={addUrl} desc={""} />
+      </li>
+      <li class="list-group-item">
+        <h5 class="mt-2">Sites</h5>
+
+        <form class="mb-4" onsubmit={removeSelected}>
+          <div
+            class="ps-3 pe-1 py-1 my-2 bg-dark d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <label
+                class="form-check-label text-light small"
+                style="opacity: 0.75;"
+              >
+                <input
+                  class="form-check-input mt-0"
+                  type="checkbox"
+                  indeterminate={selected.length > 0 &&
+                    selected.length < $settingsStore.whitelist.length}
+                  bind:checked={selectAll}
+                  onclick={selectAllClick}
+                /> Select all
+              </label>
+            </div>
+            <span>
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                Remove
+              </button>
+            </span>
+          </div>
+
+          <List
+            bind:value={selected}
+            items={$settingsStore.whitelist}
+            setDefaults={settingsStore.whitelist.reset}
+          />
+        </form>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <style>

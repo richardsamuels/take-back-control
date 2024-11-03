@@ -4,9 +4,10 @@
   import {
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
-    PERMITTED_SCROLL_FACTOR,
     MAX_BLUR,
+    MAX_INTENSITY,
   } from "./constants";
+  import { patternMatch } from "./Options/validator";
   import { settingsStore } from "./store.svelte";
 
   function randomItemFrom<T>(array: T[]): T {
@@ -18,32 +19,64 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  let canBeVisible = $derived($settingsStore.enabled);
+  const pattern = $derived.by(() => {
+    // Determine the pattern that caused this script to be injected
+    const possiblePatterns = $settingsStore.blacklist.filter((p) =>
+      patternMatch(p, window.location.toString()),
+    );
+    if (possiblePatterns.length == 0) {
+      console.error(
+        "Failed to match any pattern. This should NOT happen",
+        window.location.toString,
+        $settingsStore.blacklist,
+      );
+    }
+
+    // TODO is the most specific pattern the longest pattern?
+    possiblePatterns.sort((a: string, b: string) => {
+      return b.length - a.length;
+    });
+    return possiblePatterns[0];
+  });
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
+
+  const canBeVisible = $derived($settingsStore.enabled);
 
   let numScrollExtensions = $state(1);
-
   let innerHeight = $state(window.innerHeight);
-  const overlayTriggerOffset = $derived(
-    window.scrollY +
-      numScrollExtensions * innerHeight * PERMITTED_SCROLL_FACTOR,
-  );
+  const overlayTriggerOffset = $derived.by(() => {
+    if (siteConfig.blockWholePage && numScrollExtensions == 1) {
+      return -999999;
+    }
+
+    return (
+      window.scrollY +
+      numScrollExtensions * innerHeight * siteConfig.scrollFactor
+    );
+  });
   let rawBlurIntensity = $state(0);
-  const blurIntensity = $derived(canBeVisible ? rawBlurIntensity : 0);
+  const blurIntensity = $derived.by(() => {
+    if (siteConfig.blockWholePage && numScrollExtensions == 1) {
+      return MAX_INTENSITY;
+    }
+    return canBeVisible ? rawBlurIntensity : 0;
+  });
   const blurAmount = $derived(blurIntensity * MAX_BLUR);
   const rgbOpacity = $derived(canBeVisible ? Math.min(blurIntensity, 0.75) : 0);
   const pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
   const messageVisible = $derived(blurIntensity > 0.1);
-  const message = $derived.by(() => {
-    if (!messageVisible) {
-      return;
-    }
-    return randomItemFrom($settingsStore.messages);
-  });
+  let message = $state(randomItemFrom($settingsStore.messages));
 
-  function lieToSelf(e: Event) {
+  function lieToSelf(_e: Event) {
     numScrollExtensions += 1;
     rawBlurIntensity = 0;
   }
+
+  $effect(() => {
+    if (!messageVisible) {
+      message = randomItemFrom($settingsStore.messages);
+    }
+  });
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
@@ -82,7 +115,7 @@
         {message}
       </div>
     </div>
-    <Nag n={numScrollExtensions} continueFn={lieToSelf} />
+    <Nag n={numScrollExtensions} continueFn={lieToSelf} site={pattern} />
   </div>
 </div>
 

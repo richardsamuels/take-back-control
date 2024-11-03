@@ -647,6 +647,11 @@ prettier@3.3.3:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.3.3.tgz#30c54fe0be0d8d12e6ae61dbb10109ea00d53105"
   integrity sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==
 
+pretty-print-json@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/pretty-print-json/-/pretty-print-json-3.0.3.tgz#a7c899f92b2dc3e387badb5ffa8f39fa20d44e0e"
+  integrity sha512-uIL9/fr5dGV80BDrbN9HWBegwyuN0hCOHA+3EsysnusuQDlhBu6w7dPNm+hBCRiL7Up0jwfGgPX3Ngu/iQ0a8A==
+
 readdirp@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-4.0.2.tgz#388fccb8b75665da3abffe2d8f8ed59fe74c230a"

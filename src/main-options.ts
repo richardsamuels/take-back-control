@@ -1,27 +1,22 @@
 import { mount } from "svelte";
 import "./app.css";
-import Options from "./Options/index.svelte";
+import Options from "./Options.svelte";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { setupStoreFromLocalStorage } from "./store.svelte";
+import "./theme";
+import { storageChange } from "./store.svelte";
 
-await setupStoreFromLocalStorage();
+await storageChange();
 
+const container = document.getElementById("app")!;
 const app = mount(Options, {
-  target: document.getElementById("app")!,
+  target: container,
 });
 
-function setTheme() {
-  const prefersDarkMode =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  document.documentElement.setAttribute(
-    "data-bs-theme",
-    prefersDarkMode ? "dark" : "light",
-  );
-}
-window
-  .matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", setTheme);
-
 export default app;
+if (import.meta.hot) {
+  const { addViteStyleTarget } = await import(
+    "@samrum/vite-plugin-web-extension/client"
+  );
+
+  await addViteStyleTarget(container);
+}

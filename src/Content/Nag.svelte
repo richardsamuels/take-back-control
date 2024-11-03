@@ -1,7 +1,13 @@
 <script lang="ts">
-  let { n, continueFn }: { n: number; continueFn: any } = $props();
+  type Props = {
+    n: number;
+    continueFn: any;
+    site: string;
+  };
+  let { n, continueFn, site }: Props = $props();
 
   import { settingsStore } from "../store.svelte";
+  import { onMount } from "svelte";
 
   function getOrdinal(n: number) {
     let suffix = "th";
@@ -33,21 +39,45 @@
 
     if (nag) {
       showNag = true;
+      startCount();
     } else {
       continueFn(e);
     }
   }
+
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[site]);
+  let counter = $state(5);
+
+  function startCount() {
+    const interval = setInterval(() => {
+      counter = counter - 1;
+      if (counter == 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  }
 </script>
 
 <div class="center-flex-row" style="gap: 16px">
-  {#if !showNag}
+  {#if siteConfig.alwaysBlock}
+    <button
+      id="finite-extend-button"
+      class="finite-button nude soft-transition"
+      type="button"
+      disabled={true}
+    >
+      It's not important enough. Go do something else.
+    </button>
+  {:else if !showNag}
     <button
       id="finite-extend-button"
       class="finite-button nude soft-transition"
       type="button"
       onclick={tryDoNag}
     >
-      It's important ({getOrdinal(n)} time)
+      It's important (<span class:blinking-red-text={n > 1}
+        >{getOrdinal(n)}</span
+      > time)
     </button>
   {:else}
     <div class="sliding-div">
@@ -55,12 +85,17 @@
         id="finite-extend-button"
         class="finite-button nude soft-transition"
         type="button"
+        disabled={counter != 0}
         onclick={continueFn}
       >
         Are you <span style="font-style: italic" class="blinking-red-text"
           >REALLY</span
         >
-        sure it's important? ({getOrdinal(n)} time)
+        sure it's important? (<span class:blinking-red-text={n > 1}
+          >{getOrdinal(n)}</span
+        >
+        time)
+        {#if counter > 0}({counter}){/if}
       </button>
     </div>
   {/if}
@@ -124,6 +159,6 @@
   }
 
   .sliding-div {
-    animation: slide 0.3s ease-in-out 10;
+    animation: slide 0.3s ease-in-out 5;
   }
 </style>

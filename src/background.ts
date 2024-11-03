@@ -1,45 +1,37 @@
 import * as browser from "webextension-polyfill";
 import { get } from "svelte/store";
-import {
-  setupStoreFromLocalStorage,
-  initStorage,
-  settingsStore,
-  type Settings,
-} from "./store.svelte";
-import { type Message } from "./messages";
+import { settingsStore, type Settings } from "./store.svelte";
+import { initStorage, storageChange } from "./store.svelte";
 
 let registered: any = null;
 
-async function registerScript(msg: Message) {
-  await setupStoreFromLocalStorage();
-
-  let settings = get<Settings>(settingsStore);
-  if (!settings.init) {
+async function registerScript() {
+  let store = get<Settings>(settingsStore);
+  if (!store?.init) {
     return;
   }
 
-  if (msg.reloadContentScripts) {
-    try {
-      await browser.scripting.unregisterContentScripts({
-        ids: ["ads-injector"],
-      });
-    } catch (e) {}
-    if (settings.blacklist.length == 0 || settings.messages.length == 0) {
-      console.log("Blacklist/Messages empty, skippings scripts", settings);
-      return;
-    }
-    //console.info("Reloading scripts", settings.blacklist, settings.whitelist);
-
-    registered = await browser.scripting.registerContentScripts([
-      {
-        id: "ads-injector",
-        matches: settings.blacklist,
-        excludeMatches: settings.whitelist,
-        js: ["assets/main-content.js"],
-        runAt: "document_idle",
-      },
-    ]);
+  try {
+    await browser.scripting.unregisterContentScripts({
+      ids: ["ads-injector"],
+    });
+  } catch (e) {
+    // pass: we don't care if this fails
   }
+  if (store.blacklist.length == 0 || store.messages.length == 0) {
+    console.log("Blacklist/Messages empty, skippings scripts", store);
+    return;
+  }
+
+  registered = await browser.scripting.registerContentScripts([
+    {
+      id: "ads-injector",
+      matches: store.blacklist,
+      excludeMatches: store.whitelist,
+      js: ["assets/main-content.js"],
+      runAt: "document_idle",
+    },
+  ]);
 }
 
 browser.runtime.onInstalled.addListener(async function (
@@ -51,18 +43,14 @@ browser.runtime.onInstalled.addListener(async function (
       "Plugin installed, initializing defaults",
       get(settingsStore),
     );
-    registerScript({
-      behaviorChanged: true,
-      reloadContentScripts: true,
-      reloadMessages: true,
-    });
+    registerScript();
+  }
+  if (event.reason == "update") {
+    // TODO migrations
   }
 });
 
 // @ts-ignore
-browser.runtime.onMessage.addListener(registerScript);
-registerScript({
-  behaviorChanged: true,
-  reloadContentScripts: true,
-  reloadMessages: true,
-});
+browser.storage.sync.onChanged.addListener(registerScript);
+await storageChange();
+registerScript();
