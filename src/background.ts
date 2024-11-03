@@ -38,6 +38,7 @@ browser.runtime.onInstalled.addListener(async function (
   event: browser.Runtime.OnInstalledDetailsType,
 ) {
   if (event.reason == "install") {
+    await storageChange();
     await initStorage();
     console.trace(
       "Plugin installed, initializing defaults",
