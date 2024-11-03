@@ -24,12 +24,10 @@ jobs:
       - name: Get Version number
         id: get-package-version
         run: node .github/version.cjs
-      - name: Version Output Files
-        run:
-          - mv dist/FIREFOX_anti-doomscroll_UNSIGNED.xpi dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
-          - mv dist/FIREFOX_anti-doomscroll_UNSIGNED.zip dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
-          - mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.xpi dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
-          - mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.zip dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+      - run: mv dist/FIREFOX_anti-doomscroll_UNSIGNED.xpi dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+      - run: mv dist/FIREFOX_anti-doomscroll_UNSIGNED.zip dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+      - run: mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.xpi dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+      - run: mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.zip dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
       - name: Upload Firefox
         uses: actions/upload-artifact@v4
         with:
