@@ -98,6 +98,26 @@
         {/if}
       {/await}
       <div>
+        {#if $settingsStore.dailyBalanceInterval > 0}
+          <button
+            type="button"
+            class="btn btn-danger"
+            onclick={block}
+            disabled={$settingsStore.dailyBalanceInterval}
+          >
+            {#if needRefresh}
+              Refresh Page to Block
+            {:else}
+              Block this Page
+            {/if}
+          </button>
+        {:else if isURLAllowed(url)}
+          Page is Allowed
+        {:else}
+          Page is Not Allowed
+        {/if}
+      </div>
+      <div>
         <a href="#options" class="link-primary text-light" onclick={options}
           >Edit allowed websites</a
         >

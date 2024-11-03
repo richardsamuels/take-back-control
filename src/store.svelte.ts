@@ -22,6 +22,7 @@ export type Settings = {
   blacklist: string[];
   whitelist: string[];
   blacklistSites: BlacklistSitesMap;
+  dailyBalanceInterval: number;
 };
 
 export type Store = {
@@ -42,6 +43,7 @@ function nilSettings(): Settings {
     whitelist: [],
     blacklist: [],
     blacklistSites: {},
+    dailyBalanceInterval: 0,
   };
 }
 
@@ -55,6 +57,7 @@ function defaultSettings() {
     whitelist: constants.DEFAULT_URL_WHITELIST,
     messages: constants.DEFAULT_MESSAGES,
     blacklistSites: {},
+    dailyBalanceInterval: 0,
   };
 
   for (const site of settings.blacklist) {
@@ -253,7 +256,7 @@ export async function hydrateStorage() {
   }
 }
 
-export async function storageChange() {
+export async function storageChange(_changes: browser.Storage.StorageChange) {
   browser.storage.sync.onChanged.removeListener(storageChange);
   if (unsubscribe !== null) {
     unsubscribe();
