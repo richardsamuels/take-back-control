@@ -32,14 +32,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist/FIREFOX_anti-doomscroll_*
+          path: dist/FIREFOX_anti-doomscroll*
           if-no-files-found: error
 
       - name: Upload Chrome
         uses: actions/upload-artifact@v4
         with:
           name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist-chrome/CHROME_anti-doomscroll_*
+          path: dist-chrome/CHROME_anti-doomscroll*
           if-no-files-found: error
 
   tests:
