@@ -25,9 +25,9 @@ jobs:
         id: get-package-version
         run: node .github/version.cjs
       - run: mv dist/FIREFOX_anti-doomscroll_UNSIGNED.xpi dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
-      - run: mv dist/FIREFOX_anti-doomscroll_UNSIGNED.tar.gz dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+      - run: mv dist/FIREFOX_anti-doomscroll.tar.gz dist/FIREFOX_anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
       - run: mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.xpi dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
-      - run: mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.tar.gz dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+      - run: mv dist-chrome/CHROME_anti-doomscroll.tar.gz dist-chrome/CHROME_anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
       - name: Upload Firefox
         uses: actions/upload-artifact@v4
         with:
