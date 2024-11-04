@@ -56,3 +56,4 @@ export const DEFAULT_SCROLL_FACTOR = 0.75; // px
 export const MAX_BLUR = 100; // px
 export const MAX_DURATION = 1000 * 60 * 5; // ms
 export const MAX_INTENSITY = 1.0;
+export const ONE_DAY_MINUTES = 24 * 60;

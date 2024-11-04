@@ -3,6 +3,7 @@
   import { settingsStore } from "./store.svelte";
   import { onMount, onDestroy } from "svelte";
   import { patternMatch } from "./Options/validator";
+  import { ONE_DAY_MINUTES } from "./constants";
 
   function options(e: Event) {
     e.preventDefault();
@@ -58,6 +59,15 @@
     browser.tabs.onActivated.removeListener(extensionActiveInActiveTab);
     browser.tabs.onUpdated.removeListener(extensionActiveInActiveTab);
   });
+
+  const balanceEnabled = $derived($settingsStore.dailyBalanceInterval > 0);
+  const timerRunning = $derived($settingsStore.time.global > 0);
+  const timerComplete = $derived($settingsStore.time.global == ONE_DAY_MINUTES);
+  const timeLeft = $derived(
+    timerComplete
+      ? 0
+      : $settingsStore.dailyBalanceInterval - $settingsStore.time.global,
+  );
 </script>
 
 <main>
@@ -78,6 +88,28 @@
       {#await extensionActiveInActiveTab()}
         &nbsp;
       {:then extensionActive}
+        <div>
+          {#if balanceEnabled}
+            <button
+              type="button"
+              class="btn"
+              class:btn-danger={!timerComplete}
+              class:btn-outline-danger={timerComplete}
+              onclick={block}
+              disabled={timerComplete || timerRunning}
+            >
+              {#if timerComplete || timerRunning}
+                {timeLeft} minutes left {timerComplete ? "" : "..."}
+              {:else}
+                {timeLeft} minutes of Balance
+              {/if}
+            </button>
+          {:else if isURLAllowed(url)}
+            Page is Allowed
+          {:else}
+            Page is Not Allowed
+          {/if}
+        </div>
         {#if !extensionActive}
           <button
             type="button"
@@ -97,26 +129,6 @@
           Page is Not Allowed
         {/if}
       {/await}
-      <div>
-        {#if $settingsStore.dailyBalanceInterval > 0}
-          <button
-            type="button"
-            class="btn btn-danger"
-            onclick={block}
-            disabled={$settingsStore.dailyBalanceInterval}
-          >
-            {#if needRefresh}
-              Refresh Page to Block
-            {:else}
-              Block this Page
-            {/if}
-          </button>
-        {:else if isURLAllowed(url)}
-          Page is Allowed
-        {:else}
-          Page is Not Allowed
-        {/if}
-      </div>
       <div>
         <a href="#options" class="link-primary text-light" onclick={options}
           >Edit allowed websites</a
