@@ -7,16 +7,33 @@
     MAX_BLUR,
     MAX_INTENSITY,
   } from "./constants";
+  type Wall = {
+    n: number;
+    triggerOffset: number; // scroll Y position to start blurring
+    scrollY: number;
+  };
   import { patternMatch } from "./Options/validator";
   import { settingsStore } from "./store.svelte";
 
   function randomItemFrom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)];
   }
-
-  function scrollProgress(offset: number = 0) {
-    const amountScrolled = Math.max(window.scrollY - offset, 0);
+  function scrollProgress(threshold: number, offset: number = 0) {
+    const amountScrolled = Math.max(threshold - offset, 0);
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
+  }
+
+  function makeWall(
+    n: number,
+    scrollY: number,
+    innerHeight: number,
+    scrollFactor: number,
+  ): Wall {
+    return {
+      n: n,
+      scrollY: scrollY,
+      triggerOffset: scrollY + (n + 1) * innerHeight * scrollFactor,
+    };
   }
 
   const pattern = $derived.by(() => {
@@ -39,55 +56,80 @@
     return possiblePatterns[0];
   });
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
-
-  const canBeVisible = $derived($settingsStore.enabled);
-
-  let numScrollExtensions = $state(1);
+  const addonEnabled = $derived($settingsStore.enabled);
   let innerHeight = $state(window.innerHeight);
-  const overlayTriggerOffset = $derived.by(() => {
-    if (siteConfig.blockWholePage && numScrollExtensions == 1) {
-      return -999999;
-    }
 
-    return (
-      window.scrollY +
-      numScrollExtensions * innerHeight * siteConfig.scrollFactor
-    );
-  });
-  let rawBlurIntensity = $state(0);
+  let nextWall: Wall = $state(
+    makeWall(0, 0, innerHeight, siteConfig.scrollFactor),
+  );
+
+  let scrollY: number = $state(0);
+  let numScrollExtensions: number = $state(0);
   const blurIntensity = $derived.by(() => {
-    if (siteConfig.blockWholePage && numScrollExtensions == 1) {
+    if (!addonEnabled) {
+      return 0;
+    }
+    if (siteConfig.blockWholePage && numScrollExtensions == 0) {
       return MAX_INTENSITY;
     }
-    return canBeVisible ? rawBlurIntensity : 0;
-  });
-  const blurAmount = $derived(blurIntensity * MAX_BLUR);
-  const rgbOpacity = $derived(canBeVisible ? Math.min(blurIntensity, 0.75) : 0);
-  const pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
-  const messageVisible = $derived(blurIntensity > 0.1);
-  let message = $state(randomItemFrom($settingsStore.messages));
 
-  function lieToSelf(_e: Event) {
-    numScrollExtensions += 1;
-    rawBlurIntensity = 0;
-  }
-
-  $effect(() => {
-    if (!messageVisible) {
-      message = randomItemFrom($settingsStore.messages);
+    if (scrollY < nextWall.triggerOffset) {
+      return 0;
     }
+
+    // Calculate how far past the triggerOffset we are
+    return scrollProgress(scrollY, nextWall.triggerOffset);
   });
+  const messageVisible = $derived(blurIntensity > 0.1);
+  const blurAmount = $derived(blurIntensity * MAX_BLUR);
+  const rgbOpacity = $derived(addonEnabled ? Math.min(blurIntensity, 0.75) : 0);
+  const pointerEvents = $derived(blurIntensity > 0.1 ? "auto" : "none");
+  let message = $state(randomItemFrom($settingsStore.messages));
+  let onNextTransition: (() => void) | null = null;
+
+  function extendScroll(_e: Event) {
+    nextWall = makeWall(
+      numScrollExtensions + 1,
+      window.scrollY,
+      innerHeight,
+      siteConfig.scrollFactor,
+    );
+    onNextTransition = () => {
+      numScrollExtensions += 1;
+    };
+  }
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
       innerHeight = window.innerHeight;
+      // TODO derived?
+      nextWall = makeWall(
+        nextWall.n,
+        nextWall.scrollY,
+        innerHeight,
+        siteConfig.scrollFactor,
+      );
     });
 
     document.addEventListener("scroll", (_) => {
-      const amountScrolled = scrollProgress(overlayTriggerOffset);
-      rawBlurIntensity = amountScrolled;
+      scrollY = window.scrollY;
     });
   });
+
+  const handleAnimationEnd = () => {
+    if (onNextTransition !== null) {
+      onNextTransition();
+      onNextTransition = null;
+    }
+    if (!messageVisible) {
+      const oldMessage = $state.snapshot(message);
+      let limit = 5;
+      while (oldMessage == message && limit > 0) {
+        message = randomItemFrom($settingsStore.messages);
+        limit -= 1;
+      }
+    }
+  };
 </script>
 
 <div
@@ -96,6 +138,7 @@
   style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
+  ontransitionend={handleAnimationEnd}
 >
   <div
     id={MESSAGE_DISPLAY_DIV_ID}
@@ -115,7 +158,7 @@
         {message}
       </div>
     </div>
-    <Nag n={numScrollExtensions} continueFn={lieToSelf} site={pattern} />
+    <Nag n={numScrollExtensions + 1} continueFn={extendScroll} site={pattern} />
   </div>
 </div>
 
@@ -132,7 +175,7 @@
   }
 
   .soft-transition {
-    /* transition: all 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95); */
+    transition: all 0.1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
   }
 
   .center-flex-col {
