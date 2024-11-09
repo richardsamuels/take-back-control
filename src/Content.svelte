@@ -8,7 +8,9 @@
     MAX_INTENSITY,
   } from "./constants";
   type Wall = {
-    triggerOffset: number; // scroll Y position to start blurring
+    // scroll Y position to start blurring
+    triggerOffset: number;
+    // The scrollY position when the Wall triggerOffset was calculated
     scrollY: number;
   };
   import { patternMatch } from "./Options/validator";
@@ -130,6 +132,7 @@
     if (!messageVisible) {
       const oldMessage = $state.snapshot(message);
       let limit = 5;
+      // Try and prevent duplicate messages
       while (oldMessage == message && limit > 0) {
         message = randomItemFrom($settingsStore.messages);
         limit -= 1;
