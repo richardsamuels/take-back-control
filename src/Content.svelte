@@ -34,8 +34,8 @@
       scrollY: scrollY,
       triggerOffset: scrollY + (n + 1) * innerHeight * scrollFactor,
     };
-    // If we're supposed to block the whole page, force the offset to small
-    // number immediately
+    // HACK: If we're supposed to block the whole page, force the offset to
+    // small  number immediately so that the page loads with the wall up
     if (siteConfig.blockWholePage && n == 0) {
       nextWall.triggerOffset = -999999;
     }
@@ -44,7 +44,6 @@
 
   // Find the blacklist pattern that matches the current site
   const pattern = $derived.by(() => {
-    // Determine the pattern that caused this script to be injected
     const possiblePatterns = $settingsStore.blacklist.filter((p) =>
       patternMatch(p, window.location.toString()),
     );
@@ -94,7 +93,7 @@
   let onNextTransition: (() => void) | null = null;
 
   const extendScroll = (_e: Event) => {
-    // UGLY hack. Mutate nextWall now to rerender/hide the wall, but
+    // HACK: Mutate nextWall now to rerender/hide the wall, but
     // don't increment numScrollExtensions until the animation is complete
     // so that the user doesn't see the counter increment
     nextWall = makeWall(
