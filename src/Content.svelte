@@ -8,7 +8,6 @@
     MAX_INTENSITY,
   } from "./constants";
   type Wall = {
-    n: number;
     triggerOffset: number; // scroll Y position to start blurring
     scrollY: number;
   };
@@ -23,19 +22,25 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  function makeWall(
+  const makeWall = (
     n: number,
     scrollY: number,
     innerHeight: number,
     scrollFactor: number,
-  ): Wall {
-    return {
-      n: n,
+  ): Wall => {
+    let nextWall = {
       scrollY: scrollY,
       triggerOffset: scrollY + (n + 1) * innerHeight * scrollFactor,
     };
-  }
+    // If we're supposed to block the whole page, force the offset to small
+    // number immediately
+    if (siteConfig.blockWholePage && n == 0) {
+      nextWall.triggerOffset = -999999;
+    }
+    return nextWall;
+  };
 
+  // Find the blacklist pattern that matches the current site
   const pattern = $derived.by(() => {
     // Determine the pattern that caused this script to be injected
     const possiblePatterns = $settingsStore.blacklist.filter((p) =>
@@ -49,7 +54,7 @@
       );
     }
 
-    // TODO is the most specific pattern the longest pattern?
+    // TODO MUST the most specific pattern the longest pattern?
     possiblePatterns.sort((a: string, b: string) => {
       return b.length - a.length;
     });
@@ -57,28 +62,27 @@
   });
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
   const addonEnabled = $derived($settingsStore.enabled);
-  let innerHeight = $state(window.innerHeight);
 
+  let innerHeight = $state(window.innerHeight);
+  let scrollY: number = $state(0);
   let nextWall: Wall = $state(
     makeWall(0, 0, innerHeight, siteConfig.scrollFactor),
   );
 
-  let scrollY: number = $state(0);
   let numScrollExtensions: number = $state(0);
+
   const blurIntensity = $derived.by(() => {
+    const offset = nextWall.triggerOffset;
     if (!addonEnabled) {
       return 0;
     }
-    if (siteConfig.blockWholePage && numScrollExtensions == 0) {
-      return MAX_INTENSITY;
-    }
 
-    if (scrollY < nextWall.triggerOffset) {
+    if (scrollY < offset) {
       return 0;
     }
 
     // Calculate how far past the triggerOffset we are
-    return scrollProgress(scrollY, nextWall.triggerOffset);
+    return scrollProgress(scrollY, offset);
   });
   const messageVisible = $derived(blurIntensity > 0.1);
   const blurAmount = $derived(blurIntensity * MAX_BLUR);
@@ -87,7 +91,10 @@
   let message = $state(randomItemFrom($settingsStore.messages));
   let onNextTransition: (() => void) | null = null;
 
-  function extendScroll(_e: Event) {
+  const extendScroll = (_e: Event) => {
+    // UGLY hack. Mutate nextWall now to rerender/hide the wall, but
+    // don't increment numScrollExtensions until the animation is complete
+    // so that the user doesn't see the counter increment
     nextWall = makeWall(
       numScrollExtensions + 1,
       window.scrollY,
@@ -97,14 +104,13 @@
     onNextTransition = () => {
       numScrollExtensions += 1;
     };
-  }
+  };
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
       innerHeight = window.innerHeight;
-      // TODO derived?
       nextWall = makeWall(
-        nextWall.n,
+        numScrollExtensions,
         nextWall.scrollY,
         innerHeight,
         siteConfig.scrollFactor,
