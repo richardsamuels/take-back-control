@@ -155,7 +155,10 @@
     style="gap: 84px;"
     style:opacity={messageVisible ? "1" : "0"}
   >
-    <div class="message-text-container center-flex-col" style="gap: 12px;">
+    <div
+      class="message-text-container center-flex-col soft-transition"
+      style="gap: 12px;"
+    >
       <div
         id="reason-text-div"
         class="center-text"
