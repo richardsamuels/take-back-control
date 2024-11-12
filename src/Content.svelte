@@ -66,6 +66,7 @@
   let innerHeight = $state(window.innerHeight);
   let scrollY: number = $state(0);
   let nextWall: Wall = $state(
+    // svelte-ignore state_referenced_locally
     makeWall(0, 0, innerHeight, siteConfig.scrollFactor),
   );
 
