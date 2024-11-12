@@ -5,7 +5,6 @@
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
     MAX_BLUR,
-    MAX_INTENSITY,
   } from "./constants";
   type Wall = {
     // scroll Y position to start blurring
@@ -35,7 +34,7 @@
       triggerOffset: scrollY + (n + 1) * innerHeight * scrollFactor,
     };
     // HACK: If we're supposed to block the whole page, force the offset to
-    // small  number immediately so that the page loads with the wall up
+    // small number immediately, so that the page loads with the wall up
     if (siteConfig.blockWholePage && n == 0) {
       nextWall.triggerOffset = -999999;
     }
@@ -67,6 +66,7 @@
   let innerHeight = $state(window.innerHeight);
   let scrollY: number = $state(0);
   let nextWall: Wall = $state(
+    // svelte-ignore state_referenced_locally
     makeWall(0, 0, innerHeight, siteConfig.scrollFactor),
   );
 
@@ -142,7 +142,7 @@
 
 <div
   id={OVERLAY_DIV_ID}
-  class="full-screen-overlay soft-transition"
+  class="full-screen-overlay soft-transition isolated-element"
   style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
@@ -174,6 +174,9 @@
 </div>
 
 <style>
+  .isolated-element {
+    all: initial;
+  }
   .full-screen-overlay {
     position: fixed;
     top: 0;
