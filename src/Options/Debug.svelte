@@ -22,6 +22,7 @@
       ...$settingsStore.whitelist,
       ...RICHARDS_DEFAULTS_WHITELIST,
     ];
+    $settingsStore.animation = false;
     $settingsStore.nagChance = 20;
   }
 </script>
