@@ -34,24 +34,26 @@ async function registerScript() {
   ]);
 }
 
-browser.runtime.onInstalled.addListener(async function (
-  event: browser.Runtime.OnInstalledDetailsType,
-) {
-  if (event.reason == "install") {
-    await storageChange();
-    await initStorage();
-    console.trace(
-      "Plugin installed, initializing defaults",
-      get(settingsStore),
-    );
+// Chrome does not support top level await in service workers, so we have to
+// do this
+storageChange().then(() => {
+  function finish() {
+    browser.storage.sync.onChanged.addListener(registerScript);
     registerScript();
   }
-  if (event.reason == "update") {
-    // TODO migrations
+
+  console.log("init");
+  // runtime.OnInstalled is not reliably firing, so we work around that.
+  let store = get<Settings>(settingsStore);
+  if (!store?.init) {
+    initStorage().then(() => {
+      console.trace(
+        "Plugin installed, initializing defaults",
+        get(settingsStore),
+      );
+      finish();
+    });
+  } else {
+    finish();
   }
 });
-
-// @ts-ignore
-browser.storage.sync.onChanged.addListener(registerScript);
-await storageChange();
-registerScript();
