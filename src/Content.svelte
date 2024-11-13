@@ -147,6 +147,7 @@
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
   ontransitionend={handleAnimationEnd}
+  data-testid="overlay"
 >
   <div
     id={MESSAGE_DISPLAY_DIV_ID}
