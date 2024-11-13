@@ -42,13 +42,12 @@ storageChange().then(() => {
     registerScript();
   }
 
-  console.log("init");
-  // runtime.OnInstalled is not reliably firing, so we work around that.
+  // runtime.onInstalled is not reliably firing, so we work around that.
   let store = get<Settings>(settingsStore);
   if (!store?.init) {
     initStorage().then(() => {
       console.trace(
-        "Plugin installed, initializing defaults",
+        "Plugin installed, initialized defaults",
         get(settingsStore),
       );
       finish();
