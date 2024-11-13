@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: yarn install
     - name: Make dist
-      run: make build
+      run: make
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
