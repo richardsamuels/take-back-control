@@ -47,7 +47,7 @@ storageChange().then(() => {
   if (!store?.init) {
     initStorage().then(() => {
       console.trace(
-        "Plugin installed, initializing defaults",
+        "Plugin installed, initialized defaults",
         get(settingsStore),
       );
       finish();
