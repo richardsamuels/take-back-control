@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 jobs:
   test:
-    runs-on: mcr.microsoft.com/playwright:v1.48.1-noble
+    runs-on: mcr.microsoft.com/playwright
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v4
