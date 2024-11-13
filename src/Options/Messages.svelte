@@ -71,8 +71,14 @@
               placeholder="Do something better"
               aria-describedby="messageHelp"
               required
+              data-testid="message"
             />
-            <button type="submit" class="btn btn-primary" aria-label="Add">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              aria-label="Add"
+              data-testid="message-submit"
+            >
               <i class="bi bi-plus-lg"></i>
             </button>
           </div>

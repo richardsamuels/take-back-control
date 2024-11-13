@@ -154,6 +154,7 @@
     class="full-screen-overlay soft-transition center-flex-col"
     style="gap: 84px;"
     style:opacity={messageVisible ? "1" : "0"}
+    data-testid="overlay-msg"
   >
     <div
       class="message-text-container center-flex-col soft-transition"
@@ -178,6 +179,7 @@
   .isolated-element {
     all: initial;
   }
+
   .full-screen-overlay {
     position: fixed;
     top: 0;

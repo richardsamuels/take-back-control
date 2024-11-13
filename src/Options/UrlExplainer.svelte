@@ -1,7 +1,7 @@
 <script lang="ts">
   import { coerce_and_explain, isValidMatchPattern } from "./validator";
   let url = $state("");
-  let [realPattern, errors] = $derived(coerce_and_explain(url));
+  let [realPattern, errors] = $derived(coerce_and_explain(url.trimStart()));
   let valid = $derived(isValidMatchPattern(realPattern));
 
   const { desc, add }: { desc: string; add: (a: string) => void } = $props();

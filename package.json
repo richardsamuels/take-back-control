@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json && prettier . --check",
     "pr": "playwright test --ui",
+    "pr-server": "node e2e/server.js",
     "watch": "vite build --watch",
     "lint": "prettier . --write",
     "test": "vitest"
@@ -24,6 +25,7 @@
     "@types/webextension-polyfill": "^0.12.1",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "express": "^4.21.1",
     "picomatch": "^4.0.2",
     "prettier": "3.3.3",
     "prettier-plugin-svelte": "^3.2.7",

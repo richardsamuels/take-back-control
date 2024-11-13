@@ -174,6 +174,27 @@ describe("tryParseMatchPattern", () => {
 
     const table: [string, ut.ParsedPattern][] = [
       [
+        "*://localhost/*",
+        {
+          host: {
+            data: "localhost",
+            has_port: false,
+            valid: true,
+            wildcard_ok: true,
+          },
+          path: {
+            data: "/*",
+            has_leader: true,
+            valid: true,
+          },
+          scheme: {
+            data: "*",
+            valid: true,
+          },
+          valid: true,
+        },
+      ],
+      [
         "*://*.test.com/*",
         {
           host: {
