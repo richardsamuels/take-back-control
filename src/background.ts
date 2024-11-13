@@ -42,7 +42,6 @@ storageChange().then(() => {
     registerScript();
   }
 
-  console.log("init");
   // runtime.onInstalled is not reliably firing, so we work around that.
   let store = get<Settings>(settingsStore);
   if (!store?.init) {
