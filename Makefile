@@ -26,4 +26,4 @@ dist-chrome/CHROME_anti-doomscroll.tar.gz: yarn $(wildcard dist-chrome/**/*)
 	tar -czvf dist-chrome/CHROME_anti-doomscroll.tar.gz --exclude='.git' --exclude='dist' --exclude='dist-chrome' --exclude="node_modules" .
 
 clean:
-	rm -rf dist/ dist-chrome/
+	rm -rf dist/ dist-chrome/ test-results/ playwright-report/
