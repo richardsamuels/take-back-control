@@ -105,6 +105,9 @@
     onNextTransition = () => {
       numScrollExtensions += 1;
     };
+    if (!$settingsStore.animation) {
+      handleAnimationEnd();
+    }
   };
 
   onMount(() => {

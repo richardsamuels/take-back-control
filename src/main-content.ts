@@ -10,7 +10,6 @@ browser.runtime.onMessage.addListener(
     _sender: browser.Runtime.MessageSender,
     sendResponse: any,
   ) => {
-    console.log(msg_);
     const msg = msg_ as Message;
     if (msg.sendUrlToPopup) {
       sendResponse({ url: window.location });
