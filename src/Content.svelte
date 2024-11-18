@@ -54,7 +54,7 @@
       );
     }
 
-    // TODO MUST the most specific pattern the longest pattern?
+    // TODO: MUST the most specific pattern the longest pattern?
     possiblePatterns.sort((a: string, b: string) => {
       return b.length - a.length;
     });
@@ -105,6 +105,11 @@
     onNextTransition = () => {
       numScrollExtensions += 1;
     };
+    // XXX: If animation is disabled, ontransitionend will not fire.
+    // Do so here.
+    if (!$settingsStore.animation) {
+      handleAnimationEnd();
+    }
   };
 
   onMount(() => {
