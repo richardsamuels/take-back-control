@@ -1,5 +1,7 @@
 import { test, expect } from "./fixtures";
 
+const timeout = { timeout: 3_000 };
+
 async function setup(page, extensionId) {
   await page.goto(
     `chrome-extension://${extensionId}/src/options.html#/blacklist`,
@@ -29,8 +31,8 @@ test("add localhost to blacklist", async ({ page, extensionId }) => {
     await page.mouse.wheel(0, 100);
   }
   // TODO Need way to await content script
-  await page.waitForTimeout(3000);
-  await expect(page.getByTestId("overlay")).toBeAttached();
+  //await page.waitForTimeout(3000);
+  await expect(page.getByTestId("overlay")).toBeAttached(timeout);
   await expect(page.getByTestId("overlay")).toBeVisible();
   await expect(page.getByTestId("overlay")).toContainText("Scrolling deep");
   await expect(page.getByTestId("overlay-msg")).toBeVisible();
@@ -48,10 +50,9 @@ test("add localhost to blacklist", async ({ page, extensionId }) => {
 
 test("whitelist", async ({ page, extensionId }) => {
   await setup(page, extensionId);
-  await page.goto("http://localhost:3000");
+  await page.goto("http://localhost:3000/whitelist");
   await page.mouse.wheel(0, 10000);
-  await page.pause();
-  await expect(page.getByTestId("overlay")).not.toBeVisible();
+  await expect(page.getByTestId("overlay")).not.toBeVisible(timeout);
   await expect(page.getByTestId("overlay-msg")).not.toBeVisible();
 });
 
@@ -77,9 +78,8 @@ test("test blacklist options", async ({ page, extensionId }) => {
     .click();
 
   await page.goto("http://localhost:3000/");
-  // TODO Need way to await content script
-  await page.waitForTimeout(3000);
-  await expect(page.getByTestId("overlay")).toBeAttached();
+
+  await expect(page.getByTestId("overlay")).toBeAttached(timeout);
   await expect(page.getByTestId("overlay")).toBeVisible();
   await expect(page.getByTestId("overlay")).toContainText("Scrolling deep");
   await expect(page.getByTestId("overlay-msg")).toBeVisible();

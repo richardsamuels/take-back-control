@@ -17,8 +17,6 @@ jobs:
       run: npm install -g yarn && yarn
     - name: Install dependencies
       run: yarn install
-    - name: Make dist
-      run: make
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps chrome
     - name: Run Playwright
