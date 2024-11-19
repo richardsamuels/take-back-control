@@ -224,11 +224,10 @@ function tryParseHostPattern(
   ) {
     host.wildcard_ok = true;
   }
+  const hasPort = isChrome() ? false : host.has_port;
   if (
     host_ != "localhost" &&
-    (host.has_port ||
-      !host.wildcard_ok ||
-      (host_ != "*" && !host_.match(/.+\..+/)))
+    (hasPort || !host.wildcard_ok || (host_ != "*" && !host_.match(/.+/)))
   ) {
     return {
       valid: false,

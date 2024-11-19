@@ -6,6 +6,8 @@
 //
 // Because we are testing an extension, we have to bypass the happy path of
 // playwright as described here: https://playwright.dev/docs/chrome-extensions
+// (You may find the code for that inside ./fixtures.ts)
+//
 // This means we're subject to breakages, slowness, and instability. Keep this
 // file to the absolute bare minimum to prove that core functionality works,
 // and place your other tests somewhere else, outside of Playwright's execution
@@ -32,7 +34,9 @@ async function setup(page, extensionId) {
   await page.goto(
     `chrome-extension://${extensionId}/src/options.html#/whitelist`,
   );
-  await page.getByTestId("blacklist-input").fill("*://localhost/whitelist");
+  await page
+    .getByTestId("blacklist-input")
+    .fill("*://localhost:3000/whitelist");
   await page.getByTestId("blacklist-submit").click();
 
   //await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
