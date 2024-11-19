@@ -13,6 +13,10 @@ export type BlacklistSiteConfig = {
   alwaysBlock: boolean;
 };
 
+export type Time = {
+  global: number;
+};
+
 export type Settings = {
   init: boolean;
   animation: boolean;
@@ -23,6 +27,8 @@ export type Settings = {
   blacklist: string[];
   whitelist: string[];
   blacklistSites: BlacklistSitesMap;
+  dailyBalanceInterval: number;
+  time: Time;
 };
 
 export type Store = {
@@ -44,6 +50,10 @@ function nilSettings(): Settings {
     whitelist: [],
     blacklist: [],
     blacklistSites: {},
+    dailyBalanceInterval: 0,
+    time: {
+      global: 0,
+    },
   };
 }
 
@@ -57,7 +67,11 @@ function defaultSettings() {
     blacklist: constants.DEFAULT_URL_BLACKLIST,
     whitelist: constants.DEFAULT_URL_WHITELIST,
     messages: constants.DEFAULT_MESSAGES,
+    dailyBalanceInterval: 0,
     blacklistSites: {},
+    time: {
+      global: 0,
+    },
   };
 
   for (const site of settings.blacklist) {
@@ -166,6 +180,28 @@ function createSettingsStore() {
           messages: constants.DEFAULT_MESSAGES,
         })),
     },
+    time: {
+      start: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: 1 },
+        })),
+      inc: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: store.time.global + 1 },
+        })),
+      overload: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: constants.ONE_DAY_MINUTES },
+        })),
+      reset: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: 0 },
+        })),
+    },
     update,
   };
 }
@@ -237,10 +273,6 @@ class LikeCommentAnd {
 }
 
 let likeCommentAnd = new LikeCommentAnd();
-
-function defaultStore(): Store {
-  return { settings: defaultSettings() };
-}
 
 export async function initStorage() {
   const newStore = defaultSettings();

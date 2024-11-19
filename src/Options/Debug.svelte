@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settingsStore } from "../store.svelte";
+  import { settingsStore, type Settings } from "../store.svelte";
   import { prettyPrintJson } from "pretty-print-json";
   import {
     RICHARDS_DEFAULTS_BLACKLIST,
@@ -7,7 +7,7 @@
   } from "../constants";
 
   import "/node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.css";
-  const s: any = $state.snapshot($settingsStore);
+  const s: Settings = $derived($settingsStore);
 
   function click() {
     $settingsStore.showDebug = !$settingsStore.showDebug;
@@ -24,6 +24,21 @@
     ];
     $settingsStore.animation = false;
     $settingsStore.nagChance = 20;
+  }
+  function balance_reset() {
+    settingsStore.time.reset();
+  }
+  function balance_start() {
+    settingsStore.time.start();
+  }
+  function balance_almost_done() {
+    $settingsStore.time = {
+      ...$settingsStore.time,
+      global: $settingsStore.dailyBalanceInterval,
+    };
+  }
+  function balance_overload() {
+    settingsStore.time.overload();
   }
 </script>
 
@@ -61,6 +76,32 @@
   <div class="pb-5">
     <button type="button" class="btn btn-primary" onclick={richards_defaults}
       >Add Richard's Defaults</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary"
+      onclick={balance_start}
+      disabled={$settingsStore.dailyBalanceInterval == 0}>Balance: Start</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary"
+      onclick={balance_overload}
+      disabled={$settingsStore.dailyBalanceInterval == 0}
+      >Balance: Overload</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary"
+      onclick={balance_almost_done}
+      disabled={$settingsStore.dailyBalanceInterval == 0}
+      >Balance: Near Expiration</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary"
+      onclick={balance_reset}
+      disabled={$settingsStore.dailyBalanceInterval == 0}>Balance: Reset</button
     >
   </div>
   <pre class="json-container pb-5">

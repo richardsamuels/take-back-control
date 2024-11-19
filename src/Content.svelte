@@ -5,7 +5,7 @@
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
     MAX_BLUR,
-    MAX_INTENSITY,
+    ONE_DAY_MINUTES,
   } from "./constants";
   import { patternMatch } from "./Options/validator";
   import { settingsStore } from "./store.svelte";
@@ -46,7 +46,6 @@
   });
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
 
-  const canBeVisible = $derived($settingsStore.enabled);
   const makeWall = (
     n: number,
     scrollY: number,
@@ -65,7 +64,22 @@
     return nextWall;
   };
 
-  const addonEnabled = $derived($settingsStore.enabled);
+  const balanceEnabled = $derived($settingsStore.dailyBalanceInterval > 0);
+  const balanceRunning = $derived(
+    $settingsStore.time.global > 0 &&
+      $settingsStore.time.global !== ONE_DAY_MINUTES,
+  );
+  const addonEnabled = $derived.by(() => {
+    if (!$settingsStore.enabled) {
+      return false;
+    }
+
+    if (balanceEnabled && balanceRunning) {
+      return false;
+    }
+
+    return true;
+  });
 
   let innerHeight = $state(window.innerHeight);
 
