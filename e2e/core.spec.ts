@@ -4,6 +4,8 @@ async function setup(page, extensionId) {
   await page.goto(
     `chrome-extension://${extensionId}/src/options.html#/blacklist`,
   );
+  // TODO Need way to await content script
+  await page.waitForTimeout(3000);
   await page.getByTestId("blacklist-input").fill("*://localhost/*");
   await page.getByTestId("blacklist-submit").click();
 

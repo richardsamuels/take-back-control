@@ -22,7 +22,7 @@ jobs:
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright
-      run: CI=true xvfb-run --auto-servernum yarn playwright test
+      run: DEBUG=pw:api CI=true xvfb-run --auto-servernum yarn playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

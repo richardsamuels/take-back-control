@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json && prettier . --check",
-    "pr": "playwright test --ui",
+    "pr": "make && playwright test --ui --retries 3",
     "pr-server": "node e2e/server.js",
     "watch": "vite build --watch",
     "lint": "prettier . --write",
