@@ -50,17 +50,6 @@
     $settingsStore.time.global > 0 &&
       $settingsStore.time.global !== ONE_DAY_MINUTES,
   );
-  const addonEnabled = $derived.by(() => {
-    if (!$settingsStore.enabled) {
-      return false;
-    }
-
-    if (balanceEnabled && balanceRunning) {
-      return false;
-    }
-
-    return true;
-  });
 
   const pattern = $derived.by(() => {
     // Determine the pattern that caused this script to be injected
@@ -80,6 +69,18 @@
       return b.length - a.length;
     });
     return possiblePatterns[0];
+  });
+
+  const addonEnabled = $derived.by(() => {
+    if (!$settingsStore.enabled) {
+      return false;
+    }
+
+    if (balanceEnabled && balanceRunning) {
+      return false;
+    }
+
+    return true;
   });
 
   let innerHeight = $state(window.innerHeight);
