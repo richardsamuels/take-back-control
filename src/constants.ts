@@ -49,6 +49,14 @@ export const DEFAULT_URL_BLACKLIST = [
   "*://*.yy.com/*",
 ];
 
+export const RICHARDS_DEFAULTS_BLACKLIST = [];
+
+export const RICHARDS_DEFAULTS_WHITELIST = [
+  "*://*.reddit.com/r/VORONDesign/*",
+  "*://*.reddit.com/r/3Dprinting/*",
+  "*://*.reddit.com/r/prusa3d/*",
+];
+
 export const OVERLAY_DIV_ID = `finite-scroll-overlay-div`;
 export const MESSAGE_DISPLAY_DIV_ID = `finite-scroll-message-display-div`;
 
@@ -56,4 +64,4 @@ export const DEFAULT_SCROLL_FACTOR = 0.75; // px
 export const MAX_BLUR = 100; // px
 export const MAX_DURATION = 1000 * 60 * 5; // ms
 export const MAX_INTENSITY = 1.0;
-export const ONE_DAY_MINUTES = 24 * 60;
+export const ONE_DAY_MINUTES = 60 * 24; // 60 min * 24 hours

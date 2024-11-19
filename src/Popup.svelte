@@ -68,6 +68,11 @@
       ? 0
       : $settingsStore.dailyBalanceInterval - $settingsStore.time.global,
   );
+
+  const balance = (e: Event) => {
+    e.preventDefault();
+    settingsStore.time.start();
+  };
 </script>
 
 <main>
@@ -76,58 +81,50 @@
   </div>
   <div class="d-flex flex-column gap-1">
     <div id="checkboxContainer" class="d-flex flex-column gap-1">
-      <!--<div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" type="checkbox">
-                Timeout enabled
-            </label>
-            <div class="spinner-border spinner-border-sm d-none" role="status" id="finiteDurationSpinner">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>-->
       {#await extensionActiveInActiveTab()}
         &nbsp;
       {:then extensionActive}
         <div>
-          {#if balanceEnabled}
+          {#if !extensionActive && isURLAllowed(url)}
+            Page is Whitelisted
+          {:else if !extensionActive}
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick={block}
+              disabled={needRefresh}
+            >
+              {#if needRefresh}
+                Refresh Page to Block
+              {:else}
+                Block this Page
+              {/if}
+            </button>
+          {:else if isURLAllowed(url)}
+            Page is Allowed
+          {:else if balanceEnabled}
             <button
               type="button"
               class="btn"
               class:btn-danger={!timerComplete}
               class:btn-outline-danger={timerComplete}
-              onclick={block}
+              onclick={balance}
               disabled={timerComplete || timerRunning}
             >
-              {#if timerComplete || timerRunning}
+              {#if timerComplete}
+                Come back tomorrow
+              {:else if timerRunning && timeLeft == 0}
+                Less than a minute...
+              {:else if timerRunning}
                 {timeLeft} minutes left {timerComplete ? "" : "..."}
               {:else}
                 {timeLeft} minutes of Balance
               {/if}
             </button>
-          {:else if isURLAllowed(url)}
-            Page is Allowed
           {:else}
-            Page is Not Allowed
+            Page is Blacklisted
           {/if}
         </div>
-        {#if !extensionActive}
-          <button
-            type="button"
-            class="btn btn-danger"
-            onclick={block}
-            disabled={needRefresh}
-          >
-            {#if needRefresh}
-              Refresh Page to Block
-            {:else}
-              Block this Page
-            {/if}
-          </button>
-        {:else if isURLAllowed(url)}
-          Page is Allowed
-        {:else}
-          Page is Not Allowed
-        {/if}
       {/await}
       <div>
         <a href="#options" class="link-primary text-light" onclick={options}

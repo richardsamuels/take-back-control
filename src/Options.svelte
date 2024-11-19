@@ -23,6 +23,7 @@
   onMount(() => {
     if (window.location.hash == "") {
       window.location.hash = "#/";
+      window.history.replaceState(null, "", window.location.toString());
     }
     url = window.location.hash;
 

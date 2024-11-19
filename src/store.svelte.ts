@@ -19,6 +19,7 @@ export type Time = {
 
 export type Settings = {
   init: boolean;
+  animation: boolean;
   showDebug: boolean;
   enabled: boolean;
   nagChance: number;
@@ -30,6 +31,10 @@ export type Settings = {
   time: Time;
 };
 
+export type Store = {
+  settings: Settings;
+};
+
 function removeElement<T>(arr: T[], i: number): T[] {
   return arr.slice(0, i).concat(arr.slice(i + 1));
 }
@@ -37,6 +42,7 @@ function removeElement<T>(arr: T[], i: number): T[] {
 function nilSettings(): Settings {
   return {
     init: false,
+    animation: true,
     showDebug: false,
     enabled: false,
     nagChance: 0,
@@ -51,17 +57,18 @@ function nilSettings(): Settings {
   };
 }
 
-function defaultSettings(): Settings {
+function defaultSettings() {
   const settings: Settings = {
     init: true,
+    animation: true,
     showDebug: false,
     enabled: true,
     nagChance: 0,
     blacklist: constants.DEFAULT_URL_BLACKLIST,
     whitelist: constants.DEFAULT_URL_WHITELIST,
     messages: constants.DEFAULT_MESSAGES,
-    blacklistSites: {},
     dailyBalanceInterval: 0,
+    blacklistSites: {},
     time: {
       global: 0,
     },
@@ -173,16 +180,59 @@ function createSettingsStore() {
           messages: constants.DEFAULT_MESSAGES,
         })),
     },
+    time: {
+      start: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: 1 },
+        })),
+      inc: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: store.time.global + 1 },
+        })),
+      overload: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: constants.ONE_DAY_MINUTES },
+        })),
+      reset: () =>
+        update((store) => ({
+          ...store,
+          time: { ...store.time, global: 0 },
+        })),
+    },
     update,
   };
 }
 
 export const settingsStore = createSettingsStore();
 
+async function sendToTabsWithContentScript(msg: Message) {
+  // Query all tabs
+  const allTabs = await browser.tabs.query({});
+
+  for (const tab of allTabs) {
+    try {
+      // @ts-ignore
+      await browser.tabs.sendMessage(tab.id, msg);
+    } catch (error) {
+      // If an error occurs, the content script is not present in this tab
+      continue;
+    }
+  }
+}
+
 class LikeCommentAnd {
   lastStore: Settings | undefined = undefined;
 
   subscribe = async (store: Settings) => {
+    const msg: Message = {
+      sendUrlToPopup: false,
+      behaviorChanged: false,
+      reloadMessages: false,
+      reloadContentScripts: false,
+    };
     if (this.lastStore === undefined) {
       // For initial fetch, just store the store. This is called
       // immediately after the subscription is created
@@ -190,10 +240,35 @@ class LikeCommentAnd {
       return;
     }
 
+    if (store.messages != this.lastStore?.messages) {
+      msg.reloadMessages = true;
+    }
+    if (store.enabled != this.lastStore?.enabled) {
+      msg.behaviorChanged = true;
+    }
+    if (
+      store.blacklist != this.lastStore?.blacklist ||
+      store.whitelist != this.lastStore?.whitelist
+    ) {
+      msg.reloadContentScripts = true;
+    }
     this.lastStore = store;
     const newStore = { settings: store };
     console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
+    try {
+      await browser.runtime.sendMessage(msg);
+    } catch (e) {
+      console.trace(e);
+    }
+
+    if ("tabs" in browser) {
+      try {
+        await sendToTabsWithContentScript(msg);
+      } catch (e) {
+        console.trace(e);
+      }
+    }
   };
 }
 
@@ -207,11 +282,13 @@ export async function initStorage() {
 let unsubscribe: any = null;
 
 export async function hydrateStorage() {
-  const newStore = (await browser.storage.sync.get()) as Settings;
-  settingsStore.update((_store: Settings) => newStore);
+  const newStore = (await browser.storage.sync.get(["settings"])) as Store;
+  if (newStore.settings) {
+    settingsStore.update((_store: Settings) => newStore.settings);
+  }
 }
 
-export async function storageChange(_changes?: browser.Storage.StorageChange) {
+export async function storageChange() {
   browser.storage.sync.onChanged.removeListener(storageChange);
   if (unsubscribe !== null) {
     unsubscribe();

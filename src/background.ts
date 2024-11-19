@@ -1,5 +1,6 @@
 import * as browser from "webextension-polyfill";
 import { get } from "svelte/store";
+import { ONE_DAY_MINUTES } from "./constants";
 import { settingsStore, type Settings } from "./store.svelte";
 import { initStorage, storageChange } from "./store.svelte";
 
@@ -34,24 +35,67 @@ async function registerScript() {
   ]);
 }
 
-browser.runtime.onInstalled.addListener(async function (
-  event: browser.Runtime.OnInstalledDetailsType,
-) {
-  if (event.reason == "install") {
-    await storageChange();
-    await initStorage();
-    console.trace(
-      "Plugin installed, initializing defaults",
-      get(settingsStore),
-    );
+function getTomorrowAt3AM(): Date {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(3, 0, 0, 0);
+  return tomorrow;
+}
+
+function dailyAlarm(alarmInfo: browser.Alarms.Alarm) {
+  if (alarmInfo.name !== "daily-reset") {
+    return;
+  }
+  settingsStore.time.reset();
+}
+
+function minuteTick(alarmInfo: browser.Alarms.Alarm) {
+  if (alarmInfo.name !== "every-minute") {
+    return;
+  }
+  let store = get<Settings>(settingsStore);
+  if (!store?.init) {
+    return;
+  }
+
+  if (store.time.global == 0 || store.time.global == ONE_DAY_MINUTES) {
+    return;
+  }
+  settingsStore.time.inc();
+  if (store.time.global > store.dailyBalanceInterval) {
+    settingsStore.time.overload();
+  }
+}
+
+// Chrome does not support top level await in service workers, so we have to
+// do this
+storageChange().then(() => {
+  function finish() {
+    browser.alarms.onAlarm.addListener(dailyAlarm);
+    browser.alarms.onAlarm.addListener(minuteTick);
+    browser.alarms.create("daily-reset", {
+      when: getTomorrowAt3AM().getTime(),
+      periodInMinutes: ONE_DAY_MINUTES,
+    });
+    browser.alarms.create("every-minute", {
+      delayInMinutes: 1,
+      periodInMinutes: 1,
+    });
+    browser.storage.sync.onChanged.addListener(registerScript);
     registerScript();
   }
-  if (event.reason == "update") {
-    // TODO migrations
+
+  // runtime.onInstalled is not reliably firing, so we work around that.
+  let store = get<Settings>(settingsStore);
+  if (!store?.init) {
+    initStorage().then(() => {
+      console.trace(
+        "Plugin installed, initialized defaults",
+        get(settingsStore),
+      );
+      finish();
+    });
+  } else {
+    finish();
   }
 });
-
-// @ts-ignore
-browser.storage.sync.onChanged.addListener(registerScript);
-await storageChange();
-registerScript();

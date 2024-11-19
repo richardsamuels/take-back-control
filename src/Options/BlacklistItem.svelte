@@ -27,6 +27,7 @@
     });
   }
 
+  // svelte-ignore state_referenced_locally
   let value = $state(siteConfig.scrollFactor);
   function change() {
     if (value == null) {
