@@ -20,16 +20,10 @@ jobs:
       run: yarn install
     - name: Make dist
       run: make
-    - name: xvfb
-      run: xvfb-run --auto-servernum dotnet test AcceptanceTests
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
-    - name: Run headless test
-      uses: coactions/setup-xvfb@v1
-      with:
-        run: yarn playwright test
-        working-directory: ./ #optional
-        options: #optional
+    - name: Run Playwright
+      run: xvfb-run --auto-servernum yarn playwright tests
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
