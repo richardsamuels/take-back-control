@@ -64,7 +64,7 @@
       );
     }
 
-    // TODO is the most specific pattern the longest pattern?
+    // TODO: MUST the most specific pattern the longest pattern?
     possiblePatterns.sort((a: string, b: string) => {
       return b.length - a.length;
     });
