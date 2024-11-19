@@ -25,25 +25,6 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  const pattern = $derived.by(() => {
-    // Determine the pattern that caused this script to be injected
-    const possiblePatterns = $settingsStore.blacklist.filter((p) =>
-      patternMatch(p, window.location.toString()),
-    );
-    if (possiblePatterns.length == 0) {
-      console.error(
-        "Failed to match any pattern. This should NOT happen",
-        window.location.toString,
-        $settingsStore.blacklist,
-      );
-    }
-
-    // TODO is the most specific pattern the longest pattern?
-    possiblePatterns.sort((a: string, b: string) => {
-      return b.length - a.length;
-    });
-    return possiblePatterns[0];
-  });
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
 
   const makeWall = (
@@ -81,8 +62,27 @@
     return true;
   });
 
-  let innerHeight = $state(window.innerHeight);
+  const pattern = $derived.by(() => {
+    // Determine the pattern that caused this script to be injected
+    const possiblePatterns = $settingsStore.blacklist.filter((p) =>
+      patternMatch(p, window.location.toString()),
+    );
+    if (possiblePatterns.length == 0) {
+      console.error(
+        "Failed to match any pattern. This should NOT happen",
+        window.location.toString,
+        $settingsStore.blacklist,
+      );
+    }
 
+    // TODO is the most specific pattern the longest pattern?
+    possiblePatterns.sort((a: string, b: string) => {
+      return b.length - a.length;
+    });
+    return possiblePatterns[0];
+  });
+
+  let innerHeight = $state(window.innerHeight);
   let scrollY: number = $state(0);
   let nextWall: Wall = $state(
     // svelte-ignore state_referenced_locally
