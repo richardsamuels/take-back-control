@@ -11,13 +11,18 @@ export const test = base.extend<{
 }>({
   context: async ({}, use) => {
     const pathToExtension = path.join(__dirname, "..", "dist-chrome");
-    const context = await chromium.launchPersistentContext("", {
+    const cfg = {
       headless: false,
       args: [
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
       ],
-    });
+    };
+    if (!!process.env.CI) {
+      cfg.headless = true;
+      cfg.args.push("--headless=new");
+    }
+    const context = await chromium.launchPersistentContext("", cfg);
     await use(context);
     await context.close();
   },
