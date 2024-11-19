@@ -6,7 +6,8 @@ on:
     branches: [ master ]
 jobs:
   test:
-    runs-on: mcr.microsoft.com/playwright:v1.49.0-noble
+    runs-on: ubuntu-latest
+
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v4
@@ -23,8 +24,12 @@ jobs:
       run: xvfb-run --auto-servernum dotnet test AcceptanceTests
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
-    - name: Run Playwright tests
-      run: yarn playwright test
+    - name: Run headless test
+      uses: coactions/setup-xvfb@v1
+      with:
+        run: yarn playwright test
+        working-directory: ./ #optional
+        options: #optional
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
