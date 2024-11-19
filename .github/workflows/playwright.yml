@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: mcr.microsoft.com/playwright:v1.49.0-noble
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v4
@@ -19,6 +19,8 @@ jobs:
       run: yarn install
     - name: Make dist
       run: make
+    - name: xvfb
+      run: xvfb-run --auto-servernum dotnet test AcceptanceTests
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
