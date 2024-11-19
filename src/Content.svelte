@@ -5,15 +5,17 @@
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
     MAX_BLUR,
+    ONE_DAY_MINUTES,
   } from "./constants";
+  import { patternMatch } from "./Options/validator";
+  import { settingsStore } from "./store.svelte";
+
   type Wall = {
     // scroll Y position to start blurring
     triggerOffset: number;
     // The scrollY position when the Wall triggerOffset was calculated
     scrollY: number;
   };
-  import { patternMatch } from "./Options/validator";
-  import { settingsStore } from "./store.svelte";
 
   function randomItemFrom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)];
@@ -22,6 +24,27 @@
     const amountScrolled = Math.max(threshold - offset, 0);
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
+
+  const pattern = $derived.by(() => {
+    // Determine the pattern that caused this script to be injected
+    const possiblePatterns = $settingsStore.blacklist.filter((p) =>
+      patternMatch(p, window.location.toString()),
+    );
+    if (possiblePatterns.length == 0) {
+      console.error(
+        "Failed to match any pattern. This should NOT happen",
+        window.location.toString,
+        $settingsStore.blacklist,
+      );
+    }
+
+    // TODO is the most specific pattern the longest pattern?
+    possiblePatterns.sort((a: string, b: string) => {
+      return b.length - a.length;
+    });
+    return possiblePatterns[0];
+  });
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
 
   const makeWall = (
     n: number,
@@ -41,29 +64,25 @@
     return nextWall;
   };
 
-  // Find the blacklist pattern that matches the current site
-  const pattern = $derived.by(() => {
-    const possiblePatterns = $settingsStore.blacklist.filter((p) =>
-      patternMatch(p, window.location.toString()),
-    );
-    if (possiblePatterns.length == 0) {
-      console.error(
-        "Failed to match any pattern. This should NOT happen",
-        window.location.toString,
-        $settingsStore.blacklist,
-      );
+  const balanceEnabled = $derived($settingsStore.dailyBalanceInterval > 0);
+  const balanceRunning = $derived(
+    $settingsStore.time.global > 0 &&
+      $settingsStore.time.global !== ONE_DAY_MINUTES,
+  );
+  const addonEnabled = $derived.by(() => {
+    if (!$settingsStore.enabled) {
+      return false;
     }
 
-    // TODO: MUST the most specific pattern the longest pattern?
-    possiblePatterns.sort((a: string, b: string) => {
-      return b.length - a.length;
-    });
-    return possiblePatterns[0];
+    if (balanceEnabled && balanceRunning) {
+      return false;
+    }
+
+    return true;
   });
-  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
-  const addonEnabled = $derived($settingsStore.enabled);
 
   let innerHeight = $state(window.innerHeight);
+
   let scrollY: number = $state(0);
   let nextWall: Wall = $state(
     // svelte-ignore state_referenced_locally
@@ -111,6 +130,12 @@
       handleAnimationEnd();
     }
   };
+
+  $effect(() => {
+    if (!messageVisible) {
+      message = randomItemFrom($settingsStore.messages);
+    }
+  });
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
