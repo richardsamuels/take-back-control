@@ -30,7 +30,7 @@ export const config = {
         resources: ["assets/main-content.js"],
       },
     ],
-    permissions: ["storage", "activeTab", "scripting", "alarms"],
+    permissions: ["storage", "activeTab", "scripting"],
     host_permissions: ["<all_urls>"],
     browser_specific_settings: {
       gecko: {
@@ -39,10 +39,20 @@ export const config = {
     },
   },
 };
-export const chromeConfig = JSON.parse(JSON.stringify(config));
-chromeConfig.manifest.background.service_worker =
-  chromeConfig.manifest.background.scripts[0];
+
+export const chromeConfig = {
+  ...config,
+  manifest: {
+    ...config.manifest,
+    background: {
+      ...config.manifest.background,
+      service_worker: config.manifest.background.scripts[0],
+    },
+  },
+};
+// @ts-ignore
 delete chromeConfig.manifest.background.scripts;
+// @ts-ignore
 delete chromeConfig.manifest.browser_specific_settings;
 
 export const build = {
@@ -61,29 +71,33 @@ export const build = {
   sourcemap: true,
 };
 
-export const chromeBuild = JSON.parse(JSON.stringify(build));
-chromeBuild.outDir = "dist-chrome";
+export const chromeBuild = {
+  ...build,
+  outDir: "dist-chrome",
+};
 
-//export const iifeBuild = {
-//  emptyOutDir: false,
-//  rollupOptions: {
-//    output: {
-//      format: "iife",
-//      inlineDynamicImports: true,
-//      entryFileNames: `assets/[name].js`,
-//      chunkFileNames: `assets/[name].js`,
-//      assetFileNames: `assets/[name].[ext]`,
-//    },
-//    input: ["src/main-content.ts"],
-//  },
-//  sourcemap: true,
-//};
+export const iifeBuild = {
+  ...build,
+  rollupOptions: {
+    ...build.rollupOptions,
+    output: {
+      ...build.rollupOptions.output,
+      format: "iife",
+      inlineDynamicImports: true,
+    },
+    input: ["src/main-content.ts"],
+  },
+};
 
-export const iifeBuild = JSON.parse(JSON.stringify(build));
-iifeBuild.rollupOptions.output.format = "iife";
-iifeBuild.rollupOptions.output.inlineDynamicImports = true;
-iifeBuild.rollupOptions.input = ["src/main-content.ts"];
-export const chromeIifeBuild = JSON.parse(JSON.stringify(chromeBuild));
-chromeIifeBuild.rollupOptions.output.format = "iife";
-chromeIifeBuild.rollupOptions.output.inlineDynamicImports = true;
-chromeIifeBuild.rollupOptions.input = ["src/main-content.ts"];
+export const chromeIifeBuild = {
+  ...chromeBuild,
+  rollupOptions: {
+    ...chromeBuild.rollupOptions,
+    output: {
+      ...chromeBuild.rollupOptions.output,
+      format: "iife",
+      inlineDynamicImports: true,
+    },
+    input: ["src/main-content.ts"],
+  },
+};
