@@ -23,6 +23,12 @@ import { test, expect } from "./fixtures";
 const timeout = { timeout: 3_000 };
 
 async function setup(page, extensionId) {
+  // Chrome sometimes fail to initialize the extension, so force that now
+  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+
+  await page.getByTestId("erase-all").click();
+  await page.getByTestId("erase-all").click();
+
   await page.goto(
     `chrome-extension://${extensionId}/src/options.html#/blacklist`,
   );
