@@ -24,18 +24,22 @@ jobs:
       - name: Get Version number
         id: get-package-version
         run: node .github/version.cjs
+      - run: mv dist/FIREFOX_anti-doomscroll_UNSIGNED.xpi dist/FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+      - run: mv dist/FIREFOX_anti-doomscroll.tar.gz dist/FIREFOX_anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
+      - run: mv dist-chrome/CHROME_anti-doomscroll_UNSIGNED.xpi dist-chrome/CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.xpi
+      - run: mv dist-chrome/CHROME_anti-doomscroll.tar.gz dist-chrome/CHROME_anti-doomscroll-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.tar.gz
       - name: Upload Firefox
         uses: actions/upload-artifact@v4
         with:
-          name: firefox_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist/*anti-doomscroll.*
+          name: FIREFOX_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
+          path: dist/FIREFOX_anti-doomscroll*
           if-no-files-found: error
 
       - name: Upload Chrome
         uses: actions/upload-artifact@v4
         with:
           name: CHROME_anti-doomscroll_UNSIGNED-${{ steps.get-package-version.outputs.version }}-${{github.sha}}.zip
-          path: dist-chrome/*anti-doomscroll.*
+          path: dist-chrome/CHROME_anti-doomscroll*
           if-no-files-found: error
 
   tests:

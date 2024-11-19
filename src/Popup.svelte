@@ -78,7 +78,9 @@
       {#await extensionActiveInActiveTab()}
         &nbsp;
       {:then extensionActive}
-        {#if !extensionActive}
+        {#if !extensionActive && isURLAllowed(url)}
+          Page is Whitelisted
+        {:else if !extensionActive}
           <button
             type="button"
             class="btn btn-danger"
@@ -94,7 +96,7 @@
         {:else if isURLAllowed(url)}
           Page is Allowed
         {:else}
-          Page is Not Allowed
+          Page is Blacklisted
         {/if}
       {/await}
       <div>
