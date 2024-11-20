@@ -24,6 +24,7 @@
               autocomplete="off"
               onclick={click}
               checked={val}
+              data-testid="extension-enable"
             /> Enabled
           </label>
           <label
@@ -37,6 +38,7 @@
               autocomplete="off"
               onclick={click}
               checked={!val}
+              data-testid="extension-disable"
             />
             Disabled
           </label>

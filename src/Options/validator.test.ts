@@ -1,5 +1,5 @@
 /* global navigator */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 
 import * as ut from "./validator";
 
@@ -15,9 +15,9 @@ function setGlobals(agent: string, vendor: string) {
     return vendor; // customized  vendor
   });
 }
-setGlobals("firefox", "mozilla");
 
 describe("tryParseMatchPattern", () => {
+  beforeEach(() => setGlobals("firefox", "mozilla"));
   it("accepts valid patterns", () => {
     const table: [string, ut.ParsedPattern][] = [
       [
@@ -173,6 +173,48 @@ describe("tryParseMatchPattern", () => {
     setGlobals("chrome", "google inc");
 
     const table: [string, ut.ParsedPattern][] = [
+      [
+        "*://localhost:3000/*",
+        {
+          host: {
+            data: "localhost:3000",
+            has_port: true,
+            valid: true,
+            wildcard_ok: true,
+          },
+          path: {
+            data: "/*",
+            has_leader: true,
+            valid: true,
+          },
+          scheme: {
+            data: "*",
+            valid: true,
+          },
+          valid: true,
+        },
+      ],
+      [
+        "*://localhost/*",
+        {
+          host: {
+            data: "localhost",
+            has_port: false,
+            valid: true,
+            wildcard_ok: true,
+          },
+          path: {
+            data: "/*",
+            has_leader: true,
+            valid: true,
+          },
+          scheme: {
+            data: "*",
+            valid: true,
+          },
+          valid: true,
+        },
+      ],
       [
         "*://*.test.com/*",
         {

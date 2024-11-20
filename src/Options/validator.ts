@@ -224,10 +224,10 @@ function tryParseHostPattern(
   ) {
     host.wildcard_ok = true;
   }
+  const hasPort = isChrome() ? false : host.has_port;
   if (
-    host.has_port ||
-    !host.wildcard_ok ||
-    (host_ != "*" && !host_.match(/.+\..+/))
+    host_ != "localhost" &&
+    (hasPort || !host.wildcard_ok || (host_ != "*" && !host_.match(/.+/)))
   ) {
     return {
       valid: false,
@@ -265,6 +265,11 @@ export function patternMatch(pattern: string, url: string): boolean {
     return false;
   }
 
+  //console.log(
+  //  patternSchemeMatch(p, u),
+  //  patternHostMatch(p, u),
+  //  patternPathMatch(p, u),
+  //);
   return (
     patternSchemeMatch(p, u) && patternHostMatch(p, u) && patternPathMatch(p, u)
   );
@@ -282,6 +287,14 @@ function patternSchemeMatch(pattern: ParsedPattern, url: URL): boolean {
   }
 }
 
+function trimPort(host: string): string {
+  const m = host.match(/(.*):[0-9]+/);
+  if (!m) {
+    return host;
+  }
+  return m[1];
+}
+
 function patternHostMatch(pattern: ParsedPattern, url: URL): boolean {
   if (!pattern.host) {
     return false;
@@ -290,9 +303,11 @@ function patternHostMatch(pattern: ParsedPattern, url: URL): boolean {
     return true;
   } else if (pattern.host?.data.startsWith("*.")) {
     const baseHost = pattern.host.data.slice(2);
-    return url.host.endsWith(baseHost);
+    const urlHost = trimPort(url.host);
+    return urlHost.endsWith(baseHost);
   } else {
-    return url.host == pattern.host?.data;
+    const urlHost = trimPort(url.host);
+    return urlHost == pattern.host?.data;
   }
 }
 

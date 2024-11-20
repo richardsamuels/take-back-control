@@ -1,7 +1,7 @@
 <script lang="ts">
   import { coerce_and_explain, isValidMatchPattern } from "./validator";
   let url = $state("");
-  let [realPattern, errors] = $derived(coerce_and_explain(url));
+  let [realPattern, errors] = $derived(coerce_and_explain(url.trimStart()));
   let valid = $derived(isValidMatchPattern(realPattern));
 
   const { desc, add }: { desc: string; add: (a: string) => void } = $props();
@@ -41,12 +41,14 @@
         aria-describedby="urlInputHelp"
         class:is-invalid={!valid && url != ""}
         required
+        data-testid="blacklist-input"
       />
       <button
         type="submit"
         class="btn btn-primary"
         disabled={!valid}
         aria-label="Add"
+        data-testid="blacklist-submit"
       >
         <i class="bi bi-plus-lg"></i>
       </button>
