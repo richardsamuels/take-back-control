@@ -25,6 +25,7 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "*.test.com",
+            port: null,
             has_port: false,
             valid: true,
             wildcard_ok: true,
@@ -46,6 +47,7 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "*",
+            port: null,
             has_port: false,
             valid: true,
             wildcard_ok: true,
@@ -67,7 +69,30 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "*.mozilla.org",
+            port: null,
             has_port: false,
+            valid: true,
+            wildcard_ok: true,
+          },
+          path: {
+            data: "/*",
+            has_leader: true,
+            valid: true,
+          },
+          scheme: {
+            data: "*",
+            valid: true,
+          },
+          valid: true,
+        },
+      ],
+      [
+        "*://*.test.com:95/*",
+        {
+          host: {
+            data: "*.test.com:95",
+            port: 95,
+            has_port: true,
             valid: true,
             wildcard_ok: true,
           },
@@ -178,6 +203,7 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "localhost:3000",
+            port: 3000,
             has_port: true,
             valid: true,
             wildcard_ok: true,
@@ -199,6 +225,7 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "localhost",
+            port: null,
             has_port: false,
             valid: true,
             wildcard_ok: true,
@@ -220,6 +247,7 @@ describe("tryParseMatchPattern", () => {
         {
           host: {
             data: "*.test.com",
+            port: null,
             has_port: false,
             valid: true,
             wildcard_ok: true,
@@ -231,48 +259,6 @@ describe("tryParseMatchPattern", () => {
           },
           scheme: {
             data: "*",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "extension://*.test.com/*",
-        {
-          host: {
-            data: "*.test.com",
-            has_port: false,
-            valid: true,
-            wildcard_ok: true,
-          },
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "extension",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "chrome-extension://*.test.com/*",
-        {
-          host: {
-            data: "*.test.com",
-            has_port: false,
-            valid: true,
-            wildcard_ok: true,
-          },
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "chrome-extension",
             valid: true,
           },
           valid: true,
@@ -295,22 +281,6 @@ describe("tryParseMatchPattern", () => {
           scheme: {
             data: "bs",
             valid: false,
-          },
-          valid: false,
-        },
-      ],
-      [
-        "*://*.test.com:95/*",
-        {
-          host: {
-            data: "*.test.com:95",
-            has_port: true,
-            valid: false,
-            wildcard_ok: true,
-          },
-          scheme: {
-            data: "*",
-            valid: true,
           },
           valid: false,
         },

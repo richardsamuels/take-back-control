@@ -21,6 +21,7 @@ type Scheme = {
 type Host = {
   valid: boolean;
   data: string;
+  port: number | null;
   has_port: boolean;
   wildcard_ok: boolean;
 };
@@ -39,17 +40,14 @@ function explain_errors(p: ParsedPattern): string[] {
   const errors = [];
   // Check if the scheme is bad or missing
   if (!p.scheme?.valid) {
-    errors.push("Check URL scheme (the part before ://)");
+    errors.push(
+      `Check URL scheme (the part before ://). It must be one of: ${schemeTokens}`,
+    );
   }
   if (p.host) {
-    if (p.host.has_port) {
-      errors.push(
-        "Hosts cannot contain a port number. If you remove the port number, the URL will match any port number",
-      );
-    }
     if (!p.host.wildcard_ok) {
       errors.push(
-        `The host must either be a "*" or start with "*.". Wildcards may not be used elsewhere.`,
+        `The host must either be a "*" or start with "*.". Wildcards may not be used in the middle of the host.`,
       );
     }
   }
@@ -101,7 +99,16 @@ function findSchemeLike(pattern: string): string | null {
   }
   return null;
 }
+
 const SCHEME_FILE = "file://";
+const schemeTokens = [
+  "*",
+  "http",
+  "https",
+  //"extension",
+  //"moz-extension",
+  //"file",
+];
 export function tryParseMatchPattern(pattern: string): ParsedPattern {
   if (pattern.startsWith("data:")) {
     return handleDataPattern(pattern);
@@ -110,10 +117,6 @@ export function tryParseMatchPattern(pattern: string): ParsedPattern {
     return handleFilePattern(pattern);
   }
   // Validate scheme
-  const schemeTokens = ["*", "http", "https", "ws", "wss", "ftp", "extension"];
-  if (isChrome()) {
-    schemeTokens.push("chrome-extension");
-  }
   let scheme = null;
   for (const scheme_ of schemeTokens) {
     if (pattern.startsWith(`${scheme_}://`)) {
@@ -134,9 +137,8 @@ export function tryParseMatchPattern(pattern: string): ParsedPattern {
   const tail = pattern.slice(scheme.data.length + 3);
   return tryParseHostPattern(scheme, tail);
 }
+
 export function isValidMatchPattern(pattern: string) {
-  // Quoted portions from:
-  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns
   if (pattern == "<all_urls>") {
     return true;
   }
@@ -166,8 +168,8 @@ function handleFilePattern(pattern: string): ParsedPattern {
     };
   }
 }
+
 function handleDataPattern(_pattern: string): ParsedPattern {
-  // TODO
   console.error("While technically correct, this is unsupported.");
   return {
     valid: false,
@@ -205,16 +207,20 @@ function tryParseHostPattern(
   // At this point, index 0 is the host, and all subsequent index are the path
   // so we can rebuild the path, ensuring a leading "/"
   const host_ = hap[0];
-  const host = {
+  const host: Host = {
     data: host_,
+    port: null,
     valid: false,
     has_port: false,
     wildcard_ok: false,
   };
   // "The path pattern string should not include a port number. Adding a
   // port, ... causes the match pattern to be ignored"
-  if (host_.match(/:[0-9]+$/)) {
+  // But we implement support for ports, so we just tag the pattern as has_port
+  const port = host_.match(/:([0-9]+)$/);
+  if (port) {
     host.has_port = true;
+    host.port = parseInt(port[1]);
   }
   // Host MUST either be "*" or start with "*.". Wildcard cannot be elsewhere
   if (
@@ -224,10 +230,9 @@ function tryParseHostPattern(
   ) {
     host.wildcard_ok = true;
   }
-  const hasPort = isChrome() ? false : host.has_port;
   if (
     host_ != "localhost" &&
-    (hasPort || !host.wildcard_ok || (host_ != "*" && !host_.match(/.+/)))
+    (!host.wildcard_ok || (host_ != "*" && !host_.match(/.+/)))
   ) {
     return {
       valid: false,
@@ -287,12 +292,12 @@ function patternSchemeMatch(pattern: ParsedPattern, url: URL): boolean {
   }
 }
 
-function trimPort(host: string): string {
-  const m = host.match(/(.*):[0-9]+/);
+function trimPort(host: string): [string, number | null] {
+  const m = host.match(/(.*):([0-9])+/);
   if (!m) {
-    return host;
+    return [host, null];
   }
-  return m[1];
+  return [m[1], parseInt(m[2])];
 }
 
 function patternHostMatch(pattern: ParsedPattern, url: URL): boolean {
@@ -303,12 +308,10 @@ function patternHostMatch(pattern: ParsedPattern, url: URL): boolean {
     return true;
   } else if (pattern.host?.data.startsWith("*.")) {
     const baseHost = pattern.host.data.slice(2);
-    const urlHost = trimPort(url.host);
+    const [urlHost, _port] = trimPort(url.host);
     return urlHost.endsWith(baseHost);
-  } else {
-    const urlHost = trimPort(url.host);
-    return urlHost == pattern.host?.data;
   }
+  return url.host == pattern.host?.data;
 }
 
 function patternPathMatch(pattern: ParsedPattern, url: URL): boolean {
