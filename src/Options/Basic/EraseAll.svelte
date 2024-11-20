@@ -17,8 +17,11 @@
 <li class="list-group-item">
   <h5 class="mt-2">Reset All Settings</h5>
   <div class="mt-4 mb-4">
-    <button type="button" class="btn btn-danger" onclick={erase}
-      >{eraseText}</button
+    <button
+      type="button"
+      class="btn btn-danger"
+      onclick={erase}
+      data-testid="erase-all">{eraseText}</button
     >
   </div>
 </li>

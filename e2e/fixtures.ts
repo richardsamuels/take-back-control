@@ -1,6 +1,11 @@
+// Based on https://playwright.dev/docs/chrome-extensions
 import { test as base, chromium, type BrowserContext } from "@playwright/test";
 import { fileURLToPath } from "url";
 import path from "path";
+import { mkdtemp, rmdir } from "fs/promises";
+import { tmpdir } from "node:os";
+
+const userDataDir = await mkdtemp(path.join(tmpdir(), "ads-"));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,9 +27,10 @@ export const test = base.extend<{
       cfg.headless = true;
       cfg.args.push("--headless=new");
     }
-    const context = await chromium.launchPersistentContext("", cfg);
+    const context = await chromium.launchPersistentContext(userDataDir, cfg);
     await use(context);
     await context.close();
+    await rmdir(userDataDir, { recursive: true });
   },
   extensionId: async ({ context }, use) => {
     /*

@@ -10,7 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json && prettier . --check",
     "pr": "make yarn-chrome && playwright test --ui --retries 3",
     "pr-server": "node e2e/server.js",
-    "watch": "vite build --watch",
+    "watch": "node scripts/watch.js",
+    "watch-chrome": "node scripts/watch.js -t chrome",
     "lint": "prettier . --write",
     "test": "vitest"
   },
