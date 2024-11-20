@@ -54,7 +54,7 @@
       );
     }
 
-    // TODO MUST the most specific pattern the longest pattern?
+    // TODO: MUST the most specific pattern the longest pattern?
     possiblePatterns.sort((a: string, b: string) => {
       return b.length - a.length;
     });
@@ -105,6 +105,11 @@
     onNextTransition = () => {
       numScrollExtensions += 1;
     };
+    // XXX: If animation is disabled, ontransitionend will not fire.
+    // Do so here.
+    if (!$settingsStore.animation) {
+      handleAnimationEnd();
+    }
   };
 
   onMount(() => {
@@ -142,7 +147,8 @@
 
 <div
   id={OVERLAY_DIV_ID}
-  class="full-screen-overlay soft-transition isolated-element"
+  class="full-screen-overlay isolated-element"
+  class:soft-transition={$settingsStore.animation}
   style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
@@ -151,13 +157,15 @@
 >
   <div
     id={MESSAGE_DISPLAY_DIV_ID}
-    class="full-screen-overlay soft-transition center-flex-col"
+    class="full-screen-overlay center-flex-col"
+    class:soft-transition={$settingsStore.animation}
     style="gap: 84px;"
     style:opacity={messageVisible ? "1" : "0"}
     data-testid="overlay-msg"
   >
     <div
-      class="message-text-container center-flex-col soft-transition"
+      class="message-text-container center-flex-col"
+      class:soft-transition={$settingsStore.animation}
       style="gap: 12px;"
     >
       <div

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Enable from "./Basic/Enable.svelte";
   import Bypass from "./Basic/Bypass.svelte";
+  import Animation from "./Basic/Animation.svelte";
   import EraseAll from "./Basic/EraseAll.svelte";
 </script>
 
@@ -10,6 +11,7 @@
     <ul class="list-group">
       <Enable />
       <Bypass />
+      <Animation />
       <EraseAll />
     </ul>
   </div>

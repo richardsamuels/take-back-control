@@ -49,6 +49,14 @@ export const DEFAULT_URL_BLACKLIST = [
   "*://*.yy.com/*",
 ];
 
+export const RICHARDS_DEFAULTS_BLACKLIST = [];
+
+export const RICHARDS_DEFAULTS_WHITELIST = [
+  "*://*.reddit.com/r/VORONDesign/*",
+  "*://*.reddit.com/r/3Dprinting/*",
+  "*://*.reddit.com/r/prusa3d/*",
+];
+
 export const OVERLAY_DIV_ID = `finite-scroll-overlay-div`;
 export const MESSAGE_DISPLAY_DIV_ID = `finite-scroll-message-display-div`;
 

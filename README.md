@@ -1,13 +1,13 @@
-# Anti-Doomscroll
+# Take Back Control
 
 ![Screenshot](/.github/screenshot.png?raw=true)
 
 Take back control.
-A browser plugin to prevent doomscrolling.
+A browser plugin to reduce doomscrolling.
 
 Scroll too far on a blacklisted website, and you'll be prompted with one of
 a small selection of inspirational messages. You can customize those
-messages to your heart's content, making them as positive or mean spirited
+messages to your heart's content, making them as positive or as mean spirited
 as you need.
 
 You can also whitelist parts of a website, for example to permit access to
@@ -21,8 +21,7 @@ the content.
 No data is collected by this extension for the developer.
 
 If your browser is configured to synchronize addon settings, this feature will
-be used to share settings across all logged in instances of that browser. You
-should review your browser vendor's settings and privacy policy.
+be used to share settings across all logged in instances of that browser. You should review your browser vendor's settings and privacy policy.
 
 ## Build Instructions (for Production Extension & Addon Review)
 
