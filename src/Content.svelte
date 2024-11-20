@@ -5,15 +5,17 @@
     OVERLAY_DIV_ID,
     MESSAGE_DISPLAY_DIV_ID,
     MAX_BLUR,
+    ONE_DAY_MINUTES,
   } from "./constants";
+  import { patternMatch } from "./Options/validator";
+  import { settingsStore } from "./store.svelte";
+
   type Wall = {
     // scroll Y position to start blurring
     triggerOffset: number;
     // The scrollY position when the Wall triggerOffset was calculated
     scrollY: number;
   };
-  import { patternMatch } from "./Options/validator";
-  import { settingsStore } from "./store.svelte";
 
   function randomItemFrom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)];
@@ -22,6 +24,8 @@
     const amountScrolled = Math.max(threshold - offset, 0);
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
+
+  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
 
   const makeWall = (
     n: number,
@@ -41,8 +45,14 @@
     return nextWall;
   };
 
-  // Find the blacklist pattern that matches the current site
+  const balanceEnabled = $derived($settingsStore.dailyBalanceInterval > 0);
+  const balanceRunning = $derived(
+    $settingsStore.time.global > 0 &&
+      $settingsStore.time.global !== ONE_DAY_MINUTES,
+  );
+
   const pattern = $derived.by(() => {
+    // Determine the pattern that caused this script to be injected
     const possiblePatterns = $settingsStore.blacklist.filter((p) =>
       patternMatch(p, window.location.toString()),
     );
@@ -60,8 +70,18 @@
     });
     return possiblePatterns[0];
   });
-  const siteConfig = $derived.by(() => $settingsStore.blacklistSites[pattern]);
-  const addonEnabled = $derived($settingsStore.enabled);
+
+  const addonEnabled = $derived.by(() => {
+    if (!$settingsStore.enabled) {
+      return false;
+    }
+
+    if (balanceEnabled && balanceRunning) {
+      return false;
+    }
+
+    return true;
+  });
 
   let innerHeight = $state(window.innerHeight);
   let scrollY: number = $state(0);
@@ -111,6 +131,12 @@
       handleAnimationEnd();
     }
   };
+
+  $effect(() => {
+    if (!messageVisible) {
+      message = randomItemFrom($settingsStore.messages);
+    }
+  });
 
   onMount(() => {
     window.addEventListener("resize", (_) => {
