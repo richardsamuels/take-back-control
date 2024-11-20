@@ -110,6 +110,7 @@
               class:btn-outline-danger={timerComplete}
               onclick={balance}
               disabled={timerComplete || timerRunning}
+              data-testid="balance-start"
             >
               {#if timerComplete}
                 Come back tomorrow

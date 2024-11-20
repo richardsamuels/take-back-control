@@ -2,7 +2,7 @@
 import { test as base, chromium, type BrowserContext } from "@playwright/test";
 import { fileURLToPath } from "url";
 import path from "path";
-import { mkdtemp, rmdir } from "fs/promises";
+import { mkdtemp, rm } from "fs/promises";
 import { tmpdir } from "node:os";
 
 const userDataDir = await mkdtemp(path.join(tmpdir(), "ads-"));
@@ -30,7 +30,7 @@ export const test = base.extend<{
     const context = await chromium.launchPersistentContext(userDataDir, cfg);
     await use(context);
     await context.close();
-    await rmdir(userDataDir, { recursive: true });
+    await rm(userDataDir, { recursive: true });
   },
   extensionId: async ({ context }, use) => {
     /*

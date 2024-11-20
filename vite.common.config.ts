@@ -30,7 +30,7 @@ export const config = {
         resources: ["assets/main-content.js"],
       },
     ],
-    permissions: ["storage", "activeTab", "scripting"],
+    permissions: ["storage", "activeTab", "scripting", "alarms"],
     host_permissions: ["<all_urls>"],
     browser_specific_settings: {
       gecko: {

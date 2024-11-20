@@ -4,6 +4,7 @@
 
 <li class="list-group-item">
   <h5 class="mt-2">Balance</h5>
+
   <div class="mb-4">
     <div class="form-text mb-4">
       Once a day, disable this extension for a small period of time
@@ -24,6 +25,7 @@
           min="0"
           max="30"
           step="1"
+          data-testid="balance"
         />
       </div>
     </div>
