@@ -52,7 +52,17 @@ test("whitelist", async ({ page, extensionId }) => {
   await page.goto("http://example.com/whitelist");
 
   await waitForContentScript(page);
-  await page.pause();
+  await expectNoContentWall(page);
+
+  await page.goto("http://localhost:3000/whitelist");
+  await expectNoContentWall(page);
+
+  await page.goto("http://localhost:3001/");
+  await waitForContentScript(page);
+  await expectNoContentWall(page);
+
+  await page.goto("http://localhost:3001/whitelist");
+  await waitForContentScript(page);
   await expectNoContentWall(page);
 });
 
@@ -84,9 +94,6 @@ test("test blacklist options", async ({ page, extensionId }) => {
   await expect(
     page.getByText("It's not important enough. Go do something else."),
   ).toBeDisabled();
-
-  await page.goto("http://localhost:3000/whitelist");
-  await expectNoContentWall(page);
 });
 
 // Playwright does not allow interaction with the popup. Opening the page

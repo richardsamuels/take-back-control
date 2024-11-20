@@ -40,12 +40,14 @@ function explain_errors(p: ParsedPattern): string[] {
   const errors = [];
   // Check if the scheme is bad or missing
   if (!p.scheme?.valid) {
-    errors.push("Check URL scheme (the part before ://)");
+    errors.push(
+      `Check URL scheme (the part before ://). It must be one of: ${schemeTokens}`,
+    );
   }
   if (p.host) {
     if (!p.host.wildcard_ok) {
       errors.push(
-        `The host must either be a "*" or start with "*.". Wildcards may not be used elsewhere.`,
+        `The host must either be a "*" or start with "*.". Wildcards may not be used in the middle of the host.`,
       );
     }
   }
@@ -99,7 +101,14 @@ function findSchemeLike(pattern: string): string | null {
 }
 
 const SCHEME_FILE = "file://";
-const chromeSchemeTokens = ["*", "http", "https", "file"];
+const schemeTokens = [
+  "*",
+  "http",
+  "https",
+  //"extension",
+  //"moz-extension",
+  //"file",
+];
 export function tryParseMatchPattern(pattern: string): ParsedPattern {
   if (pattern.startsWith("data:")) {
     return handleDataPattern(pattern);
@@ -108,17 +117,6 @@ export function tryParseMatchPattern(pattern: string): ParsedPattern {
     return handleFilePattern(pattern);
   }
   // Validate scheme
-  let schemeTokens = [
-    "*",
-    "http",
-    "https",
-    //"extension",
-    //"moz-extension",
-    //"file",
-  ];
-  //if (isChrome()) {
-  //  schemeTokens = chromeSchemeTokens;
-  //}
   let scheme = null;
   for (const scheme_ of schemeTokens) {
     if (pattern.startsWith(`${scheme_}://`)) {
