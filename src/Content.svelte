@@ -179,6 +179,7 @@
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
   ontransitionend={handleAnimationEnd}
+  data-testid="overlay"
 >
   <div
     id={MESSAGE_DISPLAY_DIV_ID}
@@ -186,6 +187,7 @@
     class:soft-transition={$settingsStore.animation}
     style="gap: 84px;"
     style:opacity={messageVisible ? "1" : "0"}
+    data-testid="overlay-msg"
   >
     <div
       class="message-text-container center-flex-col"
@@ -211,6 +213,7 @@
   .isolated-element {
     all: initial;
   }
+
   .full-screen-overlay {
     position: fixed;
     top: 0;

@@ -41,7 +41,7 @@
 </script>
 
 <li class="list-group-item">
-  <div class="row align-items-start">
+  <div class="row align-items-start" data-testid="blacklist-item">
     <label class="ms-1 form-check-label col">
       <input
         class="form-check-input"
