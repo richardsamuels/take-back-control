@@ -3,6 +3,7 @@ import { get } from "svelte/store";
 import { ONE_DAY_MINUTES } from "./constants";
 import { settingsStore, type Settings } from "./store.svelte";
 import { initStorage, storageChange } from "./store.svelte";
+import { tryParseMatchPattern } from "./Options/validator";
 
 let registered: any = null;
 
@@ -24,11 +25,32 @@ async function registerScript() {
     return;
   }
 
+  // Strip ports from the blacklist and dedupe
+  const blacklist = [
+    ...new Set(
+      store.blacklist.map((item) => {
+        const p = tryParseMatchPattern(item);
+        if (p.host?.has_port) {
+          const host = p.host?.data.split(":")[0];
+          return `${p.scheme?.data}://${host}${p.path?.data}`;
+        }
+        return item;
+      }),
+    ),
+  ];
+
+  // Remove whitelist items that have ports so that Firefox won't panic.
+  // The content script reimplements the whitelist to check port numbers
+  const whitelist = store.whitelist.filter((item) => {
+    const p = tryParseMatchPattern(item);
+    return !p.host?.has_port;
+  });
+
   registered = await browser.scripting.registerContentScripts([
     {
       id: "ads-injector",
-      matches: store.blacklist,
-      excludeMatches: store.whitelist,
+      matches: blacklist,
+      excludeMatches: whitelist,
       js: ["assets/main-content.js"],
       runAt: "document_idle",
     },

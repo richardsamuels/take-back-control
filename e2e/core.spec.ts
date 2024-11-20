@@ -19,70 +19,13 @@
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 import { test, expect } from "./fixtures";
-import { OVERLAY_DIV_ID, MESSAGE_DISPLAY_DIV_ID } from "../src/constants";
-import { type Page } from "playwright";
-
-const timeout = { timeout: 3_000 };
-
-async function waitForContentScript(page: Page) {
-  // this is the closest approximation to "wait for content script to be
-  // injected"
-  await page.waitForLoadState("domcontentloaded", timeout);
-  await page.waitForLoadState("load", timeout);
-}
-
-async function expectContentWall(page: Page) {
-  const opacity = await getOverlayOpacity(page);
-  expect(opacity !== null && opacity > 0).toBeTruthy();
-}
-async function expectNoContentWall(page: Page) {
-  const opacity = await getOverlayOpacity(page);
-  expect(opacity === null || opacity == 0).toBeTruthy();
-}
-async function getOverlayOpacity(page: Page) {
-  const opacity = await page.evaluate((selector) => {
-    const element = document.querySelector(selector);
-    if (element == null) {
-      return null;
-    }
-    // @ts-ignore
-    return element.style.getPropertyValue("opacity");
-  }, `#${MESSAGE_DISPLAY_DIV_ID}`);
-  console.log("XX", opacity);
-  return opacity;
-}
-
-async function scroll(page: Page, n: number = 100) {
-  // The nearly instant scrolling prevents the wall from being triggered
-  // TODO look into that
-  for (let i = 0; i < 10; i++) {
-    await page.mouse.wheel(0, n);
-  }
-}
-
-async function setup(page, extensionId) {
-  // Chrome sometimes fail to initialize the extension, so force that now
-  await page.goto(`chrome-extension://${extensionId}/src/options.html`);
-
-  await page.getByTestId("erase-all").click();
-  await page.getByTestId("erase-all").click();
-
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
-  await page.getByTestId("blacklist-input").fill("*://localhost/*");
-  await page.getByTestId("blacklist-submit").click();
-
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/whitelist`,
-  );
-  await page.reload();
-  await page.getByTestId("blacklist-input").fill("*://localhost/whitelist");
-  await page.getByTestId("blacklist-submit").click();
-
-  //await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-  //await page.getByTestId("extension-enable").click();
-}
+import {
+  waitForContentScript,
+  expectContentWall,
+  expectNoContentWall,
+  scroll,
+  setup,
+} from "./helpers";
 
 test("blacklist test", async ({ page, extensionId }) => {
   await setup(page, extensionId);
@@ -104,27 +47,7 @@ test("blacklist test", async ({ page, extensionId }) => {
 });
 
 test("whitelist", async ({ page, extensionId }) => {
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
-  await page.getByTestId("blacklist-input").fill("*://*.example.com/*");
-  await page.getByTestId("blacklist-submit").click();
-
-  await page
-    .getByTestId("blacklist-item")
-    .filter({ hasText: "*://*.example.com/*" })
-    .getByRole("button", { name: "More" })
-    .click();
-
-  await page
-    .getByRole("radio", { name: "Block the Whole Page Immediately" })
-    .click();
-
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/whitelist`,
-  );
-  await page.getByTestId("blacklist-input").fill("*://*.example.com/whitelist");
-  await page.getByTestId("blacklist-submit").click();
+  await setup(page, extensionId);
 
   await page.goto("http://example.com/whitelist");
 
@@ -141,7 +64,7 @@ test("test blacklist options", async ({ page, extensionId }) => {
   );
   await page
     .getByTestId("blacklist-item")
-    .filter({ hasText: "*://localhost/*" })
+    .filter({ hasText: "*://localhost:3000/*" })
     .getByRole("button", { name: "More" })
     .click();
 
