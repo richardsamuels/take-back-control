@@ -22,18 +22,7 @@ No data is collected by this extension for the developer.
 
 If your browser is configured to synchronize addon settings, this feature will
 be used to share settings across all logged in instances of that browser. You
-should review your browser's privacy policy.
-
-## Future Work
-
-_in descending priority_
-
-- Firefox Mobile
-- Balance: allow the users to give themself a timed reprieve from this extension without disabling it
-- Compunctation statement. Make the user apologize for wasting their life by writing a handful of words into a text box (opt-in)
-- Offer feature to trigger anti-doomscroll wall after measuring time on page instead of scrolling (opt-in)
-- The Whitelist/Blacklist/Messages list all rely on copy pasted code. Fix that!
-- Import and Export of settings
+should review your browser vendor's settings and privacy policy.
 
 ## Build Instructions (for Production Extension & Addon Review)
 
@@ -55,18 +44,30 @@ path.
 The build system is a touch messy due to rollUp limitations. `vite.config.ts`
 builds the options and popup ui as a module. `vite.cs.config.ts` builds the
 content scripts as an IIFE module because content scripts cannot be modules.
+An additional pair of config files, `vite.chrome.config.ts` and
+`vite.chrome.cs.config.ts` are used for the Chrome build.
 
-RollUp does not allow for these outputs to be represented in the same
-config file,so you should run two watch commands in separate windows when
-developing:
+RollUp does not allow for these outputs to be represented in the same config
+file, so workarounds have been implemented
 
-- `yarn watch . -c vite.config.ts`
-- `yarn watch . -c vite.cs.config.ts`
+#### Watch
+To run a watch operation:
+`yarn watch -t [firefox|chrome]`
 
-You can manually reload the extension after making changes to the content script
+This will run scripts/watch.js, which will launch a watch operation on both
+config files. Firefox is the default. 
 
-When using `make` (specifically `make yarn`, which is default) to run the build,
-both config files will be built.
+#### Build
+To build, without packaging, use:
+`make yarn-[firefox|chrome]`
+
+To build with packaging, use
+`make [firefox|chrome]`
+
+To build and package everything, use
+`make`
+
+The current build system does NOT support HMR.
 
 ## Legal & Credit
 
