@@ -11,9 +11,8 @@
 
   type Props = {
     blacklistPattern: string;
-    whitelistPattern: string | null;
   };
-  const { blacklistPattern, whitelistPattern }: Props = $props();
+  const { blacklistPattern }: Props = $props();
 
   type Wall = {
     // scroll Y position to start blurring
@@ -32,7 +31,7 @@
 
   const siteConfig = $derived.by(() => {
     if (blacklistPattern == null) {
-      return null;
+      console.error("Blacklist pattern not found. This should NEVER happen");
     }
     return $settingsStore.blacklistSites[blacklistPattern];
   });
@@ -77,7 +76,7 @@
   let scrollY: number = $state(0);
   let nextWall: Wall = $state(
     // svelte-ignore state_referenced_locally
-    makeWall(0, 0, innerHeight, siteConfig?.scrollFactor || 0),
+    makeWall(0, 0, innerHeight, siteConfig.scrollFactor),
   );
 
   let numScrollExtensions: number = $state(0);
@@ -110,7 +109,7 @@
       numScrollExtensions + 1,
       window.scrollY,
       innerHeight,
-      siteConfig?.scrollFactor || 0,
+      siteConfig.scrollFactor,
     );
     onNextTransition = () => {
       numScrollExtensions += 1;
@@ -122,12 +121,6 @@
     }
   };
 
-  $effect(() => {
-    if (!messageVisible) {
-      message = randomItemFrom($settingsStore.messages);
-    }
-  });
-
   onMount(() => {
     window.addEventListener("resize", (_) => {
       innerHeight = window.innerHeight;
@@ -135,7 +128,7 @@
         numScrollExtensions,
         nextWall.scrollY,
         innerHeight,
-        siteConfig?.scrollFactor || null,
+        siteConfig.scrollFactor,
       );
     });
 
