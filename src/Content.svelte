@@ -27,8 +27,6 @@
   );
 </script>
 
-<div>
-  {#if blacklistPattern != null && whitelistPattern == null}
-    <Wall {blacklistPattern} />
-  {/if}
-</div>
+{#if blacklistPattern != null && whitelistPattern == null}
+  <Wall {blacklistPattern} />
+{/if}

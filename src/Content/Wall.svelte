@@ -122,19 +122,28 @@
   };
 
   onMount(() => {
-    window.addEventListener("resize", (_) => {
-      innerHeight = window.innerHeight;
-      nextWall = makeWall(
-        numScrollExtensions,
-        nextWall.scrollY,
-        innerHeight,
-        siteConfig.scrollFactor,
-      );
-    });
+    window.addEventListener(
+      "resize",
+      (_) => {
+        innerHeight = window.innerHeight;
+        nextWall = makeWall(
+          numScrollExtensions,
+          nextWall.scrollY,
+          innerHeight,
+          siteConfig.scrollFactor,
+        );
+      },
+      { capture: true },
+    );
 
-    document.addEventListener("scroll", (_) => {
-      scrollY = window.scrollY;
-    });
+    window.addEventListener(
+      "scroll",
+      (_) => {
+        console.log("scroll");
+        scrollY = window.scrollY;
+      },
+      { capture: true },
+    );
   });
 
   const handleAnimationEnd = () => {
@@ -156,7 +165,7 @@
 
 <div
   id={OVERLAY_DIV_ID}
-  class="full-screen-overlay isolated-element"
+  class="full-screen-overlay"
   class:soft-transition={$settingsStore.animation}
   style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
@@ -197,10 +206,6 @@
 </div>
 
 <style>
-  .isolated-element {
-    all: initial;
-  }
-
   .full-screen-overlay {
     position: fixed;
     top: 0;
