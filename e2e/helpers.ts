@@ -1,5 +1,4 @@
 import { expect } from "./fixtures";
-import { OVERLAY_DIV_ID, MESSAGE_DISPLAY_DIV_ID } from "../src/constants";
 import { type Page } from "playwright";
 
 export const timeout = { timeout: 3_000 };
@@ -12,24 +11,29 @@ export async function waitForContentScript(page: Page) {
 }
 
 export async function expectContentWall(page: Page) {
-  const opacity = await getOverlayOpacity(page);
-  expect(opacity !== null && opacity > 0).toBeTruthy();
+  await expect(page.getByTestId("overlay")).not.toHaveAttribute(
+    "data-blur-intensity",
+    "0",
+  );
+  await expect(page.getByTestId("overlay")).toHaveAttribute(
+    "data-msg-visible",
+    "true",
+  );
 }
+
+export async function expectNoContentWallWhitelist(page: Page) {
+  await expect(page.getByTestId("overlay")).toHaveCount(0);
+}
+
 export async function expectNoContentWall(page: Page) {
-  const opacity = await getOverlayOpacity(page);
-  expect(opacity === null || opacity == 0).toBeTruthy();
-}
-async function getOverlayOpacity(page: Page) {
-  const opacity = await page.evaluate((selector) => {
-    const element = document.querySelector(selector);
-    if (element == null) {
-      return null;
-    }
-    // @ts-ignore
-    return element.style.getPropertyValue("opacity");
-  }, `#${MESSAGE_DISPLAY_DIV_ID}`);
-  console.log("XX", opacity);
-  return opacity;
+  await expect(page.getByTestId("overlay")).toHaveAttribute(
+    "data-blur-intensity",
+    "0",
+  );
+  await expect(page.getByTestId("overlay")).toHaveAttribute(
+    "data-msg-visible",
+    "false",
+  );
 }
 
 export async function scroll(page: Page, n: number = 100) {

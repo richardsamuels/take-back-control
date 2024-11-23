@@ -122,28 +122,19 @@
   };
 
   onMount(() => {
-    window.addEventListener(
-      "resize",
-      (_) => {
-        innerHeight = window.innerHeight;
-        nextWall = makeWall(
-          numScrollExtensions,
-          nextWall.scrollY,
-          innerHeight,
-          siteConfig.scrollFactor,
-        );
-      },
-      { capture: true },
-    );
+    window.addEventListener("resize", (_) => {
+      innerHeight = window.innerHeight;
+      nextWall = makeWall(
+        numScrollExtensions,
+        nextWall.scrollY,
+        innerHeight,
+        siteConfig.scrollFactor,
+      );
+    });
 
-    window.addEventListener(
-      "scroll",
-      (_) => {
-        console.log("scroll");
-        scrollY = window.scrollY;
-      },
-      { capture: true },
-    );
+    window.addEventListener("scroll", (_) => {
+      scrollY = window.scrollY;
+    });
   });
 
   const handleAnimationEnd = () => {
@@ -171,6 +162,8 @@
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
   ontransitionend={handleAnimationEnd}
+  data-msg-visible={messageVisible}
+  data-blur-intensity={blurIntensity}
   data-testid="overlay"
 >
   <div

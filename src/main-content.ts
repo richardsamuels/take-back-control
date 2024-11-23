@@ -29,6 +29,7 @@ browser.runtime.onMessage.addListener(
   }
   const container = document.createElement("div");
   bodyElement.appendChild(container);
+  // XXX: Do not change to closed, or playwright will break
   const shadowRoot = container.attachShadow({ mode: "open" });
   mount(Content, { target: shadowRoot });
 })();

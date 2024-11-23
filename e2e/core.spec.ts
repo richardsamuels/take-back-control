@@ -23,6 +23,7 @@ import {
   waitForContentScript,
   expectContentWall,
   expectNoContentWall,
+  expectNoContentWallWhitelist,
   scroll,
   setup,
 } from "./helpers";
@@ -49,21 +50,16 @@ test("blacklist test", async ({ page, extensionId }) => {
 test("whitelist", async ({ page, extensionId }) => {
   await setup(page, extensionId);
 
-  await page.goto("http://example.com/whitelist");
+  await page.goto("http://localhost:3000");
 
   await waitForContentScript(page);
-  await expectNoContentWall(page);
+  await scroll(page);
+  await expectContentWall(page);
 
   await page.goto("http://localhost:3000/whitelist");
-  await expectNoContentWall(page);
-
-  await page.goto("http://localhost:3001/");
   await waitForContentScript(page);
-  await expectNoContentWall(page);
-
-  await page.goto("http://localhost:3001/whitelist");
-  await waitForContentScript(page);
-  await expectNoContentWall(page);
+  await scroll(page);
+  await expectNoContentWallWhitelist(page);
 });
 
 test("test blacklist options", async ({ page, extensionId }) => {
