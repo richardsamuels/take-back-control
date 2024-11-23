@@ -21,5 +21,15 @@ browser.runtime.onMessage.addListener(
 (async function appendCreatedDivs() {
   await storageChange();
   const bodyElement = document.querySelector("body");
-  mount(Content, { target: bodyElement! });
+  if (!bodyElement) {
+    console.warn(
+      "Document contains no body element. Doomscrolling will NOT be blocked",
+    );
+    return;
+  }
+  const container = document.createElement("div");
+  bodyElement.appendChild(container);
+  // XXX: Do not change to closed, or playwright will break
+  const shadowRoot = container.attachShadow({ mode: "open" });
+  mount(Content, { target: shadowRoot });
 })();

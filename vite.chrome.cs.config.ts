@@ -5,6 +5,6 @@ import { chromeIifeBuild } from "./vite.common.config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [svelte({ emitCss: false })],
   build: chromeIifeBuild,
 });

@@ -132,7 +132,7 @@
       );
     });
 
-    document.addEventListener("scroll", (_) => {
+    window.addEventListener("scroll", (_) => {
       scrollY = window.scrollY;
     });
   });
@@ -156,12 +156,14 @@
 
 <div
   id={OVERLAY_DIV_ID}
-  class="full-screen-overlay isolated-element"
+  class="full-screen-overlay"
   class:soft-transition={$settingsStore.animation}
   style:pointer-events={pointerEvents}
   style:backdrop-filter={`blur(${blurAmount}px)`}
   style:background-color={`rgba(0, 0, 0, ${rgbOpacity})`}
   ontransitionend={handleAnimationEnd}
+  data-msg-visible={messageVisible}
+  data-blur-intensity={blurIntensity}
   data-testid="overlay"
 >
   <div
@@ -197,10 +199,6 @@
 </div>
 
 <style>
-  .isolated-element {
-    all: initial;
-  }
-
   .full-screen-overlay {
     position: fixed;
     top: 0;
