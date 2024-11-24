@@ -20,6 +20,7 @@
     "@popperjs/core": "^2.11.8",
     "@samrum/vite-plugin-web-extension": "^5.1.1",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@sveltestrap/sveltestrap": "^6.2.7",
     "@tsconfig/svelte": "^5.0.4",
     "@types/firefox-webext-browser": "^120.0.4",
     "@types/node": "^22.9.0",

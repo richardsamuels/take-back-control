@@ -1,8 +1,14 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
+
+  import { FormGroup, Input, ListGroupItem } from "@sveltestrap/sveltestrap";
+
+  const label = $settingsStore.animation
+    ? "Animations active"
+    : "Animations disabled";
 </script>
 
-<li class="list-group-item">
+<ListGroupItem>
   <h5 class="mt-2">Animation Toggle</h5>
 
   <div class="mb-4">
@@ -11,22 +17,14 @@
     </div>
     <div class="row">
       <div class="w-50">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="enable-toggle"
+        <FormGroup>
+          <Input
+            type="switch"
             bind:checked={$settingsStore.animation}
+            {label}
           />
-          <label class="form-check-label" for="enable-toggle">
-            {#if $settingsStore.animation}
-              Animations active
-            {:else}
-              Animations disabled
-            {/if}
-          </label>
-        </div>
+        </FormGroup>
       </div>
     </div>
   </div>
-</li>
+</ListGroupItem>

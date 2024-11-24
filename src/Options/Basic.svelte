@@ -4,18 +4,20 @@
   import Balance from "./Basic/Balance.svelte";
   import Animation from "./Basic/Animation.svelte";
   import EraseAll from "./Basic/EraseAll.svelte";
+
+  import { ListGroup } from "@sveltestrap/sveltestrap";
 </script>
 
 <div class="pb-5">
   <h5>Basic Settings</h5>
   <div class="mt-4">
-    <ul class="list-group">
+    <ListGroup>
       <Enable />
       <Bypass />
       <Balance />
       <Animation />
       <EraseAll />
-    </ul>
+    </ListGroup>
   </div>
 </div>
 

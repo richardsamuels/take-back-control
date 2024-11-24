@@ -9,19 +9,18 @@
       eraseText = "One more time, just to be safe";
     } else {
       settingsStore.nuke();
-      console.log($settingsStore);
+      window.location.reload();
     }
   }
+
+  import { Button, ListGroupItem } from "@sveltestrap/sveltestrap";
 </script>
 
-<li class="list-group-item">
+<ListGroupItem>
   <h5 class="mt-2">Reset All Settings</h5>
   <div class="mt-4 mb-4">
-    <button
-      type="button"
-      class="btn btn-danger"
-      onclick={erase}
-      data-testid="erase-all">{eraseText}</button
+    <Button color="danger" onclick={erase} data-testid="erase-all"
+      >{eraseText}</Button
     >
   </div>
-</li>
+</ListGroupItem>

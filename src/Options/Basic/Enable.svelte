@@ -1,30 +1,40 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
+  import {
+    ListGroup,
+    ListGroupItem,
+    Form,
+    Input,
+    FormGroup,
+  } from "@sveltestrap/sveltestrap";
+
+  const messagesColor = $derived.by(() => {
+    if ($settingsStore.blacklist.length == 0) {
+      return "danger";
+    }
+    if ($settingsStore.blacklist.length < 5) {
+      return "warning";
+    }
+    return "success";
+  });
 </script>
 
-<li class="list-group-item">
+<ListGroupItem>
   <div class="mb-4">
     <div class="mb-4">
       <h5 class="mt-2">Plugin Status</h5>
 
-      <ul class="list-group mb-4">
-        <li
-          class="list-group-item"
-          class:list-group-item-success={$settingsStore.blacklist.length > 0}
-          class:list-group-item-danger={$settingsStore.blacklist.length == 0}
+      <ListGroup class="mb-4">
+        <ListGroupItem
+          color={$settingsStore.blacklist.length == 0 ? "danger" : "success"}
         >
           {#if $settingsStore.blacklist.length == 0}
             You need to add some URLs to the blacklist
           {:else}
             You've got some URLs in the blacklist
           {/if}
-        </li>
-        <li
-          class="list-group-item"
-          class:list-group-item-success={$settingsStore.messages.length > 5}
-          class:list-group-item-warning={$settingsStore.messages.length < 5}
-          class:list-group-item-danger={$settingsStore.messages.length == 0}
-        >
+        </ListGroupItem>
+        <ListGroupItem color={messagesColor}>
           {#if $settingsStore.messages.length == 0}
             You need to add some messages
           {:else if $settingsStore.messages.length < 5}
@@ -32,25 +42,15 @@
           {:else}
             You've got more than enough inspirational messages.
           {/if}
-        </li>
-      </ul>
+        </ListGroupItem>
+      </ListGroup>
       <div class="mt-4">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="enable-toggle"
-            bind:checked={$settingsStore.enabled}
-          />
-          <label class="form-check-label" for="enable-toggle">
-            {#if $settingsStore.enabled}
-              Plugin active!
-            {:else}
-              Plugin disabled
-            {/if}
-          </label>
-        </div>
+        <Input
+          type="switch"
+          bind:checked={$settingsStore.enabled}
+          label={$settingsStore.enabled ? "Plugin Enabled!" : "Plugin disabled"}
+        />
       </div>
     </div>
   </div>
-</li>
+</ListGroupItem>
