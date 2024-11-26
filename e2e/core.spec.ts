@@ -27,9 +27,21 @@ import {
   scroll,
   setup,
 } from "./helpers";
+import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 test("blacklist test", async ({ page, extensionId }) => {
+  // This test takes at least 10 seconds
+  test.setTimeout(20_000);
   await setup(page, extensionId);
+
+  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+  await page.getByTestId("nag-chance").fill("100");
+
+  await page.clock.setFixedTime(new Date("2024-02-02T08:00:00"));
   await page.goto("http://localhost:3000");
   await waitForContentScript(page);
 
@@ -37,13 +49,17 @@ test("blacklist test", async ({ page, extensionId }) => {
 
   await expectContentWall(page);
   await page.getByText("It's important (1st time)").click();
+  await page
+    .getByText("Are you REALLY sure it's important? (1st time)")
+    .click();
   await expectNoContentWall(page);
   await scroll(page, 200);
-  await page.waitForTimeout(1000);
 
   await expectContentWall(page);
   await page.getByText("It's important (2nd time)").click();
-  await page.waitForTimeout(1000);
+  await page
+    .getByText("Are you REALLY sure it's important? (2nd time)")
+    .click();
   await expectNoContentWall(page);
 });
 
