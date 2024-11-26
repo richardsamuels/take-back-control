@@ -50,13 +50,15 @@ RollUp does not allow for these outputs to be represented in the same config
 file, so workarounds have been implemented
 
 #### Watch
+
 To run a watch operation:
 `yarn watch -t [firefox|chrome]`
 
 This will run scripts/watch.js, which will launch a watch operation on both
-config files. Firefox is the default. 
+config files. Firefox is the default.
 
 #### Build
+
 To build, without packaging, use:
 `make yarn-[firefox|chrome]`
 
