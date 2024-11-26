@@ -30,7 +30,7 @@ export const config = {
         resources: ["assets/main-content.js"],
       },
     ],
-    permissions: ["storage", "activeTab", "scripting", "alarms"],
+    permissions: ["storage", "activeTab", "scripting", "alarms"] as any,
     host_permissions: ["<all_urls>"],
     browser_specific_settings: {
       gecko: {
@@ -82,7 +82,7 @@ export const iifeBuild = {
     ...build.rollupOptions,
     output: {
       ...build.rollupOptions.output,
-      format: "iife",
+      format: "iife" as any,
       inlineDynamicImports: true,
     },
     input: ["src/main-content.ts"],
@@ -95,7 +95,7 @@ export const chromeIifeBuild = {
     ...chromeBuild.rollupOptions,
     output: {
       ...chromeBuild.rollupOptions.output,
-      format: "iife",
+      format: "iife" as any,
       inlineDynamicImports: true,
     },
     input: ["src/main-content.ts"],
