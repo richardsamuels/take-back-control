@@ -13,14 +13,12 @@
     }
   }
 
-  import { Button, ListGroupItem } from "@sveltestrap/sveltestrap";
+  import { Button } from "@sveltestrap/sveltestrap";
+  import Item from "./Item.svelte";
 </script>
 
-<ListGroupItem>
-  <h5 class="mt-2">Reset All Settings</h5>
-  <div class="mt-4 mb-4">
-    <Button color="danger" onclick={erase} data-testid="erase-all"
-      >{eraseText}</Button
-    >
-  </div>
-</ListGroupItem>
+<Item title="Reset All Settings">
+  <Button class="mb-4" color="danger" onclick={erase} data-testid="erase-all"
+    >{eraseText}</Button
+  >
+</Item>

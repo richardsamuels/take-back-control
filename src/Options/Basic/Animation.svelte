@@ -1,30 +1,24 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
 
-  import { FormGroup, Input, ListGroupItem } from "@sveltestrap/sveltestrap";
+  import { FormGroup, Input } from "@sveltestrap/sveltestrap";
+  import Item from "./Item.svelte";
 
   const label = $settingsStore.animation
     ? "Animations active"
     : "Animations disabled";
 </script>
 
-<ListGroupItem>
-  <h5 class="mt-2">Animation Toggle</h5>
+{#snippet desc()}
+  Toggle subtle animations on the doomscroll wall
+{/snippet}
 
-  <div class="mb-4">
-    <div class="form-text mb-4">
-      Toggle subtle animations on the doomscroll wall.
+<Item title="Animation" description={desc}>
+  <FormGroup>
+    <div class="w-50">
+      <FormGroup>
+        <Input type="switch" bind:checked={$settingsStore.animation} {label} />
+      </FormGroup>
     </div>
-    <div class="row">
-      <div class="w-50">
-        <FormGroup>
-          <Input
-            type="switch"
-            bind:checked={$settingsStore.animation}
-            {label}
-          />
-        </FormGroup>
-      </div>
-    </div>
-  </div>
-</ListGroupItem>
+  </FormGroup>
+</Item>
