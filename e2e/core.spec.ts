@@ -109,21 +109,45 @@ test("test blacklist options", async ({ page, extensionId }) => {
 });
 
 // Playwright does not allow interaction with the popup. Opening the page
-// prevents the popup from correctly identifying the active tab
-//test("test balance", async ({ page, extensionId }) => {
-//  await setup(page, extensionId);
-//
-//  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-//  await page.getByTestId("balance").fill("20");
-//  await page.goto(`chrome-extension://${extensionId}/src/popup.html`);
-//  await page.getByTestId("balance-start").click();
-//
-//  await page.goto("http://localhost:3000/");
-//  await waitForContentScript(page);
-//  await expectNoContentWall(page);
-//
-//  // Initialize clock with a specific time, let the page load naturally.
-//  await page.clock.install({ time: new Date("2024-02-02T08:00:00") });
-//  await page.clock.runFor(25 * 60 * 1000); // 25 minutes
-//  await expectContentWall(page);
-//});
+// prevents the popup from correctly identifying the active tab, so any
+// features that are triggered by the popup are untestable.
+// :/
+test("test balance", async ({ page, extensionId }) => {
+  await setup(page, extensionId);
+
+  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+  await page.getByTestId("balance").fill("20");
+
+  await page.goto(
+    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
+  );
+  await page
+    .getByTestId("blacklist-item")
+    .filter({ hasText: "*://localhost:3000/*" })
+    .getByRole("button", { name: "More" })
+    .click();
+  await page
+    .getByRole("radio", { name: "Block the Whole Page Immediately" })
+    .click();
+
+  // We can't click the popup to start the balance featurem, so this script
+  // does that for us
+  await page.clock.install({ time: new Date("2024-02-02T08:00:00") });
+  await page.goto("http://localhost:3000/");
+
+  await page.pause();
+  await page.evaluate(() => {
+    // @ts-ignore
+    window.store.time.start();
+  });
+  await waitForContentScript(page);
+  await expectContentWall(page);
+
+  //await page.clock.runFor(60 * 1000); // 1 minute
+  await page.pause();
+  await expectNoContentWall(page);
+
+  //await page.clock.runFor(25 * 60 * 1000); // 25 minutes
+  await page.clock.pauseAt(new Date("2024-02-02T10:00:00"));
+  await expectContentWall(page);
+});

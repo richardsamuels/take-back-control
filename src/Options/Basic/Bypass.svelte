@@ -28,6 +28,7 @@
           min="0"
           max="100"
           step=""
+          data-testid="nag-chance"
         />
       </div>
     </div>
