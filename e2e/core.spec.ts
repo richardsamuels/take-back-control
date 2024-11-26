@@ -29,14 +29,13 @@ import {
 } from "./helpers";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { env } from "process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test("blacklist test", async ({ page, extensionId }) => {
   // This test takes at least 10 seconds, but in CI its much worse
-  test.setTimeout(!!env.CI ? 120_000 : 20_000);
+  test.setTimeout(20_000);
   await setup(page, extensionId);
 
   await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
