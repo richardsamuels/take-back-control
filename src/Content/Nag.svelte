@@ -7,7 +7,6 @@
   let { n, continueFn, site }: Props = $props();
 
   import { settingsStore } from "../store.svelte";
-  import { onMount } from "svelte";
 
   function getOrdinal(n: number) {
     let suffix = "th";
@@ -22,6 +21,7 @@
   }
 
   let showNag = $state(false);
+  let counter = $state(5);
 
   function tryDoNag(e: Event) {
     e.stopPropagation();
@@ -41,12 +41,16 @@
       showNag = true;
       startCount();
     } else {
-      continueFn(e);
+      closeWall(e);
     }
+  }
+  function closeWall(e: Event) {
+    showNag = false;
+    counter = 5;
+    continueFn(e);
   }
 
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[site]);
-  let counter = $state(5);
 
   function startCount() {
     const interval = setInterval(() => {
@@ -86,7 +90,7 @@
         class="finite-button nude soft-transition"
         type="button"
         disabled={counter != 0}
-        onclick={continueFn}
+        onclick={closeWall}
       >
         Are you <span style="font-style: italic" class="blinking-red-text"
           >REALLY</span
