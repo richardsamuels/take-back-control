@@ -20,7 +20,7 @@ jobs:
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps chrome
       - name: Build
-        run: make chrome
+        run: USE_PLAYWRIGHT_HELPERS=true make chrome
       - name: Run Playwright
         run: DEBUG=pw:api yarn playwright test
       - uses: actions/upload-artifact@v4
