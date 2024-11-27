@@ -46,10 +46,10 @@
       closeWall(e);
     }
   }
+
   function closeWall(e: Event) {
     showNag = false;
-    resetTimer();
-    counter = 5;
+    resetTimerAndCounter();
     continueFn(e);
   }
 
@@ -60,7 +60,7 @@
       interval = setInterval(() => {
         counter = counter - 1;
         if (counter == 0) {
-          resetTimer();
+          resetTimerAndCounter();
         }
       }, 1000);
     }
@@ -72,6 +72,10 @@
       interval = null;
     }
   }
+  function resetTimerAndCounter() {
+    resetTimer();
+    counter = 5;
+  }
 
   onMount(() => {
     window.addEventListener("focus", startCount);
@@ -79,9 +83,7 @@
   });
 
   onDestroy(() => {
-    resetTimer();
-
-    counter = 5;
+    resetTimerAndCounter();
     window.removeEventListener("focus", startCount);
     window.removeEventListener("blur", resetTimer);
   });
