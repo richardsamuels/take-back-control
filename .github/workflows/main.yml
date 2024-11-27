@@ -59,6 +59,8 @@ jobs:
         run: yarn test
       - name: Run Lints
         run: yarn check
+      - name: Run Checks
+        run: yarn run check
       - name: Run make
         run: make
       - name: "web-ext lint"

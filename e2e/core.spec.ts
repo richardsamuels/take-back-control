@@ -34,7 +34,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test("blacklist test", async ({ page, extensionId }) => {
-  // This test takes at least 10 seconds
+  // This test takes at least 10 seconds, but in CI its much worse
   test.setTimeout(20_000);
   await setup(page, extensionId);
 
