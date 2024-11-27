@@ -7,4 +7,9 @@ import { chromeIifeBuild } from "./vite.common.config";
 export default defineConfig({
   plugins: [svelte({ emitCss: false })],
   build: chromeIifeBuild,
+  define: {
+    "import.meta.env.USE_PLAYWRIGHT_HELPERS": JSON.stringify(
+      process.env.USE_PLAYWRIGHT_HELPERS,
+    ),
+  },
 });
