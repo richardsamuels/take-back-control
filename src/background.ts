@@ -84,6 +84,8 @@ function minuteTick(alarmInfo: browser.Alarms.Alarm) {
     return;
   }
   settingsStore.time.inc();
+
+  store = get<Settings>(settingsStore);
   if (store.time.global > store.dailyBalanceInterval) {
     settingsStore.time.overload();
   }

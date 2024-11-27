@@ -111,12 +111,14 @@ test("test blacklist options", async ({ page, extensionId }) => {
 // Playwright does not allow interaction with the popup. Opening the page
 // prevents the popup from correctly identifying the active tab, so any
 // features that are triggered by the popup are untestable.
-// :/
+// Thus, we have a massive hack: inject a button into the content wall
+// that we can click in this test. It is only present when using playwright
 test("test balance", async ({ page, extensionId }) => {
+  test.setTimeout(120_000);
   await setup(page, extensionId);
 
   await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-  await page.getByTestId("balance").fill("20");
+  await page.getByTestId("balance").fill("1");
 
   await page.goto(
     `chrome-extension://${extensionId}/src/options.html#/blacklist`,
@@ -132,22 +134,14 @@ test("test balance", async ({ page, extensionId }) => {
 
   // We can't click the popup to start the balance featurem, so this script
   // does that for us
-  await page.clock.install({ time: new Date("2024-02-02T08:00:00") });
   await page.goto("http://localhost:3000/");
-
-  await page.pause();
-  await page.evaluate(() => {
-    // @ts-ignore
-    window.store.time.start();
-  });
   await waitForContentScript(page);
   await expectContentWall(page);
 
-  //await page.clock.runFor(60 * 1000); // 1 minute
-  await page.pause();
+  await page.getByTestId("balance-button").dispatchEvent("click");
   await expectNoContentWall(page);
 
-  //await page.clock.runFor(25 * 60 * 1000); // 25 minutes
-  await page.clock.pauseAt(new Date("2024-02-02T10:00:00"));
-  await expectContentWall(page);
+  // HACK: Playwright Clock API doesn't work with the browser.alarm API, so
+  // we actually have to wait a minute of wall time. Seriously
+  await expectContentWall(page, { timeout: 65 * 1000 });
 });

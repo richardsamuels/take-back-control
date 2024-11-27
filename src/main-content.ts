@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
 import { type Message } from "./messages";
 import Content from "./Content.svelte";
-import { storageChange } from "./store.svelte";
+import { settingsStore, storageChange } from "./store.svelte";
 
 browser.runtime.onMessage.addListener(
   async (

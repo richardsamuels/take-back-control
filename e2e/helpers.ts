@@ -10,14 +10,16 @@ export async function waitForContentScript(page: Page) {
   await page.waitForLoadState("load", timeout);
 }
 
-export async function expectContentWall(page: Page) {
+export async function expectContentWall(page: Page, options: any = undefined) {
   await expect(page.getByTestId("overlay")).not.toHaveAttribute(
     "data-blur-intensity",
     "0",
+    options,
   );
   await expect(page.getByTestId("overlay")).toHaveAttribute(
     "data-msg-visible",
     "true",
+    options,
   );
 }
 
@@ -25,14 +27,19 @@ export async function expectNoContentWallWhitelist(page: Page) {
   await expect(page.getByTestId("overlay")).toHaveCount(0);
 }
 
-export async function expectNoContentWall(page: Page) {
+export async function expectNoContentWall(
+  page: Page,
+  options: any = undefined,
+) {
   await expect(page.getByTestId("overlay")).toHaveAttribute(
     "data-blur-intensity",
     "0",
+    options,
   );
   await expect(page.getByTestId("overlay")).toHaveAttribute(
     "data-msg-visible",
     "false",
+    options,
   );
 }
 
