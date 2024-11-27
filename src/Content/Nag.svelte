@@ -60,7 +60,7 @@
       interval = setInterval(() => {
         counter = counter - 1;
         if (counter == 0) {
-          resetTimerAndCounter();
+          resetTimer();
         }
       }, 1000);
     }
