@@ -33,20 +33,10 @@
     addEventListener("hashchange", hashChange);
   });
 
-  import {
-    Container,
-    Card,
-    CardHeader,
-    CardBody,
-    Row,
-    Col,
-    ListGroup,
-    ListGroupItem,
-    TabContent,
-    TabPane,
-    NavItem,
-    NavLink,
-  } from "@sveltestrap/sveltestrap";
+  import { Container, Card, Row, Col } from "@sveltestrap/sveltestrap";
+
+  // BUG: sveltestap bug prevent use of TabContent:
+  // https://github.com/sveltestrap/sveltestrap/issues/82
 </script>
 
 <main class="p5 ms-4 me-4">
