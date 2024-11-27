@@ -3,6 +3,14 @@
   import UrlExplainer from "./UrlExplainer.svelte";
   import { settingsStore } from "../store.svelte";
   import BlacklistItem from "./BlacklistItem.svelte";
+  import {
+    FormGroup,
+    ListGroup,
+    ListGroupItem,
+    Container,
+    Row,
+    Col,
+  } from "@sveltestrap/sveltestrap";
 
   let selected: number[] = $state([]);
   let selectAll = $state(false);
@@ -48,15 +56,16 @@
   <h5>Blacklisted Websites</h5>
   <div id="urlInputHelp" class="form-text">
     If a matching page is loaded, scrolling on it will blur the screen and offer
-    you an inspirational message from the list below.
+    you an inspirational message
   </div>
+
   <div class="mt-4">
-    <ul class="list-group">
-      <li class="list-group-item">
+    <ListGroup>
+      <ListGroupItem>
         <h5 class="mt-2">Add New</h5>
         <UrlExplainer add={addUrl} desc={""} />
-      </li>
-      <li class="list-group-item">
+      </ListGroupItem>
+      <ListGroupItem>
         <h5 class="mt-2">Sites</h5>
 
         <form class="mb-4" onsubmit={removeSelected}>
@@ -91,8 +100,8 @@
             child={BlacklistItem}
           />
         </form>
-      </li>
-    </ul>
+      </ListGroupItem>
+    </ListGroup>
   </div>
 </div>
 
