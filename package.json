@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json && prettier . --check",
-    "pr": "make yarn-chrome && playwright test --ui",
+    "pr": "USE_PLAYWRIGHT_HELPERS=true make yarn-chrome && playwright test --ui",
     "pr-server": "node e2e/server.js",
     "watch": "node scripts/watch.js",
     "watch-chrome": "node scripts/watch.js -t chrome",
