@@ -51,22 +51,7 @@
 <form class="mb-4" onsubmit={removeSelected}>
   <div
     class="ps-3 pe-1 py-1 my-2 d-flex align-items-center justify-content-between"
-  >
-    <div class="d-flex align-items-center gap-2">
-      <Input
-        type="checkbox"
-        indeterminate={selected.length > 0 && selected.length < items.length}
-        bind:checked={selectAll}
-        onclick={selectAllClick}
-        label="Select all"
-      />
-    </div>
-    <span>
-      <button type="submit" class="btn btn-outline-danger btn-sm">
-        Remove
-      </button>
-    </span>
-  </div>
+  ></div>
   <ul class="list-group">
     {#if items.length == 0}
       <li class="list-group-item">
@@ -77,6 +62,29 @@
         >?
       </li>
     {:else}
+      <li class="list-group-item">
+        <Container>
+          <Row>
+            <Col sm="9">
+              <Input
+                type="checkbox"
+                indeterminate={selected.length > 0 &&
+                  selected.length < items.length}
+                bind:checked={selectAll}
+                onclick={selectAllClick}
+                label="Select all"
+              />
+            </Col>
+            <Col sm="3">
+              <span class="float-end">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                  Remove
+                </button>
+              </span>
+            </Col>
+          </Row>
+        </Container>
+      </li>
       {#each items as item, i (item)}
         <Child {item} index={i} bind:selected />
       {/each}

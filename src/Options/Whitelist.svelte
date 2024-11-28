@@ -83,7 +83,6 @@
           </div>
 
           <List
-            bind:value={selected}
             items={$settingsStore.whitelist}
             setDefaults={settingsStore.whitelist.reset}
           />
