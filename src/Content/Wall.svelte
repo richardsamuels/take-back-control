@@ -166,36 +166,37 @@
   data-blur-intensity={blurIntensity}
   data-testid="overlay"
 >
-  <div
-    id={MESSAGE_DISPLAY_DIV_ID}
-    class="full-screen-overlay center-flex-col"
-    class:soft-transition={$settingsStore.animation}
-    style="gap: 84px;"
-    style:opacity={messageVisible ? "1" : "0"}
-    data-testid="overlay-msg"
-  >
+  {#if messageVisible}
     <div
-      class="message-text-container center-flex-col"
+      id={MESSAGE_DISPLAY_DIV_ID}
+      class="full-screen-overlay center-flex-col"
       class:soft-transition={$settingsStore.animation}
-      style="gap: 12px;"
+      style="gap: 84px;"
+      data-testid="overlay-msg"
     >
       <div
-        id="reason-text-div"
-        class="center-text"
-        style="opacity: 0.7; font-weight: 300; font-size: 12px;"
+        class="message-text-container center-flex-col"
+        class:soft-transition={$settingsStore.animation}
+        style="gap: 12px;"
       >
-        Scrolling deep are we?
+        <div
+          id="reason-text-div"
+          class="center-text"
+          style="opacity: 0.7; font-weight: 300; font-size: 12px;"
+        >
+          Scrolling deep are we?
+        </div>
+        <div id="message-text-div" class="center-text" style="font-size: 56px;">
+          {message}
+        </div>
       </div>
-      <div id="message-text-div" class="center-text" style="font-size: 56px;">
-        {message}
-      </div>
+      <Nag
+        n={numScrollExtensions + 1}
+        continueFn={extendScroll}
+        site={blacklistPattern}
+      />
     </div>
-    <Nag
-      n={numScrollExtensions + 1}
-      continueFn={extendScroll}
-      site={blacklistPattern}
-    />
-  </div>
+  {/if}
 </div>
 
 <style>
