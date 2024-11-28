@@ -53,11 +53,11 @@
           <Input
             type="range"
             class="form-range"
+            aria-label="Balance Time"
             bind:value={$settingsStore.dailyBalanceInterval}
             min="0"
             max="30"
             step="1"
-            data-testid="balance"
           />
         </div>
       </div>

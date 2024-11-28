@@ -58,17 +58,12 @@ export async function setup(page: Page, extensionId: string) {
   await page.getByTestId("erase-all").click();
   await page.getByTestId("erase-all").click();
 
-  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
-  await page.getByTestId("blacklist-input").fill("*://localhost:3000/*");
-  await page.getByTestId("blacklist-submit").click();
+  await page.getByRole("link", { name: "Blacklist" }).click();
+  await page.getByRole("textbox").fill("*://localhost:3000/*");
+  await page.getByRole("button", { name: "Add" }).click();
 
-  await page.goto(`chrome-extension://${extensionId}/options.html#/whitelist`);
+  await page.getByRole("link", { name: "Whitelist" }).click();
   await page.reload();
-  await page
-    .getByTestId("blacklist-input")
-    .fill("*://localhost:3000/whitelist");
-  await page.getByTestId("blacklist-submit").click();
-
-  //await page.goto(`chrome-extension://${extensionId}/options.html#/`);
-  //await page.getByTestId("extension-enable").click();
+  await page.getByRole("textbox").fill("*://localhost:3000/whitelist");
+  await page.getByRole("button", { name: "Add" }).click();
 }

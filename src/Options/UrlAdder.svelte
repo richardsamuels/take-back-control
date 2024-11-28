@@ -74,7 +74,6 @@
                 valid={valid && url != ""}
                 invalid={!valid && url != ""}
                 required
-                data-testid="blacklist-input"
               />
             </FormGroup>
           </Col>

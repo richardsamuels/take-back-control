@@ -61,11 +61,11 @@
         <Input
           type="range"
           class="form-range"
+          aria-label="Bypass Chance"
           bind:value={$settingsStore.nagChance}
           min="0"
           max="100"
           step=""
-          data-testid="nag-chance"
         />
       </div>
     </FormGroup>

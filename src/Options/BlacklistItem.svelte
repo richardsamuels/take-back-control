@@ -48,7 +48,7 @@
 
 <li class="list-group-item">
   <Container>
-    <Row>
+    <Row data-testid="blacklist-item">
       <Col sm="9">
         <label class="ms-1 form-check-label">
           <input
