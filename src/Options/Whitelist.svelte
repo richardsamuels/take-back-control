@@ -1,6 +1,6 @@
 <script lang="ts">
   import List from "./List.svelte";
-  import UrlExplainer from "./UrlExplainer.svelte";
+  import UrlAdder from "./UrlAdder.svelte";
   import { settingsStore } from "../store.svelte";
 
   let selected: number[] = $state([]);
@@ -32,19 +32,9 @@
       selected = $settingsStore.whitelist.map((_, i) => i);
     }
   }
-
-  function addUrl(realPattern: string) {
-    for (const v in $settingsStore.whitelist) {
-      if (v == realPattern) {
-        console.log("DUPE"); // TODO real duplicate notifications
-        return;
-      }
-    }
-    settingsStore.whitelist.add(realPattern);
-  }
 </script>
 
-<div class="pb-5">
+<div class="grid gap-3 pb-5">
   <h5>Whitelisted Websites</h5>
   <div id="urlInputHelp" class="form-text">
     If matched, the page with that URL will be exempt from doomscroll
@@ -57,7 +47,11 @@
     <ul class="list-group">
       <li class="list-group-item">
         <h5 class="mt-2">Exempt a New URL from the Blacklist</h5>
-        <UrlExplainer add={addUrl} desc={""} />
+        <UrlAdder
+          add={settingsStore.whitelist.add}
+          bind:list={$settingsStore.whitelist}
+          desc={""}
+        />
       </li>
       <li class="list-group-item">
         <h5 class="mt-2">Sites</h5>

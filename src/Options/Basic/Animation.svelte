@@ -2,23 +2,38 @@
   import { settingsStore } from "../../store.svelte";
 
   import { FormGroup, Input } from "@sveltestrap/sveltestrap";
-  import Item from "./Item.svelte";
 
   const label = $settingsStore.animation
     ? "Animations active"
     : "Animations disabled";
+
+  import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
-{#snippet desc()}
-  Toggle subtle animations on the doomscroll wall
-{/snippet}
-
-<Item title="Animation" description={desc}>
-  <FormGroup>
-    <div class="w-50">
+{#if $settingsStore.showDebug}
+  <Card>
+    <CardHeader>
+      <CardTitle>EXPERIMENTAL: Animation</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <CardText>Toggle subtle animations on the doomscroll wall</CardText>
       <FormGroup>
-        <Input type="switch" bind:checked={$settingsStore.animation} {label} />
+        <div class="w-50">
+          <FormGroup>
+            <Input
+              type="switch"
+              bind:checked={$settingsStore.animation}
+              {label}
+            />
+          </FormGroup>
+        </div>
       </FormGroup>
-    </div>
-  </FormGroup>
-</Item>
+    </CardBody>
+  </Card>
+{/if}

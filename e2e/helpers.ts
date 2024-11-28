@@ -53,26 +53,22 @@ export async function scroll(page: Page, n: number = 100) {
 
 export async function setup(page: Page, extensionId: string) {
   // Chrome sometimes fail to initialize the extension, so force that now
-  await page.goto(`chrome-extension://${extensionId}/src/options.html`);
+  await page.goto(`chrome-extension://${extensionId}/options.html`);
 
   await page.getByTestId("erase-all").click();
   await page.getByTestId("erase-all").click();
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
   await page.getByTestId("blacklist-input").fill("*://localhost:3000/*");
   await page.getByTestId("blacklist-submit").click();
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/whitelist`,
-  );
+  await page.goto(`chrome-extension://${extensionId}/options.html#/whitelist`);
   await page.reload();
   await page
     .getByTestId("blacklist-input")
     .fill("*://localhost:3000/whitelist");
   await page.getByTestId("blacklist-submit").click();
 
-  //await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+  //await page.goto(`chrome-extension://${extensionId}/options.html#/`);
   //await page.getByTestId("extension-enable").click();
 }

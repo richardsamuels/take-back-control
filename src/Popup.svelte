@@ -7,8 +7,7 @@
 
   function options(e: Event) {
     e.preventDefault();
-    const optionsUrl =
-      browser.runtime.getURL("src/options.html") + "#/whitelist";
+    const optionsUrl = browser.runtime.getURL("options.html") + "#/whitelist";
     browser.tabs.create({ url: optionsUrl });
   }
 

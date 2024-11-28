@@ -14,11 +14,21 @@
   }
 
   import { Button } from "@sveltestrap/sveltestrap";
-  import Item from "./Item.svelte";
+  import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
-<Item title="Reset All Settings">
-  <Button class="mb-4" color="danger" onclick={erase} data-testid="erase-all"
-    >{eraseText}</Button
-  >
-</Item>
+<Card>
+  <CardHeader>
+    <CardTitle>Reset All Settings</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <Button class="mb-4" color="danger" onclick={erase} data-testid="erase-all"
+      >{eraseText}</Button
+    >
+  </CardBody>
+</Card>

@@ -2,31 +2,51 @@
   import { coerce_and_explain, isValidMatchPattern } from "./validator";
   let url = $state("");
   let [realPattern, errors] = $derived(coerce_and_explain(url.trimStart()));
-  let valid = $derived(isValidMatchPattern(realPattern));
 
-  const { desc, add }: { desc: string; add: (a: string) => void } = $props();
+  let {
+    add,
+    desc,
+    list = $bindable(),
+  }: { add: (url: string) => void; desc?: string; list: string[] } = $props();
+
+  let dupe = $state(false);
+
+  $effect(() => {
+    if (list.includes(realPattern)) {
+      dupe = true;
+    } else {
+      dupe = false;
+    }
+  });
+
+  let valid = $derived(isValidMatchPattern(realPattern) && !dupe);
 
   function handle(e: Event) {
     e.preventDefault();
-    add(realPattern);
+    add(url);
     url = "";
   }
 </script>
 
 <form class="mb-4" onsubmit={handle}>
   <div>
-    <span class="form-label">
-      {desc}
-    </span>
+    {#if desc}
+      <span class="form-label">
+        {desc}
+      </span>
+    {/if}
     <div class="d-flex gap-2">
       <span>
-        {#if errors.length > 0}
+        {#if errors.length > 0 || dupe}
           <div class="alert alert-danger" role="alert">
             The host pattern is invalid because:
             <ul>
               {#each errors as item (item)}
                 <li>{item}</li>
               {/each}
+              {#if dupe}
+                <li>Pattern is already in the list</li>
+              {/if}
             </ul>
           </div>
         {/if}

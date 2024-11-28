@@ -48,7 +48,7 @@
   }
 </script>
 
-<div class="pb-5">
+<div class="grid gap-3 pb-5">
   <h5>Inspirational Messages</h5>
   <div class="form-text pb-2">
     A randomly selected message from this list will show up when you start

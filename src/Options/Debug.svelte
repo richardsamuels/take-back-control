@@ -43,7 +43,6 @@
 </script>
 
 <div class="pb-5">
-  <h5>Debug</h5>
   <div class="pb-5">
     <label
       class="btn"

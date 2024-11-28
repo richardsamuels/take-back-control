@@ -38,7 +38,7 @@ test("blacklist test", async ({ page, extensionId }) => {
   test.setTimeout(20_000);
   await setup(page, extensionId);
 
-  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+  await page.goto(`chrome-extension://${extensionId}/options.html#/`);
   await page.getByTestId("nag-chance").fill("100");
 
   await page.clock.setFixedTime(new Date("2024-02-02T08:00:00"));
@@ -81,9 +81,7 @@ test("whitelist", async ({ page, extensionId }) => {
 test("test blacklist options", async ({ page, extensionId }) => {
   await setup(page, extensionId);
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
   await page
     .getByTestId("blacklist-item")
     .filter({ hasText: "*://localhost:3000/*" })
@@ -117,12 +115,10 @@ test("test balance", async ({ page, extensionId }) => {
   test.setTimeout(120_000);
   await setup(page, extensionId);
 
-  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
+  await page.goto(`chrome-extension://${extensionId}/options.html#/`);
   await page.getByTestId("balance").fill("1");
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
   await page
     .getByTestId("blacklist-item")
     .filter({ hasText: "*://localhost:3000/*" })
