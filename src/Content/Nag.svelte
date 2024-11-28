@@ -7,6 +7,7 @@
   let { n, continueFn, site }: Props = $props();
 
   import { settingsStore } from "../store.svelte";
+  import { onDestroy, onMount } from "svelte";
 
   function getOrdinal(n: number) {
     let suffix = "th";
@@ -22,6 +23,7 @@
 
   let showNag = $state(false);
   let counter = $state(5);
+  let interval: ReturnType<typeof setInterval> | null = null;
 
   function tryDoNag(e: Event) {
     e.stopPropagation();
@@ -44,22 +46,47 @@
       closeWall(e);
     }
   }
+
   function closeWall(e: Event) {
     showNag = false;
-    counter = 5;
+    resetTimerAndCounter();
     continueFn(e);
   }
 
   const siteConfig = $derived.by(() => $settingsStore.blacklistSites[site]);
 
   function startCount() {
-    const interval = setInterval(() => {
-      counter = counter - 1;
-      if (counter == 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
+    if (interval == null) {
+      interval = setInterval(() => {
+        counter = counter - 1;
+        if (counter == 0) {
+          resetTimer();
+        }
+      }, 1000);
+    }
   }
+
+  function resetTimer() {
+    if (interval !== null) {
+      clearInterval(interval);
+      interval = null;
+    }
+  }
+  function resetTimerAndCounter() {
+    resetTimer();
+    counter = 5;
+  }
+
+  onMount(() => {
+    window.addEventListener("focus", startCount);
+    window.addEventListener("blur", resetTimer);
+  });
+
+  onDestroy(() => {
+    resetTimerAndCounter();
+    window.removeEventListener("focus", startCount);
+    window.removeEventListener("blur", resetTimer);
+  });
 </script>
 
 <div class="center-flex-row" style="gap: 16px">
