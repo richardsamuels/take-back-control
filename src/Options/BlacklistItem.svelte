@@ -1,9 +1,20 @@
 <script lang="ts">
-  let { item, index }: { item: string; index: number } = $props();
+  type Props = { item: string; index: number; group: any };
+  let { item, index, group = $bindable() }: Props = $props();
+
+  import {
+    FormGroup,
+    ListGroup,
+    ListGroupItem,
+    Container,
+    Row,
+    Col,
+    Input,
+  } from "@sveltestrap/sveltestrap";
+  const i = index;
 
   import { DEFAULT_SCROLL_FACTOR } from "../constants";
   import { settingsStore, type BlacklistSiteConfig } from "../store.svelte";
-
   const siteConfig: BlacklistSiteConfig = $derived(
     $settingsStore.blacklistSites[item]!,
   );
@@ -24,93 +35,113 @@
   }
 
   // svelte-ignore state_referenced_locally
-  let scrollFactor = $state(siteConfig.scrollFactor);
-  function changeScrollFactor() {
-    if (scrollFactor == null) {
-      scrollFactor = DEFAULT_SCROLL_FACTOR;
+  let value = $state(siteConfig.scrollFactor);
+  function change() {
+    if (value == null) {
+      value = DEFAULT_SCROLL_FACTOR;
     }
     settingsStore.blacklistSites.set(item, {
       ...siteConfig,
-      scrollFactor: scrollFactor,
+      scrollFactor: value,
     });
   }
-
-  import { ListGroup, ListGroupItem } from "@sveltestrap/sveltestrap";
 </script>
 
-<ListGroup>
-  <ListGroupItem>
-    <label
-      class="btn"
-      class:active={blockWholePage}
-      class:btn-secondary={!blockWholePage}
-      class:btn-danger={blockWholePage}
-    >
+<li class="list-group-item">
+  <div class="row align-items-start" data-testid="blacklist-item">
+    <label class="ms-1 form-check-label col">
       <input
-        type="radio"
-        name={`blockWholePage-${index}`}
-        autocomplete="off"
-        onclick={clickBlockWholePage}
-        checked={blockWholePage}
-      /> Block the Whole Page Immediately
-    </label>
-    <label
-      class="btn btn-secondary"
-      class:active={!blockWholePage}
-      class:btn-secondary={blockWholePage}
-      class:btn-success={!blockWholePage}
-    >
-      <input
-        type="radio"
-        name={`blockWholePage-${index}`}
-        autocomplete="off"
-        onclick={clickBlockWholePage}
-        checked={!blockWholePage}
+        class="form-check-input"
+        type="checkbox"
+        name="url"
+        value={i}
+        bind:group
       />
-      Block After Scrolling
+      <span>{item}</span>
     </label>
-  </ListGroupItem>
-  <ListGroupItem>
-    <label
-      class="btn"
-      class:active={alwaysBlock}
-      class:btn-secondary={!alwaysBlock}
-      class:btn-danger={alwaysBlock}
+    <button
+      class="btn btn-info position-end col-1"
+      data-bs-toggle="collapse"
+      data-bs-target={`#item-${i}`}
+      onclick={(e: Event) => e.preventDefault()}
     >
-      <input
-        type="radio"
-        name={`alwaysBlock-${index}`}
-        autocomplete="off"
-        onclick={clickAlwaysBlock}
-        checked={alwaysBlock}
-      /> Never Allow Access (except if matching Whitelist)
-    </label>
-    <label
-      class="btn btn-secondary"
-      class:active={!alwaysBlock}
-      class:btn-secondary={alwaysBlock}
-      class:btn-success={!alwaysBlock}
-    >
-      <input
-        type="radio"
-        name={`alwaysBlock-${index}`}
-        autocomplete="off"
-        onclick={clickAlwaysBlock}
-        checked={!alwaysBlock}
-      />
-      Allow User to Bypass the Wall
-    </label>
-  </ListGroupItem>
-  {#if $settingsStore.showDebug}
-    <ListGroupItem>
-      EXPERIMENTAL: Scroll Factor <input
-        type="number"
-        min="0"
-        max="2"
-        step="0.01"
-        bind:value={scrollFactor}
-        onchange={changeScrollFactor}
-      />
-    </ListGroupItem>
-  {/if}
-</ListGroup>
+      More
+    </button>
+  </div>
+  <div id={`item-${i}`} class="collapse">
+    <ul class="list-group">
+      <li class="list-group-item">
+        <label
+          class="btn"
+          class:active={blockWholePage}
+          class:btn-secondary={!blockWholePage}
+          class:btn-danger={blockWholePage}
+        >
+          <input
+            type="radio"
+            name={`blockWholePage-${i}`}
+            autocomplete="off"
+            onclick={clickBlockWholePage}
+            checked={blockWholePage}
+          /> Block the Whole Page Immediately
+        </label>
+        <label
+          class="btn btn-secondary"
+          class:active={!blockWholePage}
+          class:btn-secondary={blockWholePage}
+          class:btn-success={!blockWholePage}
+        >
+          <input
+            type="radio"
+            name={`blockWholePage-${i}`}
+            autocomplete="off"
+            onclick={clickBlockWholePage}
+            checked={!blockWholePage}
+          />
+          Block After Scrolling
+        </label>
+      </li>
+      <li class="list-group-item">
+        <label
+          class="btn"
+          class:active={alwaysBlock}
+          class:btn-secondary={!alwaysBlock}
+          class:btn-danger={alwaysBlock}
+        >
+          <input
+            type="radio"
+            name={`alwaysBlock-${i}`}
+            autocomplete="off"
+            onclick={clickAlwaysBlock}
+            checked={alwaysBlock}
+          /> Never Allow Access (except if matching Whitelist)
+        </label>
+        <label
+          class="btn btn-secondary"
+          class:active={!alwaysBlock}
+          class:btn-secondary={alwaysBlock}
+          class:btn-success={!alwaysBlock}
+        >
+          <input
+            type="radio"
+            name={`alwaysBlock-${i}`}
+            autocomplete="off"
+            onclick={clickAlwaysBlock}
+            checked={!alwaysBlock}
+          />
+          Allow User to Bypass the Wall
+        </label>
+      </li>
+      <li class="list-group-item">
+        Scroll Factor <input
+          type="number"
+          min="0"
+          max="2"
+          step="0.01"
+          bind:value
+          onchange={change}
+        />
+      </li>
+    </ul>
+  </div>
+</li>
