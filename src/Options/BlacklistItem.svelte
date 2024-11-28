@@ -1,6 +1,6 @@
 <script lang="ts">
   type Props = { item: string; index: number; selected: number[] };
-  let { item, index, selected = $bindable() }: Props = $props();
+  let { item, index, selected }: Props = $props();
 
   import {
     FormGroup,

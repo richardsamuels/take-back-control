@@ -2,9 +2,8 @@
   let {
     item,
     index,
-    selected = $bindable(),
-  }: { item: string; index: number; selected: any } = $props();
-  const i = index;
+    selected,
+  }: { item: string; index: number; selected: number[] } = $props();
 </script>
 
 <li class="list-group-item">
@@ -14,7 +13,7 @@
         class="form-check-input"
         type="checkbox"
         name="url"
-        value={i}
+        value={index}
         bind:group={selected}
       />
       <span>{item}</span>

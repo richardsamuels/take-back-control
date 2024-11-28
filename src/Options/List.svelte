@@ -33,7 +33,6 @@
   function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
-    console.log(todel);
     for (const d of todel.reverse()) {
       remove(d);
     }
@@ -92,7 +91,7 @@
         </Container>
       </li>
       {#each items as item, i (item)}
-        <li class="list-group-item">
+        <!--<li class="list-group-item">
           <div class="row align-items-start">
             <label class="ms-1 form-check-label col">
               <input
@@ -105,7 +104,8 @@
               <span>{item}</span>
             </label>
           </div>
-        </li>
+        </li>-->
+        <Child value={selected} {item} index={i} />
       {/each}
     {/if}
   </ul>
