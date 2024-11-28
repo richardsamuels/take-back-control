@@ -26,6 +26,14 @@
     add(url);
     url = "";
   }
+
+  import {
+    Container,
+    Row,
+    Col,
+    Input,
+    FormGroup,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
 <form class="mb-4" onsubmit={handle}>
@@ -53,25 +61,36 @@
       </span>
     </div>
     <div class="d-flex gap-2">
-      <input
-        bind:value={url}
-        type="text"
-        class="form-control"
-        placeholder="www.instagram.com"
-        aria-describedby="urlInputHelp"
-        class:is-invalid={!valid && url != ""}
-        required
-        data-testid="blacklist-input"
-      />
-      <button
-        type="submit"
-        class="btn btn-primary"
-        disabled={!valid}
-        aria-label="Add"
-        data-testid="blacklist-submit"
-      >
-        <i class="bi bi-plus-lg"></i>
-      </button>
+      <Container>
+        <Row>
+          <Col sm="10">
+            <FormGroup>
+              <Input
+                bind:value={url}
+                type="text"
+                class="form-control"
+                placeholder="www.instagram.com"
+                aria-describedby="urlInputHelp"
+                valid={valid && url != ""}
+                invalid={!valid && url != ""}
+                required
+                data-testid="blacklist-input"
+              />
+            </FormGroup>
+          </Col>
+          <Col sm="2">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              disabled={!valid}
+              aria-label="Add"
+              data-testid="blacklist-submit"
+            >
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </Col>
+        </Row>
+      </Container>
     </div>
     <div id="urlInputHelp" class="form-text">
       <span>

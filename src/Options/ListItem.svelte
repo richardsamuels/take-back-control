@@ -2,8 +2,8 @@
   let {
     item,
     index,
-    group = $bindable(),
-  }: { item: string; index: number; group: any } = $props();
+    selected = $bindable(),
+  }: { item: string; index: number; selected: any } = $props();
   const i = index;
 </script>
 
@@ -15,7 +15,7 @@
         type="checkbox"
         name="url"
         value={i}
-        bind:group
+        bind:group={selected}
       />
       <span>{item}</span>
     </label>

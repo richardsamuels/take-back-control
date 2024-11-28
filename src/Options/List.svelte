@@ -12,6 +12,7 @@
   const Child = child;
 
   import {
+    Label,
     FormGroup,
     ListGroup,
     ListGroupItem,
@@ -32,6 +33,7 @@
   function removeSelected(e: Event) {
     e.preventDefault();
     const todel = $state.snapshot(selected);
+    console.log(todel);
     for (const d of todel.reverse()) {
       remove(d);
     }
@@ -77,7 +79,11 @@
             </Col>
             <Col sm="3">
               <span class="float-end">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
+                <button
+                  type="submit"
+                  class="btn btn-outline-danger btn-sm"
+                  onclick={removeSelected}
+                >
                   Remove
                 </button>
               </span>
@@ -86,7 +92,20 @@
         </Container>
       </li>
       {#each items as item, i (item)}
-        <Child {item} index={i} bind:selected />
+        <li class="list-group-item">
+          <div class="row align-items-start">
+            <label class="ms-1 form-check-label col">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="url"
+                value={i}
+                bind:group={selected}
+              />
+              <span>{item}</span>
+            </label>
+          </div>
+        </li>
       {/each}
     {/if}
   </ul>

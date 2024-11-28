@@ -1,51 +1,38 @@
 <script lang="ts">
   import List from "./List.svelte";
   import { settingsStore } from "../store.svelte";
+  import {
+    Input,
+    FormGroup,
+    Container,
+    Row,
+    Col,
+  } from "@sveltestrap/sveltestrap";
 
-  let selected: number[] = $state([]);
   const settings = $derived($settingsStore);
-  let selectAll = $state(false);
-  $effect(() => {
-    if (
-      (selectAll && selected.length != settings.messages.length) ||
-      settings.messages.length == 0
-    ) {
-      selectAll = false;
-    }
-  });
   let newMsg = $state("");
-
-  function removeSelected(e: Event) {
-    e.preventDefault();
-    const todel = $state.snapshot(selected);
-
-    for (const d of todel.reverse()) {
-      settingsStore.messages.remove(d);
-    }
-    selected.length = 0;
-  }
-
-  function selectAllClick(_e: Event) {
-    selectAll = !selectAll;
-    if (!selectAll) {
-      selected = [];
-    } else {
-      selected = settings.messages.map((_, i: number) => i);
-    }
-  }
 
   function handleNewMsg(e: Event) {
     e.preventDefault();
 
-    for (const v in settings.messages) {
-      if (v == newMsg) {
-        console.log("DUPE");
-        return;
-      }
-    }
-    settingsStore.messages.add(newMsg);
+    settingsStore.messages.add(newMsg.trim());
     newMsg = "";
   }
+
+  const feedback = $derived.by(() => {
+    if ($settingsStore.messages.includes(newMsg.trim())) {
+      return "Message is already in the list";
+    }
+    return "";
+  });
+  const validMsg = $derived.by(() => {
+    const msg = newMsg.trim();
+    if (!msg || $settingsStore.messages.includes(msg)) {
+      return false;
+    }
+
+    return true;
+  });
 </script>
 
 <div class="grid gap-3 pb-5">
@@ -56,7 +43,7 @@
     Insulting phrasing to change your behaviour
   </div>
 
-  <div class="mt-4">
+  <div class="mt-4 pe-3">
     <ul class="list-group">
       <li class="list-group-item">
         <h5 class="mt-2">Add New Message</h5>
@@ -64,23 +51,37 @@
         <form class="mb-4" onsubmit={handleNewMsg}>
           <label for="urlInput" class="form-label"></label>
           <div class="d-flex gap-2">
-            <input
-              type="text"
-              class="form-control"
-              bind:value={newMsg}
-              placeholder="Do something better"
-              aria-describedby="messageHelp"
-              required
-              data-testid="message"
-            />
-            <button
-              type="submit"
-              class="btn btn-primary"
-              aria-label="Add"
-              data-testid="message-submit"
-            >
-              <i class="bi bi-plus-lg"></i>
-            </button>
+            <Container>
+              <Row>
+                <Col sm="10">
+                  <FormGroup>
+                    <Input
+                      type="text"
+                      class="form-control"
+                      bind:value={newMsg}
+                      placeholder="Do something better"
+                      aria-describedby="messageHelp"
+                      required
+                      valid={newMsg != "" && validMsg}
+                      invalid={newMsg != "" && !validMsg}
+                      data-testid="message"
+                      {feedback}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col sm="2">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    aria-label="Add"
+                    data-testid="message-submit"
+                    disabled={!validMsg}
+                  >
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </Col>
+              </Row>
+            </Container>
           </div>
           <div id="messageHelp" class="form-text">
             Try crafting a message that targets one of your fixable fears or
@@ -91,37 +92,11 @@
       <li class="list-group-item">
         <h5 class="mt-2">Inspirational Messages</h5>
 
-        <form class="mb-4" onsubmit={removeSelected}>
-          <div
-            class="ps-3 pe-1 py-1 my-2 d-flex align-items-center justify-content-between"
-          >
-            <div class="d-flex align-items-center gap-2">
-              <label
-                class="form-check-label text-light small"
-                style="opacity: 0.75;"
-              >
-                <input
-                  class="form-check-input mt-0"
-                  type="checkbox"
-                  indeterminate={selected.length > 0 &&
-                    selected.length < $settingsStore.blacklist.length}
-                  bind:checked={selectAll}
-                  onclick={selectAllClick}
-                /> Select all
-              </label>
-            </div>
-            <span>
-              <button type="submit" class="btn btn-outline-danger btn-sm">
-                Remove
-              </button>
-            </span>
-          </div>
-          <List
-            items={$settingsStore.messages}
-            bind:value={selected}
-            setDefaults={settingsStore.messages.reset}
-          />
-        </form>
+        <List
+          items={$settingsStore.messages}
+          remove={settingsStore.messages.remove}
+          setDefaults={settingsStore.messages.reset}
+        />
       </li>
     </ul>
   </div>
