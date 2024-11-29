@@ -15,10 +15,10 @@ export const config = {
       "128": "icons/skull-128.png",
     },
     action: {
-      default_popup: "src/popup.html",
+      default_popup: "popup.html",
     },
     options_ui: {
-      page: "src/options.html",
+      page: "options.html",
       open_in_tab: true,
     },
     background: {
@@ -65,7 +65,7 @@ export const build = {
       assetFileNames: `assets/[name].[ext]`,
     },
     input: {
-      options: resolve(__dirname, "src/options.html"),
+      options: resolve(__dirname, "options.html"),
     },
   },
   sourcemap: true,

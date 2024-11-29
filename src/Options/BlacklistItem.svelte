@@ -1,10 +1,16 @@
 <script lang="ts">
-  let {
-    item,
-    index,
-    group = $bindable(),
-  }: { item: string; index: number; group: any } = $props();
-  const i = index;
+  type Props = { item: string; index: number; selected: number[] };
+  let { item, index, selected }: Props = $props();
+
+  import {
+    FormGroup,
+    ListGroup,
+    ListGroupItem,
+    Container,
+    Row,
+    Col,
+    Input,
+  } from "@sveltestrap/sveltestrap";
 
   import { DEFAULT_SCROLL_FACTOR } from "../constants";
   import { settingsStore, type BlacklistSiteConfig } from "../store.svelte";
@@ -41,28 +47,33 @@
 </script>
 
 <li class="list-group-item">
-  <div class="row align-items-start" data-testid="blacklist-item">
-    <label class="ms-1 form-check-label col">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        name="url"
-        value={i}
-        bind:group
-      />
-      <span>{item}</span>
-    </label>
-    <button
-      class="btn btn-info position-end col-1"
-      data-bs-toggle="collapse"
-      data-bs-target={`#item-${i}`}
-      onclick={(e: Event) => e.preventDefault()}
-    >
-      More
-    </button>
-  </div>
-  <div id={`item-${i}`} class="collapse">
-    <ul class="list-group">
+  <Container>
+    <Row data-testid="blacklist-item">
+      <Col sm="9">
+        <label class="ms-1 form-check-label">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="url"
+            value={index}
+            bind:group={selected}
+          />
+          <span>{item}</span>
+        </label>
+      </Col>
+      <Col sm="3" class="float-end">
+        <button
+          class="btn btn-primary float-end"
+          data-bs-toggle="collapse"
+          data-bs-target={`#list-${index}`}
+        >
+          More
+        </button>
+      </Col>
+    </Row>
+  </Container>
+  <div class="collapse" id={`list-${index}`}>
+    <ul class="list-group pt-3 pb-3">
       <li class="list-group-item">
         <label
           class="btn"
@@ -72,7 +83,7 @@
         >
           <input
             type="radio"
-            name={`blockWholePage-${i}`}
+            name={`blockWholePage-${index}`}
             autocomplete="off"
             onclick={clickBlockWholePage}
             checked={blockWholePage}
@@ -86,7 +97,7 @@
         >
           <input
             type="radio"
-            name={`blockWholePage-${i}`}
+            name={`blockWholePage-${index}`}
             autocomplete="off"
             onclick={clickBlockWholePage}
             checked={!blockWholePage}
@@ -103,7 +114,7 @@
         >
           <input
             type="radio"
-            name={`alwaysBlock-${i}`}
+            name={`alwaysBlock-${index}`}
             autocomplete="off"
             onclick={clickAlwaysBlock}
             checked={alwaysBlock}
@@ -117,7 +128,7 @@
         >
           <input
             type="radio"
-            name={`alwaysBlock-${i}`}
+            name={`alwaysBlock-${index}`}
             autocomplete="off"
             onclick={clickAlwaysBlock}
             checked={!alwaysBlock}
@@ -125,16 +136,18 @@
           Allow User to Bypass the Wall
         </label>
       </li>
-      <li class="list-group-item">
-        Scroll Factor <input
-          type="number"
-          min="0"
-          max="2"
-          step="0.01"
-          bind:value
-          onchange={change}
-        />
-      </li>
+      {#if $settingsStore.showDebug}
+        <li class="list-group-item">
+          Scroll Factor <input
+            type="number"
+            min="0"
+            max="2"
+            step="0.01"
+            bind:value
+            onchange={change}
+          />
+        </li>
+      {/if}
     </ul>
   </div>
 </li>

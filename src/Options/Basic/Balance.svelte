@@ -1,33 +1,66 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
+
+  import { Label, FormGroup, Input } from "@sveltestrap/sveltestrap";
+
+  import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+    Container,
+    Row,
+    Col,
+    Accordion,
+    AccordionItem,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
-<li class="list-group-item">
-  <h5 class="mt-2">Balance</h5>
-
-  <div class="mb-4">
-    <div class="form-text mb-4">
-      Once a day, disable this extension for a small period of time
-    </div>
-    <span class="mb-2">
-      {#if $settingsStore.dailyBalanceInterval == 0}
-        Disable this feature
-      {:else}
-        {$settingsStore.dailyBalanceInterval} minutes
-      {/if}
-    </span>
-    <div class="row">
-      <div class="w-50">
-        <input
-          type="range"
-          class="form-range"
-          bind:value={$settingsStore.dailyBalanceInterval}
-          min="0"
-          max="30"
-          step="1"
-          data-testid="balance"
-        />
+<Card>
+  <CardHeader>
+    <CardTitle>Balance</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <CardText>
+      If enabled, once a day, you can disable the wall for a small period of
+      time. Enable this feature by clicking the skull icon in your addon bar
+    </CardText>
+    <Accordion class="pb-4">
+      <AccordionItem header="Example">
+        <Container>
+          <Row>
+            <Col>Normal wall</Col>
+          </Row>
+          <Row>
+            <Col>
+              <img width="600" src="/balance.png" alt="wall example" />
+            </Col>
+          </Row>
+        </Container>
+      </AccordionItem>
+    </Accordion>
+    <FormGroup>
+      <Label class="mb-2">
+        {#if $settingsStore.dailyBalanceInterval == 0}
+          Disable this feature
+        {:else}
+          {$settingsStore.dailyBalanceInterval} minutes
+        {/if}
+      </Label>
+      <div class="row">
+        <div class="w-50">
+          <Input
+            type="range"
+            class="form-range"
+            aria-label="Balance Time"
+            bind:value={$settingsStore.dailyBalanceInterval}
+            min="0"
+            max="30"
+            step="1"
+          />
+        </div>
       </div>
-    </div>
-  </div>
-</li>
+    </FormGroup>
+  </CardBody>
+</Card>

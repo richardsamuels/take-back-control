@@ -42,7 +42,7 @@ function removeElement<T>(arr: T[], i: number): T[] {
 function nilSettings(): Settings {
   return {
     init: false,
-    animation: true,
+    animation: false,
     showDebug: false,
     enabled: false,
     nagChance: 0,
@@ -60,7 +60,7 @@ function nilSettings(): Settings {
 function defaultSettings() {
   const settings: Settings = {
     init: true,
-    animation: true,
+    animation: false,
     showDebug: false,
     enabled: true,
     nagChance: 0,

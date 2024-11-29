@@ -53,26 +53,17 @@ export async function scroll(page: Page, n: number = 100) {
 
 export async function setup(page: Page, extensionId: string) {
   // Chrome sometimes fail to initialize the extension, so force that now
-  await page.goto(`chrome-extension://${extensionId}/src/options.html`);
+  await page.goto(`chrome-extension://${extensionId}/options.html`);
 
   await page.getByTestId("erase-all").click();
   await page.getByTestId("erase-all").click();
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
-  await page.getByTestId("blacklist-input").fill("*://localhost:3000/*");
-  await page.getByTestId("blacklist-submit").click();
+  await page.getByRole("link", { name: "Blacklist" }).click();
+  await page.getByRole("textbox").fill("*://localhost:3000/*");
+  await page.getByRole("button", { name: "Add" }).click();
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/whitelist`,
-  );
+  await page.getByRole("link", { name: "Whitelist" }).click();
   await page.reload();
-  await page
-    .getByTestId("blacklist-input")
-    .fill("*://localhost:3000/whitelist");
-  await page.getByTestId("blacklist-submit").click();
-
-  //await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-  //await page.getByTestId("extension-enable").click();
+  await page.getByRole("textbox").fill("*://localhost:3000/whitelist");
+  await page.getByRole("button", { name: "Add" }).click();
 }

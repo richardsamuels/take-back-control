@@ -9,19 +9,26 @@
       eraseText = "One more time, just to be safe";
     } else {
       settingsStore.nuke();
-      console.log($settingsStore);
+      window.location.reload();
     }
   }
+
+  import { Button } from "@sveltestrap/sveltestrap";
+  import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
-<li class="list-group-item">
-  <h5 class="mt-2">Reset All Settings</h5>
-  <div class="mt-4 mb-4">
-    <button
-      type="button"
-      class="btn btn-danger"
-      onclick={erase}
-      data-testid="erase-all">{eraseText}</button
+<Card>
+  <CardHeader>
+    <CardTitle>Reset All Settings</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <Button class="mb-4" color="danger" onclick={erase} data-testid="erase-all"
+      >{eraseText}</Button
     >
-  </div>
-</li>
+  </CardBody>
+</Card>

@@ -38,8 +38,8 @@ test("blacklist test", async ({ page, extensionId }) => {
   test.setTimeout(20_000);
   await setup(page, extensionId);
 
-  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-  await page.getByTestId("nag-chance").fill("100");
+  await page.goto(`chrome-extension://${extensionId}/options.html`);
+  await page.getByRole("slider", { name: "Bypass Chance" }).fill("100");
 
   await page.clock.setFixedTime(new Date("2024-02-02T08:00:00"));
   await page.goto("http://localhost:3000");
@@ -81,9 +81,7 @@ test("whitelist", async ({ page, extensionId }) => {
 test("test blacklist options", async ({ page, extensionId }) => {
   await setup(page, extensionId);
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
   await page
     .getByTestId("blacklist-item")
     .filter({ hasText: "*://localhost:3000/*" })
@@ -114,15 +112,12 @@ test("test blacklist options", async ({ page, extensionId }) => {
 // Thus, we have a massive hack: inject a button into the content wall
 // that we can click in this test. It is only present when using playwright
 test("test balance", async ({ page, extensionId }) => {
-  test.setTimeout(120_000);
   await setup(page, extensionId);
 
-  await page.goto(`chrome-extension://${extensionId}/src/options.html#/`);
-  await page.getByTestId("balance").fill("1");
+  await page.goto(`chrome-extension://${extensionId}/options.html`);
+  await page.getByRole("slider", { name: "Balance Time" }).fill("1");
+  await page.getByRole("link", { name: "Blacklist" }).click();
 
-  await page.goto(
-    `chrome-extension://${extensionId}/src/options.html#/blacklist`,
-  );
   await page
     .getByTestId("blacklist-item")
     .filter({ hasText: "*://localhost:3000/*" })
@@ -140,6 +135,8 @@ test("test balance", async ({ page, extensionId }) => {
   // does that for us
   await page.getByTestId("balance-button").dispatchEvent("click");
   await expectNoContentWall(page);
+
+  test.setTimeout(120_000);
 
   // HACK: Playwright Clock API doesn't work with the browser.alarm API, so
   // we actually have to wait a minute of wall time. Seriously

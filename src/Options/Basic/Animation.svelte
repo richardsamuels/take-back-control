@@ -1,32 +1,39 @@
 <script lang="ts">
   import { settingsStore } from "../../store.svelte";
+
+  import { FormGroup, Input } from "@sveltestrap/sveltestrap";
+
+  const label = $settingsStore.animation
+    ? "Animations active"
+    : "Animations disabled";
+
+  import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+  } from "@sveltestrap/sveltestrap";
 </script>
 
-<li class="list-group-item">
-  <h5 class="mt-2">Animation Toggle</h5>
-
-  <div class="mb-4">
-    <div class="form-text mb-4">
-      Toggle subtle animations on the doomscroll wall.
-    </div>
-    <div class="row">
-      <div class="w-50">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="enable-toggle"
-            bind:checked={$settingsStore.animation}
-          />
-          <label class="form-check-label" for="enable-toggle">
-            {#if $settingsStore.animation}
-              Animations active
-            {:else}
-              Animations disabled
-            {/if}
-          </label>
+{#if $settingsStore.showDebug}
+  <Card>
+    <CardHeader>
+      <CardTitle>EXPERIMENTAL: Animation</CardTitle>
+    </CardHeader>
+    <CardBody>
+      <CardText>Toggle subtle animations on the doomscroll wall</CardText>
+      <FormGroup>
+        <div class="w-50">
+          <FormGroup>
+            <Input
+              type="switch"
+              bind:checked={$settingsStore.animation}
+              {label}
+            />
+          </FormGroup>
         </div>
-      </div>
-    </div>
-  </div>
-</li>
+      </FormGroup>
+    </CardBody>
+  </Card>
+{/if}
