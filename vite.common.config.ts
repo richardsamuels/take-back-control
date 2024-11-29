@@ -22,7 +22,7 @@ export const config = {
       open_in_tab: true,
     },
     background: {
-      scripts: ["src/background.ts"],
+      scripts: ["src/main-background.ts"],
     },
     web_accessible_resources: [
       {

@@ -1,9 +1,9 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
-  import { settingsStore } from "./store.svelte";
+  import { settingsStore } from "@/store";
   import { onMount, onDestroy } from "svelte";
-  import { patternMatch } from "./Options/validator";
-  import { ONE_DAY_MINUTES } from "./constants";
+  import { patternMatch } from "@/lib/validator";
+  import { ONE_DAY_MINUTES } from "@/lib/constants";
 
   function options(e: Event) {
     e.preventDefault();

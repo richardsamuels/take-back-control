@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Basic from "./Options/Basic.svelte";
-  import Blacklist from "./Options/Blacklist.svelte";
-  import Whitelist from "./Options/Whitelist.svelte";
-  import Messages from "./Options/Messages.svelte";
-  import Debug from "./Options/Debug.svelte";
+  import Basic from "./Basic";
+  import Blacklist from "./Blacklist.svelte";
+  import Whitelist from "./Whitelist.svelte";
+  import Messages from "./Messages.svelte";
+  import Debug from "./Debug.svelte";
   import { onMount, onDestroy } from "svelte";
-  import { settingsStore } from "./store.svelte";
+  import { settingsStore } from "@/store";
 
   let url = $state("");
   function hashChange(event: HashChangeEvent) {

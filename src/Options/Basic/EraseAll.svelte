@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settingsStore } from "../../store.svelte";
+  import { settingsStore } from "@/store";
 
   let eraseText = $state("Erase Everything Without Any Undo");
 

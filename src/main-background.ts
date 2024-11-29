@@ -1,9 +1,13 @@
 import * as browser from "webextension-polyfill";
 import { get } from "svelte/store";
-import { ONE_DAY_MINUTES } from "./constants";
-import { settingsStore, type Settings } from "./store.svelte";
-import { initStorage, storageChange } from "./store.svelte";
-import { tryParseMatchPattern } from "./Options/validator";
+import { ONE_DAY_MINUTES } from "@/lib/constants";
+import {
+  initStorage,
+  storageChange,
+  settingsStore,
+  type Settings,
+} from "@/store";
+import { tryParseMatchPattern } from "@/lib/validator";
 
 let registered: any = null;
 

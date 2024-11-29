@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { coerce_and_explain, isValidMatchPattern } from "./validator";
+  import { coerce_and_explain, isValidMatchPattern } from "@/lib/validator";
   let url = $state("");
   let [realPattern, errors] = $derived(coerce_and_explain(url.trimStart()));
 

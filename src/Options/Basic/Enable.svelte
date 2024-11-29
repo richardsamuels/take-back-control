@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settingsStore } from "../../store.svelte";
+  import { settingsStore } from "@/store";
   import { ListGroup, ListGroupItem, Input } from "@sveltestrap/sveltestrap";
 
   import {

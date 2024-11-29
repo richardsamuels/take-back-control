@@ -15,7 +15,11 @@
     "checkJs": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "typeRoots": ["@types/firefox-webext-browser", "node_modules/@types"]
+    "typeRoots": ["@types/firefox-webext-browser", "node_modules/@types"],
+    "paths": {
+      "@/lib/*": ["./src/lib/*"],
+      "@/store": ["./src/store.svelte"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]

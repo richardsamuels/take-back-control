@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settingsStore } from "../../store.svelte";
+  import { settingsStore } from "@/store";
 
   import { FormGroup, Input } from "@sveltestrap/sveltestrap";
 
