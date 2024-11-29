@@ -1,7 +1,7 @@
 import * as browser from "webextension-polyfill";
 import * as constants from "@/lib/constants";
 import { writable, get } from "svelte/store";
-import { type Message } from "./messages";
+import { type Message } from "@/lib/messages";
 
 export type BlacklistSitesMap = {
   [key: string]: BlacklistSiteConfig;
@@ -229,9 +229,6 @@ class LikeCommentAnd {
   subscribe = async (store: Settings) => {
     const msg: Message = {
       sendUrlToPopup: false,
-      behaviorChanged: false,
-      reloadMessages: false,
-      reloadContentScripts: false,
     };
     if (this.lastStore === undefined) {
       // For initial fetch, just store the store. This is called
@@ -240,21 +237,9 @@ class LikeCommentAnd {
       return;
     }
 
-    if (store.messages != this.lastStore?.messages) {
-      msg.reloadMessages = true;
-    }
-    if (store.enabled != this.lastStore?.enabled) {
-      msg.behaviorChanged = true;
-    }
-    if (
-      store.blacklist != this.lastStore?.blacklist ||
-      store.whitelist != this.lastStore?.whitelist
-    ) {
-      msg.reloadContentScripts = true;
-    }
     this.lastStore = store;
     const newStore = { settings: store };
-    console.trace("storing", newStore);
+    //console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
       await browser.runtime.sendMessage(msg);
