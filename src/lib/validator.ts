@@ -103,12 +103,12 @@ const schemeTokens = [
   //"file",
 ];
 export function tryParseMatchPattern(pattern: string): ParsedPattern {
-  if (pattern.startsWith("data:")) {
-    return handleDataPattern(pattern);
-  }
-  if (pattern.startsWith(SCHEME_FILE)) {
-    return handleFilePattern(pattern);
-  }
+  //if (pattern.startsWith("data:")) {
+  //  return handleDataPattern(pattern);
+  //}
+  //if (pattern.startsWith(SCHEME_FILE)) {
+  //  return handleFilePattern(pattern);
+  //}
   // Validate scheme
   let scheme = null;
   for (const scheme_ of schemeTokens) {
