@@ -27,12 +27,7 @@
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;
   }
 
-  const siteConfig = $derived.by(() => {
-    if (blacklistPattern == null) {
-      console.error("Blacklist pattern not found. This should NEVER happen");
-    }
-    return $settingsStore.blacklistSites[blacklistPattern];
-  });
+  const siteConfig = $settingsStore.blacklistSites[blacklistPattern];
 
   const makeWall = (
     n: number,

@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   // @ts-ignore
@@ -12,4 +13,5 @@ export default defineConfig({
       "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
     ],
   },
+  plugins: [tsconfigPaths()],
 });
