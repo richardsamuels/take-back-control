@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Enable from "./Basic/Enable.svelte";
-  import Bypass from "./Basic/Bypass.svelte";
-  import Balance from "./Basic/Balance.svelte";
-  import Animation from "./Basic/Animation.svelte";
-  import EraseAll from "./Basic/EraseAll.svelte";
+  import Enable from "./Enable.svelte";
+  import Bypass from "./Bypass.svelte";
+  import Balance from "./Balance.svelte";
+  import Animation from "./Animation.svelte";
+  import EraseAll from "./EraseAll.svelte";
 </script>
 
 <div class="grid gap-3 pb-5">

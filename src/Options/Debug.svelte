@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { settingsStore, type Settings } from "../store.svelte";
+  import { settingsStore, type Settings } from "@/store";
   import { prettyPrintJson } from "pretty-print-json";
   import {
     RICHARDS_DEFAULTS_BLACKLIST,
     RICHARDS_DEFAULTS_WHITELIST,
-  } from "../constants";
+  } from "@/lib/constants";
 
   import "/node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.css";
   const s: Settings = $derived($settingsStore);

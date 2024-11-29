@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Wall from "./Content/Wall.svelte";
-  import { patternMatch } from "./Options/validator";
-  import { settingsStore } from "./store.svelte";
+  import Wall from "./Wall.svelte";
+  import { patternMatch } from "@/lib/validator";
+  import { settingsStore } from "@/store";
 
   function findPattern(patterns: string[]) {
     // Determine the pattern that caused this script to be injected

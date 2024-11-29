@@ -1,9 +1,9 @@
 import { mount } from "svelte";
 import "./app.css";
-import Options from "./Options.svelte";
+import Options from "./Options";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./theme";
-import { storageChange } from "./store.svelte";
+import { storageChange } from "@/store";
 
 await storageChange();
 

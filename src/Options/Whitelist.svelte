@@ -1,7 +1,7 @@
 <script lang="ts">
   import List from "./List.svelte";
   import UrlAdder from "./UrlAdder.svelte";
-  import { settingsStore } from "../store.svelte";
+  import { settingsStore } from "@/store";
 </script>
 
 <div class="grid gap-3 pb-5">

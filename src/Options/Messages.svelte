@@ -1,6 +1,6 @@
 <script lang="ts">
   import List from "./List.svelte";
-  import { settingsStore } from "../store.svelte";
+  import { settingsStore } from "@/store";
   import {
     Input,
     FormGroup,

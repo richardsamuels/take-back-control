@@ -6,8 +6,8 @@
     MESSAGE_DISPLAY_DIV_ID,
     MAX_BLUR,
     ONE_DAY_MINUTES,
-  } from "../constants";
-  import { settingsStore } from "../store.svelte";
+  } from "@/lib/constants";
+  import { settingsStore } from "@/store";
 
   type Props = {
     blacklistPattern: string;

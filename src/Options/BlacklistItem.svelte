@@ -12,8 +12,8 @@
     Input,
   } from "@sveltestrap/sveltestrap";
 
-  import { DEFAULT_SCROLL_FACTOR } from "../constants";
-  import { settingsStore, type BlacklistSiteConfig } from "../store.svelte";
+  import { DEFAULT_SCROLL_FACTOR } from "@/lib/constants";
+  import { settingsStore, type BlacklistSiteConfig } from "@/store";
   const siteConfig: BlacklistSiteConfig = $derived(
     $settingsStore.blacklistSites[item]!,
   );

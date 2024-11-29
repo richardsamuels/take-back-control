@@ -3,7 +3,7 @@ import "./app.css";
 import Popup from "./Popup.svelte";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./theme";
-import { storageChange } from "./store.svelte";
+import { storageChange } from "@/store";
 
 await storageChange();
 

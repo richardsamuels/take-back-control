@@ -6,7 +6,7 @@
   };
   let { n, continueFn, site }: Props = $props();
 
-  import { settingsStore } from "../store.svelte";
+  import { settingsStore } from "@/store";
   import { onDestroy, onMount } from "svelte";
 
   function getOrdinal(n: number) {
