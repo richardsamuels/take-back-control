@@ -16,7 +16,7 @@ export function getOrdinal(n: number) {
   return n + suffix;
 }
 
-export function findPattern(patterns: string[]) {
+export function findPattern(patterns: string[]): string | null {
   // Determine the pattern that caused this script to be injected
   const possiblePatterns = patterns.filter((p) =>
     patternMatch(p, window.location.toString()),
@@ -29,6 +29,14 @@ export function findPattern(patterns: string[]) {
   possiblePatterns.sort((a: string, b: string) => {
     return b.length - a.length;
   });
+  const candidates = possiblePatterns.filter(
+    (x) => x.length == possiblePatterns[0].length,
+  );
+  if (candidates.length > 1) {
+    const numWildcards = candidates.map((x, i) => [i, x.split("*").length - 1]);
+    numWildcards.sort((a, b) => a[1] - b[1]);
+    return candidates[numWildcards[0][0]];
+  }
   return possiblePatterns[0];
 }
 
