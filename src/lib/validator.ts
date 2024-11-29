@@ -1,11 +1,3 @@
-function isChrome(): boolean {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  const vendor = window.navigator.vendor.toLowerCase();
-  return (
-    /chrome/.test(userAgent) && /google inc/.test(vendor) && !("opr" in window)
-  );
-}
-
 export type ParsedPattern = {
   valid: boolean;
   scheme?: Scheme;
@@ -75,6 +67,7 @@ export function coerce(pattern: string): string {
   }
   return newPattern;
 }
+
 export function coerce_and_explain(pattern: string): [string, string[]] {
   if (pattern == "<all_urls>" || pattern.startsWith("data:")) {
     return ["", ["<all_urls> and data: are forbidden"]];
@@ -145,6 +138,7 @@ export function isValidMatchPattern(pattern: string) {
   const p = tryParseMatchPattern(pattern);
   return p.valid;
 }
+
 function handleFilePattern(pattern: string): ParsedPattern {
   const path_candidate = pattern.slice(SCHEME_FILE.length);
   const path = tryParseFilePath(path_candidate);

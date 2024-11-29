@@ -8,6 +8,7 @@
     ONE_DAY_MINUTES,
   } from "@/lib/constants";
   import { settingsStore } from "@/store";
+  import { randomItemFrom } from "@/lib/helpers";
 
   type Props = {
     blacklistPattern: string;
@@ -21,9 +22,6 @@
     scrollY: number;
   };
 
-  function randomItemFrom<T>(array: T[]): T {
-    return array[Math.floor(Math.random() * array.length)];
-  }
   function scrollProgress(threshold: number, offset: number = 0) {
     const amountScrolled = Math.max(threshold - offset, 0);
     return Math.min(Math.floor(amountScrolled / 25), 100) / 100;

@@ -8,18 +8,7 @@
 
   import { settingsStore } from "@/store";
   import { onDestroy, onMount } from "svelte";
-
-  function getOrdinal(n: number) {
-    let suffix = "th";
-    if (n % 10 == 1 && n % 100 != 11) {
-      suffix = "st";
-    } else if (n % 10 == 2 && n % 100 != 12) {
-      suffix = "nd";
-    } else if (n % 10 == 3 && n % 100 != 13) {
-      suffix = "rd";
-    }
-    return n + suffix;
-  }
+  import { getOrdinal } from "@/lib/helpers";
 
   let showNag = $state(false);
   let forceShowNag = $state(false);

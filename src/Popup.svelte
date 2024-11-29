@@ -4,6 +4,7 @@
   import { onMount, onDestroy } from "svelte";
   import { patternMatch } from "@/lib/validator";
   import { ONE_DAY_MINUTES } from "@/lib/constants";
+  import { type Message } from "@/lib/messages";
 
   function options(e: Event) {
     e.preventDefault();
@@ -25,7 +26,7 @@
     try {
       (await browser.tabs.sendMessage(active.id!, {
         sendUrlToPopup: true,
-      })) as { url: URL };
+      } as Message)) as { url: URL };
       extensionActive = true;
       return true;
     } catch (err) {

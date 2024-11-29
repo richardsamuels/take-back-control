@@ -1,6 +1,6 @@
 import * as browser from "webextension-polyfill";
 import { mount } from "svelte";
-import { type Message } from "./messages";
+import { type Message } from "@/lib/messages";
 import Content from "./Content";
 import { settingsStore, storageChange } from "@/store";
 
