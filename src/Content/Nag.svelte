@@ -22,6 +22,7 @@
   }
 
   let showNag = $state(false);
+  let forceShowNag = $state(false);
   let counter = $state(5);
   let interval: ReturnType<typeof setInterval> | null = null;
 
@@ -39,7 +40,7 @@
       nag = r <= $settingsStore.nagChance / 100;
     }
 
-    if (nag) {
+    if (nag || forceShowNag) {
       showNag = true;
       startCount();
     } else {
@@ -75,6 +76,7 @@
   function resetTimerAndCounter() {
     resetTimer();
     counter = 5;
+    forceShowNag = false;
   }
 
   onMount(() => {
@@ -83,6 +85,13 @@
   });
 
   onDestroy(() => {
+    // If the user scrolls up when the nag is visible, they will retrigger the
+    // probability test and can bypass the wall timer. So, if the nag is up
+    // when this window is destroyed, the next time the "It's Important" button
+    // is pressed, the user should be forced to go through the nag
+    if (showNag) {
+      forceShowNag = true;
+    }
     resetTimerAndCounter();
     window.removeEventListener("focus", startCount);
     window.removeEventListener("blur", resetTimer);

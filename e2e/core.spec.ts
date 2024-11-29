@@ -132,12 +132,12 @@ test("test balance", async ({ page, extensionId }) => {
     .getByRole("radio", { name: "Block the Whole Page Immediately" })
     .click();
 
-  // We can't click the popup to start the balance featurem, so this script
-  // does that for us
   await page.goto("http://localhost:3000/");
   await waitForContentScript(page);
   await expectContentWall(page);
 
+  // We can't click the popup to start the balance featurem, so this hack
+  // does that for us
   await page.getByTestId("balance-button").dispatchEvent("click");
   await expectNoContentWall(page);
 
