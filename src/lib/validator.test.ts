@@ -351,6 +351,11 @@ describe("patternMatch", () => {
       ],
       [
         "*://*.reddit.com/r/cats/*",
+        "http://reddit.com/r/cats/blahblahblah",
+        true,
+      ],
+      [
+        "*://*.reddit.com/r/cats/*",
         "http://old.reddit.com/r/dogs/blahblahblah",
         false,
       ],
