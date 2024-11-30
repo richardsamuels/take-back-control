@@ -14,6 +14,7 @@ export type BlacklistSiteConfig = {
 };
 
 export type Time = {
+  globalDate: number | null;
   global: number;
 };
 
@@ -52,6 +53,7 @@ function nilSettings(): Settings {
     blacklistSites: {},
     dailyBalanceInterval: 0,
     time: {
+      globalDate: null,
       global: 0,
     },
   };
@@ -70,6 +72,7 @@ function defaultSettings() {
     dailyBalanceInterval: 0,
     blacklistSites: {},
     time: {
+      globalDate: null,
       global: 0,
     },
   };
@@ -184,7 +187,7 @@ function createSettingsStore() {
       start: () =>
         update((store) => ({
           ...store,
-          time: { ...store.time, global: 1 },
+          time: { ...store.time, global: 1, globalDate: new Date().getTime() },
         })),
       inc: () =>
         update((store) => ({
@@ -199,7 +202,7 @@ function createSettingsStore() {
       reset: () =>
         update((store) => ({
           ...store,
-          time: { ...store.time, global: 0 },
+          time: { ...store.time, global: 0, globalDate: null },
         })),
     },
     update,
