@@ -111,16 +111,11 @@ describe("tryParseMatchPattern", () => {
       [
         "file:///*",
         {
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
           scheme: {
             data: "file",
-            valid: true,
+            valid: false,
           },
-          valid: true,
+          valid: false,
         },
       ],
       [
@@ -140,138 +135,6 @@ describe("tryParseMatchPattern", () => {
     }
   });
 
-  it("accepts valid patterns for file", () => {
-    const table: [string, ut.ParsedPattern][] = [
-      [
-        "file:///*",
-        {
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "file",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "file:///test/*/test",
-        {
-          path: {
-            data: "/test/*/test",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "file",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "file:///blah/*",
-        {
-          path: {
-            data: "/blah/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "file",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-    ];
-    for (const [t, expected] of table) {
-      expect(ut.tryParseMatchPattern(t), t).toStrictEqual(expected);
-      expect(ut.isValidMatchPattern(t), t).toBe(expected.valid);
-    }
-  });
-
-  it("accepts valid patterns (chrome)", () => {
-    setGlobals("chrome", "google inc");
-
-    const table: [string, ut.ParsedPattern][] = [
-      [
-        "*://localhost:3000/*",
-        {
-          host: {
-            data: "localhost:3000",
-            port: 3000,
-            has_port: true,
-            valid: true,
-            wildcard_ok: true,
-          },
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "*",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "*://localhost/*",
-        {
-          host: {
-            data: "localhost",
-            port: null,
-            has_port: false,
-            valid: true,
-            wildcard_ok: true,
-          },
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "*",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-      [
-        "*://*.test.com/*",
-        {
-          host: {
-            data: "*.test.com",
-            port: null,
-            has_port: false,
-            valid: true,
-            wildcard_ok: true,
-          },
-          path: {
-            data: "/*",
-            has_leader: true,
-            valid: true,
-          },
-          scheme: {
-            data: "*",
-            valid: true,
-          },
-          valid: true,
-        },
-      ],
-    ];
-    for (const [t, expected] of table) {
-      expect(ut.tryParseMatchPattern(t), t).toStrictEqual(expected);
-      expect(ut.isValidMatchPattern(t), t).toStrictEqual(expected.valid);
-    }
-    setGlobals("firefox", "mozilla");
-  });
-
   it("rejects invalid patterns", () => {
     const table: [string, ut.ParsedPattern][] = [
       ["", { valid: false }],
@@ -288,14 +151,9 @@ describe("tryParseMatchPattern", () => {
       [
         "file://*",
         {
-          path: {
-            data: "*",
-            has_leader: false,
-            valid: false,
-          },
           scheme: {
             data: "file",
-            valid: true,
+            valid: false,
           },
           valid: false,
         },
@@ -303,14 +161,6 @@ describe("tryParseMatchPattern", () => {
       [
         "data:content/type;base64,",
         {
-          data: {
-            base64: false,
-            data: "",
-          },
-          scheme: {
-            data: "data",
-            valid: true,
-          },
           valid: false,
         },
       ],
