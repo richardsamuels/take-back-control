@@ -61,13 +61,6 @@ async function registerScript() {
   ]);
 }
 
-function getTomorrowAt3AM(): Date {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(3, 0, 0, 0);
-  return tomorrow;
-}
-
 function dailyAlarm(alarmInfo: browser.Alarms.Alarm) {
   if (alarmInfo.name !== "daily-reset") {
     return;
@@ -92,6 +85,14 @@ function minuteTick(alarmInfo: browser.Alarms.Alarm) {
   store = get<Settings>(settingsStore);
   if (store.time.global > store.dailyBalanceInterval) {
     settingsStore.time.overload();
+
+    // Schedule the reset for 24 hours from the expiration of the balance
+    // period
+    const resetTime = new Date(store.time.globalDate!);
+    resetTime.setTime(resetTime.getTime() + 24 * 60 * 60 * 1000);
+    browser.alarms.create("daily-reset", {
+      when: resetTime.getTime(),
+    });
   }
 }
 
@@ -101,10 +102,6 @@ storageChange().then(() => {
   function finish() {
     browser.alarms.onAlarm.addListener(dailyAlarm);
     browser.alarms.onAlarm.addListener(minuteTick);
-    browser.alarms.create("daily-reset", {
-      when: getTomorrowAt3AM().getTime(),
-      periodInMinutes: ONE_DAY_MINUTES,
-    });
     browser.alarms.create("every-minute", {
       delayInMinutes: 1,
       periodInMinutes: 1,
