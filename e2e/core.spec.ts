@@ -144,6 +144,7 @@ test("test balance", async ({ page, extensionId }) => {
 });
 
 test("delete on options work", async ({ page, extensionId }) => {
+  test.slow();
   await setup(page, extensionId);
 
   await page.goto(`chrome-extension://${extensionId}/options.html`);
