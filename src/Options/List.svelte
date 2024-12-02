@@ -11,16 +11,7 @@
   let { items, setDefaults, remove, child = ListItem }: Props = $props();
   const Child = child;
 
-  import {
-    Label,
-    FormGroup,
-    ListGroup,
-    ListGroupItem,
-    Container,
-    Row,
-    Col,
-    Input,
-  } from "@sveltestrap/sveltestrap";
+  import { Container, Row, Col, Input } from "@sveltestrap/sveltestrap";
 
   let selected: number[] = $state([]);
   let selectAll = $state(false);
@@ -68,6 +59,7 @@
           <Row>
             <Col sm="9">
               <Input
+                id={items.join("")}
                 type="checkbox"
                 indeterminate={selected.length > 0 &&
                   selected.length < items.length}
@@ -81,6 +73,7 @@
                 <button
                   type="submit"
                   class="btn btn-outline-danger btn-sm"
+                  disabled={selected.length == 0}
                   onclick={removeSelected}
                 >
                   Remove
@@ -105,7 +98,7 @@
             </label>
           </div>
         </li>-->
-        <Child value={selected} {item} index={i} />
+        <Child bind:group={selected} {item} index={i} />
       {/each}
     {/if}
   </ul>

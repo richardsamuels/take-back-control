@@ -1,16 +1,8 @@
 <script lang="ts">
-  type Props = { item: string; index: number; selected: number[] };
-  let { item, index, selected }: Props = $props();
+  type Props = { item: string; index: number; group: number[] };
+  let { item, index, group = $bindable() }: Props = $props();
 
-  import {
-    FormGroup,
-    ListGroup,
-    ListGroupItem,
-    Container,
-    Row,
-    Col,
-    Input,
-  } from "@sveltestrap/sveltestrap";
+  import { Container, Row, Col } from "@sveltestrap/sveltestrap";
 
   import { DEFAULT_SCROLL_FACTOR } from "@/lib/constants";
   import { settingsStore, type BlacklistSiteConfig } from "@/store";
@@ -44,6 +36,22 @@
       scrollFactor: value,
     });
   }
+
+  const handleCheck = () => {
+    group = [...group, index];
+  };
+  const handleUncheck = () => {
+    group = group.filter((checkedValue) => checkedValue !== index);
+  };
+
+  let checked = $derived(group.includes(index));
+  function onclick() {
+    if (!checked) {
+      handleCheck();
+    } else {
+      handleUncheck();
+    }
+  }
 </script>
 
 <li class="list-group-item">
@@ -56,7 +64,8 @@
             type="checkbox"
             name="url"
             value={index}
-            bind:group={selected}
+            {checked}
+            {onclick}
           />
           <span>{item}</span>
         </label>
