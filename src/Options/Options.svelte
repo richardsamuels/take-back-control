@@ -28,8 +28,12 @@
       !window.location.hash ||
       ["", "#", "#/"].includes(window.location.hash)
     ) {
-      window.location.hash = "#/basic";
-      window.history.replaceState(null, "", window.location.toString());
+      //window.location.hash = "#/basic";
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.toString()}#/basic`,
+      );
     }
     url = window.location.hash;
 
