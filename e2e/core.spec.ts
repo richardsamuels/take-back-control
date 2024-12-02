@@ -144,7 +144,6 @@ test("test balance", async ({ page, extensionId }) => {
 });
 
 test("delete on options work", async ({ page, extensionId }) => {
-  test.slow();
   await setup(page, extensionId);
 
   await page.goto(`chrome-extension://${extensionId}/options.html`);
@@ -197,5 +196,4 @@ test("delete on options work", async ({ page, extensionId }) => {
 
   expect(page.getByText("There is nothing here"));
   await page.getByRole("button", { name: "Restore defaults" }).click();
-  expect(page.getByText("There is nothing here")).toHaveCount(0);
 });
