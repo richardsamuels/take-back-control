@@ -142,3 +142,59 @@ test("test balance", async ({ page, extensionId }) => {
   // we actually have to wait a minute of wall time. Seriously
   await expectContentWall(page, { timeout: 65 * 1000 });
 });
+
+test("delete on options work", async ({ page, extensionId }) => {
+  await setup(page, extensionId);
+
+  await page.goto(`chrome-extension://${extensionId}/options.html`);
+
+  // Blacklist
+  await page.getByRole("link", { name: "Blacklist" }).click();
+  await page.getByRole("checkbox", { name: "*://*.youtube.com/*" }).click();
+  await page.getByRole("checkbox", { name: "*://*.instagram.com/*" }).click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  await page.getByRole("checkbox", { name: "Select all" }).click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  expect(page.getByText("There is nothing here"));
+  await page.getByRole("button", { name: "Restore defaults" }).click();
+  expect(page.getByText("There is nothing here")).toHaveCount(0);
+
+  // Whitelist page
+  await page.getByRole("link", { name: "Whitelist" }).click();
+  await page
+    .getByRole("checkbox", { name: "*://*.instagram.com/direct/inbox/" })
+    .click();
+  await page
+    .getByRole("checkbox", { name: "*://*.instagram.com/direct/*" })
+    .click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  await page.getByRole("checkbox", { name: "Select all" }).click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  expect(page.getByText("There is nothing here"));
+  await page.getByRole("button", { name: "Restore defaults" }).click();
+  expect(page.getByText("There is nothing here")).toHaveCount(0);
+
+  // Messages
+  await page.getByRole("link", { name: "Messages" }).click();
+  await page.getByRole("textbox").fill("TESTTEST");
+  await page.getByRole("button", { name: "Add" }).click();
+  await page.getByRole("checkbox", { name: "TESTTEST" }).click();
+  await page
+    .getByRole("checkbox", { name: "Weren't you doing something?" })
+    .click();
+  await page
+    .getByRole("checkbox", { name: "You are compromising your future self." })
+    .click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  await page.getByRole("checkbox", { name: "Select all" }).click();
+  await page.getByRole("button", { name: "Remove" }).click();
+
+  expect(page.getByText("There is nothing here"));
+  await page.getByRole("button", { name: "Restore defaults" }).click();
+  expect(page.getByText("There is nothing here")).toHaveCount(0);
+});

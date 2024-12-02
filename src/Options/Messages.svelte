@@ -9,7 +9,6 @@
     Col,
   } from "@sveltestrap/sveltestrap";
 
-  const settings = $derived($settingsStore);
   let newMsg = $state("");
 
   function handleNewMsg(e: Event) {
