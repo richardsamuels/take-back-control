@@ -90,22 +90,33 @@ function minuteTick(alarmInfo: browser.Alarms.Alarm) {
     // period
     const resetTime = new Date(store.time.globalDate!);
     resetTime.setTime(resetTime.getTime() + 24 * 60 * 60 * 1000);
-    browser.alarms.create("daily-reset", {
-      when: resetTime.getTime(),
-    });
+    createResetAlarm(resetTime.getTime());
   }
+}
+
+function createResetAlarm(t: number | Date | null) {
+  if (t === null) {
+    return;
+  }
+  const resetTime = new Date(t);
+  resetTime.setTime(resetTime.getTime() + 24 * 60 * 60 * 1000);
+  browser.alarms.create("daily-reset", {
+    when: resetTime.getTime(),
+  });
+  console.log("Balance reset: ", resetTime);
 }
 
 // Chrome does not support top level await in service workers, so we have to
 // do this
 storageChange().then(() => {
-  function finish() {
+  function finish(t: number | null) {
     browser.alarms.onAlarm.addListener(dailyAlarm);
     browser.alarms.onAlarm.addListener(minuteTick);
     browser.alarms.create("every-minute", {
       delayInMinutes: 1,
       periodInMinutes: 1,
     });
+    createResetAlarm(t);
     browser.storage.sync.onChanged.addListener(registerScript);
     registerScript();
   }
@@ -118,9 +129,9 @@ storageChange().then(() => {
         "Plugin installed, initialized defaults",
         get(settingsStore),
       );
-      finish();
+      finish(store.time.globalDate);
     });
   } else {
-    finish();
+    finish(store.time.globalDate);
   }
 });
