@@ -4,6 +4,7 @@
   import {
     RICHARDS_DEFAULTS_BLACKLIST,
     RICHARDS_DEFAULTS_WHITELIST,
+    ONE_DAY_MINUTES,
   } from "@/lib/constants";
 
   import "/node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.css";
@@ -39,6 +40,17 @@
   }
   function balance_overload() {
     settingsStore.time.overload();
+  }
+  function balance_almost_reset() {
+    settingsStore.time.overload();
+
+    const d = new Date();
+    d.setMinutes(d.getMinutes() + 2);
+    d.setTime(d.getTime() - 24 * 60 * 60 * 1000);
+    $settingsStore.time = {
+      ...$settingsStore.time,
+      globalDate: d.getTime(),
+    };
   }
 </script>
 
@@ -101,6 +113,15 @@
       class="btn btn-primary"
       onclick={balance_reset}
       disabled={$settingsStore.dailyBalanceInterval == 0}>Balance: Reset</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary"
+      onclick={balance_almost_reset}
+      disabled={$settingsStore.dailyBalanceInterval == 0 &&
+        ($settingsStore.time.global == 0 ||
+          $settingsStore.time.global == ONE_DAY_MINUTES)}
+      >Balance: Set Renewal Time to +1 minute</button
     >
   </div>
   <pre class="json-container pb-5">
