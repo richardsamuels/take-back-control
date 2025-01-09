@@ -88,7 +88,7 @@
 </script>
 
 <div class="center-flex-row" style="gap: 16px">
-  {#if siteConfig.alwaysBlock}
+  {#if siteConfig.alwaysBlock || (!$settingsStore.allowBypass && !siteConfig.allowBypass)}
     <button
       id="finite-extend-button"
       class="finite-button nude soft-transition"
