@@ -247,7 +247,7 @@ class LikeCommentAnd {
 
     this.lastStore = store;
     const newStore = { settings: store };
-    console.trace("storing", newStore);
+    //console.trace("storing", newStore);
     await browser.storage.sync.set(newStore);
     try {
       await browser.runtime.sendMessage(msg);
