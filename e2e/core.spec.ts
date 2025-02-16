@@ -78,7 +78,10 @@ test("whitelist", async ({ page, extensionId }) => {
   await expectNoContentWallWhitelist(page);
 });
 
-test("test blacklist options2", async ({ page, extensionId }) => {
+test("test blacklist options override disabled", async ({
+  page,
+  extensionId,
+}) => {
   await setup(page, extensionId);
 
   await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
@@ -139,9 +142,8 @@ test("test blacklist options", async ({ page, extensionId }) => {
   await waitForContentScript(page);
 
   await expectContentWall(page);
-  await expect(
-    page.getByText("It's not important enough. Go do something else."),
-  ).toBeDisabled();
+  await page.getByText("It's important (1st time)").click();
+  await expectNoContentWall(page);
 });
 
 // Playwright does not allow interaction with the popup. Opening the page
