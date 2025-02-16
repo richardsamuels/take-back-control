@@ -78,6 +78,25 @@ test("whitelist", async ({ page, extensionId }) => {
   await expectNoContentWallWhitelist(page);
 });
 
+test("test blacklist options2", async ({ page, extensionId }) => {
+  await setup(page, extensionId);
+
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
+  await page
+    .getByTestId("blacklist-item")
+    .filter({ hasText: "*://localhost:3000/*" })
+    .getByRole("button", { name: "More" })
+    .click();
+  await page
+    .getByRole("radio", {
+      name: "Allow Bypass (override global bypass setting)",
+    })
+    .click();
+
+  await page.goto("http://localhost:3000/");
+  await waitForContentScript(page);
+});
+
 test("test blacklist options", async ({ page, extensionId }) => {
   await setup(page, extensionId);
 
@@ -95,6 +114,25 @@ test("test blacklist options", async ({ page, extensionId }) => {
     .click();
   await page
     .getByRole("radio", { name: "Block the Whole Page Immediately" })
+    .click();
+
+  await page.goto("http://localhost:3000/");
+  await waitForContentScript(page);
+
+  await expectContentWall(page);
+  await expect(
+    page.getByText("It's not important enough. Go do something else."),
+  ).toBeDisabled();
+
+  await page.goto(`chrome-extension://${extensionId}/options.html#/blacklist`);
+  await page
+    .getByTestId("blacklist-item")
+    .filter({ hasText: "*://localhost:3000/*" })
+    .getByRole("button", { name: "More" })
+    .click();
+
+  await page
+    .getByRole("radio", { name: "Allow user to Bypass the Wall" })
     .click();
 
   await page.goto("http://localhost:3000/");

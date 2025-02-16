@@ -180,8 +180,7 @@
             onclick={clickAllowBypass}
             checked={allowBypass}
           />
-
-          Allow User to Bypass the Wall
+          Allow Bypass (override global bypass setting)
         </label>
       </li>
       {#if $settingsStore.showDebug}
