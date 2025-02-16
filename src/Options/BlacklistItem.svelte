@@ -11,6 +11,7 @@
   );
   const blockWholePage = $derived(siteConfig.blockWholePage);
   const alwaysBlock = $derived(siteConfig.alwaysBlock);
+  const allowBypass = $derived(siteConfig.allowBypass);
 
   function clickBlockWholePage(_e: Event) {
     settingsStore.blacklistSites.set(item, {
@@ -22,6 +23,12 @@
     settingsStore.blacklistSites.set(item, {
       ...siteConfig,
       alwaysBlock: !alwaysBlock,
+    });
+  }
+  function clickAllowBypass(_e: Event) {
+    settingsStore.blacklistSites.set(item, {
+      ...siteConfig,
+      allowBypass: !allowBypass,
     });
   }
 
@@ -143,6 +150,37 @@
             checked={!alwaysBlock}
           />
           Allow User to Bypass the Wall
+        </label>
+      </li>
+      <li class="list-group-item">
+        <label
+          class="btn btn-secondary"
+          class:active={!allowBypass}
+          class:btn-secondary={allowBypass}
+          class:btn-success={!allowBypass}
+        >
+          <input
+            type="radio"
+            name={`allowBypass-${index}`}
+            autocomplete="off"
+            onclick={clickAllowBypass}
+            checked={!allowBypass}
+          />Inherit global bypass setting
+        </label>
+        <label
+          class="btn"
+          class:active={allowBypass}
+          class:btn-secondary={!allowBypass}
+          class:btn-danger={allowBypass}
+        >
+          <input
+            type="radio"
+            name={`allowBypass-${index}`}
+            autocomplete="off"
+            onclick={clickAllowBypass}
+            checked={allowBypass}
+          />
+          Allow Bypass (override global bypass setting)
         </label>
       </li>
       {#if $settingsStore.showDebug}

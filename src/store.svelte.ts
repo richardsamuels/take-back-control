@@ -11,6 +11,7 @@ export type BlacklistSiteConfig = {
   scrollFactor: number;
   blockWholePage: boolean;
   alwaysBlock: boolean;
+  allowBypass: boolean;
 };
 
 export type Time = {
@@ -20,6 +21,7 @@ export type Time = {
 
 export type Settings = {
   init: boolean;
+  allowBypass: boolean;
   animation: boolean;
   showDebug: boolean;
   enabled: boolean;
@@ -43,6 +45,7 @@ function removeElement<T>(arr: T[], i: number): T[] {
 function nilSettings(): Settings {
   return {
     init: false,
+    allowBypass: true,
     animation: false,
     showDebug: false,
     enabled: false,
@@ -62,6 +65,7 @@ function nilSettings(): Settings {
 function defaultSettings() {
   const settings: Settings = {
     init: true,
+    allowBypass: true,
     animation: false,
     showDebug: false,
     enabled: true,
@@ -82,6 +86,7 @@ function defaultSettings() {
       scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
       blockWholePage: false,
       alwaysBlock: false,
+      allowBypass: false,
     };
   }
   return settings;
@@ -116,6 +121,7 @@ function createSettingsStore() {
                 scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
                 blockWholePage: false,
                 alwaysBlock: false,
+                allowBypass: true,
               },
             },
           };
