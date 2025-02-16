@@ -77,7 +77,7 @@
 
 <main>
   <div class="pb-2 d-flex justify-content-between align-items-bottom">
-    <h1>Anti-Doomscroll</h1>
+    <h1>Take Back Control</h1>
   </div>
   <div class="d-flex flex-column gap-1">
     <div id="checkboxContainer" class="d-flex flex-column gap-1">
