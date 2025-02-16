@@ -121,6 +121,7 @@ function createSettingsStore() {
                 scrollFactor: constants.DEFAULT_SCROLL_FACTOR,
                 blockWholePage: false,
                 alwaysBlock: false,
+                allowBypass: true,
               },
             },
           };
